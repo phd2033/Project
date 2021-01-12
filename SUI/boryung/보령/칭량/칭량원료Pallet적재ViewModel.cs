@@ -1010,7 +1010,12 @@ namespace 보령
                             CommandResults["ConfirmCommand"] = false;
                             CommandCanExecutes["ConfirmCommand"] = false;
 
-                            if (ListContainer.Count > 0)
+                            //if (ListContainer.Count > 0)
+                            if (ListContainer.Count == 0)
+                            {
+                                OnMessage("기록 준비 항목이 없습니다.");
+                            }
+                            else
                             {
                                 DataSet ds = new DataSet();
                                 DataTable dt = new DataTable("DATA");
