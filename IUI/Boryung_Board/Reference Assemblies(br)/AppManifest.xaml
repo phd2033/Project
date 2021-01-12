@@ -1,0 +1,93 @@
+﻿<Deployment xmlns="http://schemas.microsoft.com/client/2007/deployment" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" EntryPointAssembly="MainLogIn" EntryPointType="MainLogIn.App" RuntimeVersion="5.0.61118.0">
+  <Deployment.OutOfBrowserSettings>
+    <OutOfBrowserSettings ShortName="Integration UI" EnableGPUAcceleration="False" ShowInstallMenuItem="True">
+      <OutOfBrowserSettings.Blurb>Integration UI</OutOfBrowserSettings.Blurb>
+      <OutOfBrowserSettings.WindowSettings>
+        <WindowSettings Title="Integration UI" WindowStyle="BorderlessRoundCornersWindow" />
+      </OutOfBrowserSettings.WindowSettings>
+      <OutOfBrowserSettings.SecuritySettings>
+        <SecuritySettings ElevatedPermissions="Required" />
+      </OutOfBrowserSettings.SecuritySettings>
+      <OutOfBrowserSettings.Icons>
+        <Icon Size="32,32">Images/UIicon32.png</Icon>
+        <Icon Size="48,48">Images/UIicon48.png</Icon>
+      </OutOfBrowserSettings.Icons>
+    </OutOfBrowserSettings>
+  </Deployment.OutOfBrowserSettings>
+  <Deployment.Parts>
+    <AssemblyPart x:Name="MainLogIn" Source="MainLogIn.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.5" Source="C1.Silverlight.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.Chart.5" Source="C1.Silverlight.Chart.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.Chart.Extended.5" Source="C1.Silverlight.Chart.Extended.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.Data.5" Source="C1.Silverlight.Data.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.DataGrid.5" Source="C1.Silverlight.DataGrid.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.DataGrid.Excel.5" Source="C1.Silverlight.DataGrid.Excel.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.DateTimeEditors.5" Source="C1.Silverlight.DateTimeEditors.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.Docking.5" Source="C1.Silverlight.Docking.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.Excel.5" Source="C1.Silverlight.Excel.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.Extended.5" Source="C1.Silverlight.Extended.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.FlexGrid.5" Source="C1.Silverlight.FlexGrid.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.FlexGridFilter.5" Source="C1.Silverlight.FlexGridFilter.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.Legacy.5" Source="C1.Silverlight.Legacy.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.Pdf.5" Source="C1.Silverlight.Pdf.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.PdfViewer.5" Source="C1.Silverlight.PdfViewer.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.ReportViewer.5" Source="C1.Silverlight.ReportViewer.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.RichTextBox.5" Source="C1.Silverlight.RichTextBox.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.Schedule.5" Source="C1.Silverlight.Schedule.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.TileView.5" Source="C1.Silverlight.TileView.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.Toolbar.5" Source="C1.Silverlight.Toolbar.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.Uploader.5" Source="C1.Silverlight.Uploader.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.Zip.5" Source="C1.Silverlight.Zip.5.dll" />
+    <AssemblyPart x:Name="Equipment" Source="Equipment.dll" />
+    <AssemblyPart x:Name="LGCNS.ezControl.Interface.Silverlight" Source="LGCNS.ezControl.Interface.Silverlight.dll" />
+    <AssemblyPart x:Name="LGCNS.EZMES.Common" Source="LGCNS.EZMES.Common.dll" />
+    <AssemblyPart x:Name="LGCNS.EZMES.Controls.Theming" Source="LGCNS.EZMES.Controls.Theming.dll" />
+    <AssemblyPart x:Name="LGCNS.EZMES.Controls.Theming.Green" Source="LGCNS.EZMES.Controls.Theming.Green.dll" />
+    <AssemblyPart x:Name="LGCNS.EZMES.ControlsLib" Source="LGCNS.EZMES.ControlsLib.dll" />
+    <AssemblyPart x:Name="LGCNS.EZMES.CorLib" Source="LGCNS.EZMES.CorLib.dll" />
+    <AssemblyPart x:Name="LGCNS.EZMES.MainControls" Source="LGCNS.EZMES.MainControls.dll" />
+    <AssemblyPart x:Name="LGCNS.iPharmMES.Common" Source="LGCNS.iPharmMES.Common.dll" />
+    <AssemblyPart x:Name="LGCNS.iPharmMES.Controls" Source="LGCNS.iPharmMES.Controls.dll" />
+    <AssemblyPart x:Name="LGCNS.iPharmMES.Controls.Theming" Source="LGCNS.iPharmMES.Controls.Theming.dll" />
+    <AssemblyPart x:Name="Material" Source="Material.dll" />
+    <AssemblyPart x:Name="Microsoft.AspNet.SignalR.Client" Source="Microsoft.AspNet.SignalR.Client.dll" />
+    <AssemblyPart x:Name="Microsoft.CompilerServices.AsyncTargetingPack.Silverlight5" Source="Microsoft.CompilerServices.AsyncTargetingPack.Silverlight5.dll" />
+    <AssemblyPart x:Name="Microsoft.CSharp" Source="Microsoft.CSharp.dll" />
+    <AssemblyPart x:Name="Microsoft.Expression.Drawing" Source="Microsoft.Expression.Drawing.dll" />
+    <AssemblyPart x:Name="Microsoft.Expression.Interactions" Source="Microsoft.Expression.Interactions.dll" />
+    <AssemblyPart x:Name="Newtonsoft.Json" Source="Newtonsoft.Json.dll" />
+    <AssemblyPart x:Name="Order" Source="Order.dll" />
+    <AssemblyPart x:Name="Process" Source="Process.dll" />
+    <AssemblyPart x:Name="System.ComponentModel.Composition" Source="System.ComponentModel.Composition.dll" />
+    <AssemblyPart x:Name="System.ComponentModel.DataAnnotations" Source="System.ComponentModel.DataAnnotations.dll" />
+    <AssemblyPart x:Name="System.IO" Source="System.IO.dll" />
+    <AssemblyPart x:Name="System.Net.Http" Source="System.Net.Http.dll" />
+    <AssemblyPart x:Name="System.Net.Http.Extensions" Source="System.Net.Http.Extensions.dll" />
+    <AssemblyPart x:Name="System.Net.Http.Primitives" Source="System.Net.Http.Primitives.dll" />
+    <AssemblyPart x:Name="System.Runtime" Source="System.Runtime.dll" />
+    <AssemblyPart x:Name="System.ServiceModel.Extensions" Source="System.ServiceModel.Extensions.dll" />
+    <AssemblyPart x:Name="System.ServiceModel.NetTcp" Source="System.ServiceModel.NetTcp.dll" />
+    <AssemblyPart x:Name="System.Threading.Tasks" Source="System.Threading.Tasks.dll" />
+    <AssemblyPart x:Name="System.Windows.Controls.Data.DataForm.Toolkit" Source="System.Windows.Controls.Data.DataForm.Toolkit.dll" />
+    <AssemblyPart x:Name="System.Windows.Controls.Data" Source="System.Windows.Controls.Data.dll" />
+    <AssemblyPart x:Name="System.Windows.Controls.Data.Input" Source="System.Windows.Controls.Data.Input.dll" />
+    <AssemblyPart x:Name="System.Windows.Controls.Data.Toolkit" Source="System.Windows.Controls.Data.Toolkit.dll" />
+    <AssemblyPart x:Name="System.Windows.Controls.DataVisualization.Toolkit" Source="System.Windows.Controls.DataVisualization.Toolkit.dll" />
+    <AssemblyPart x:Name="System.Windows.Controls" Source="System.Windows.Controls.dll" />
+    <AssemblyPart x:Name="System.Windows.Controls.Input.Toolkit" Source="System.Windows.Controls.Input.Toolkit.dll" />
+    <AssemblyPart x:Name="System.Windows.Controls.Layout.Toolkit" Source="System.Windows.Controls.Layout.Toolkit.dll" />
+    <AssemblyPart x:Name="System.Windows.Controls.Navigation" Source="System.Windows.Controls.Navigation.dll" />
+    <AssemblyPart x:Name="System.Windows.Controls.Theming.Toolkit" Source="System.Windows.Controls.Theming.Toolkit.dll" />
+    <AssemblyPart x:Name="System.Windows.Controls.Toolkit" Source="System.Windows.Controls.Toolkit.dll" />
+    <AssemblyPart x:Name="System.Windows.Controls.Toolkit.Internals" Source="System.Windows.Controls.Toolkit.Internals.dll" />
+    <AssemblyPart x:Name="System.Windows.Data" Source="System.Windows.Data.dll" />
+    <AssemblyPart x:Name="System.Windows.Interactivity" Source="System.Windows.Interactivity.dll" />
+    <AssemblyPart x:Name="System.Xml.Linq" Source="System.Xml.Linq.dll" />
+    <AssemblyPart x:Name="System.Xml.Serialization" Source="System.Xml.Serialization.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.Imaging.5" Source="C1.Silverlight.Imaging.5.dll" />
+    <AssemblyPart x:Name="C1.Silverlight.DataGrid.Summaries.5" Source="C1.Silverlight.DataGrid.Summaries.5.dll" />
+    <AssemblyPart x:Name="LGCNS.EZMES.WcfClient.Proxy" Source="LGCNS.EZMES.WcfClient.Proxy.dll" />
+    <AssemblyPart x:Name="System.ServiceModel.Syndication" Source="System.ServiceModel.Syndication.dll" />
+    <AssemblyPart Source="ko/System.ServiceModel.Syndication.resources.dll" />
+  </Deployment.Parts>
+</Deployment>

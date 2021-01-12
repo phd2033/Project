@@ -1,0 +1,59 @@
+<Keyboard language="English" culture="EN">
+  <Rows>
+    <KeyboardRow>
+      <GeneralKey shift="~">`</GeneralKey>
+      <GeneralKey shift="!">1</GeneralKey>
+      <GeneralKey shift="@">2</GeneralKey>
+      <GeneralKey shift="#">3</GeneralKey>
+      <GeneralKey shift="$">4</GeneralKey>
+      <GeneralKey shift="%">5</GeneralKey>
+      <GeneralKey shift="^">6</GeneralKey>
+      <GeneralKey shift="&amp;">7</GeneralKey>
+      <GeneralKey shift="*">8</GeneralKey>
+      <GeneralKey shift="(">9</GeneralKey>
+      <GeneralKey shift=")">0</GeneralKey>
+      <GeneralKey shift="_">-</GeneralKey>
+      <GeneralKey shift="+">=</GeneralKey>
+      <GeneralKey shift="|">\</GeneralKey>
+    </KeyboardRow>
+    <KeyboardRow>
+      <GeneralKey>q</GeneralKey>
+      <GeneralKey>w</GeneralKey>
+      <GeneralKey>e</GeneralKey>
+      <GeneralKey>r</GeneralKey>
+      <GeneralKey>t</GeneralKey>
+      <GeneralKey>y</GeneralKey>
+      <GeneralKey>u</GeneralKey>
+      <GeneralKey>i</GeneralKey>
+      <GeneralKey>o</GeneralKey>
+      <GeneralKey>p</GeneralKey>
+      <GeneralKey shift="{">[</GeneralKey>
+      <GeneralKey shift="}">]</GeneralKey>
+    </KeyboardRow>
+    <KeyboardRow>
+      <GeneralKey>a</GeneralKey>
+      <GeneralKey>s</GeneralKey>
+      <GeneralKey>d</GeneralKey>
+      <GeneralKey>f</GeneralKey>
+      <GeneralKey>g</GeneralKey>
+      <GeneralKey>h</GeneralKey>
+      <GeneralKey>j</GeneralKey>
+      <GeneralKey>k</GeneralKey>
+      <GeneralKey>l</GeneralKey>
+      <GeneralKey shift=":">;</GeneralKey>
+      <GeneralKey shift="&quot;">'</GeneralKey>
+    </KeyboardRow>
+    <KeyboardRow>
+      <GeneralKey>z</GeneralKey>
+      <GeneralKey>x</GeneralKey>
+      <GeneralKey>c</GeneralKey>
+      <GeneralKey>v</GeneralKey>
+      <GeneralKey>b</GeneralKey>
+      <GeneralKey>n</GeneralKey>
+      <GeneralKey>m</GeneralKey>
+      <GeneralKey shift="&lt;">,</GeneralKey>
+      <GeneralKey shift="&gt;">.</GeneralKey>
+      <GeneralKey shift="?">/</GeneralKey>
+    </KeyboardRow>
+  </Rows>
+</Keyboard>

@@ -1,0 +1,25 @@
+﻿<configuration>
+  <system.serviceModel>
+    <bindings>
+      <basicHttpBinding>
+        <binding name="ReportExecutionServiceSoap" maxBufferSize="2147483647"
+          maxReceivedMessageSize="2147483647">
+          <security mode="None" />
+        </binding>
+        <binding name="ReportingService2010Soap" maxBufferSize="2147483647"
+          maxReceivedMessageSize="2147483647">
+          <security mode="None" />
+        </binding>
+      </basicHttpBinding>
+    </bindings>
+    <client>
+      <endpoint address="http://10.62.207.121:80/ReportServer/ReportExecution2005.asmx"
+        binding="basicHttpBinding" bindingConfiguration="ReportExecutionServiceSoap"
+        contract="RptExecutionService.ReportExecutionServiceSoap" name="ReportExecutionServiceSoap" />
+      <endpoint address="http://10.62.207.121:80/ReportServer/ReportService2010.asmx"
+        binding="basicHttpBinding" bindingConfiguration="ReportingService2010Soap"
+        contract="RptService.ReportingService2010Soap" name="ReportingService2010Soap" />
+    </client>
+  </system.serviceModel>
+</configuration>
+

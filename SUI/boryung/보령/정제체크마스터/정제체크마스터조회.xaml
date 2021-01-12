@@ -1,0 +1,163 @@
+﻿<ShopFloorUI:ShopFloorCustomWindow 
+    x:Class="보령.정제체크마스터조회"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk"
+    xmlns:toolkit ="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit"
+    xmlns:c1="http://schemas.componentone.com/winfx/2006/xaml"
+    xmlns:my="clr-namespace:보령"
+    xmlns:ShopFloorUI="clr-namespace:ShopFloorUI;assembly=ShopFloorUI.Common"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:icommon="clr-namespace:LGCNS.iPharmMES.Common;assembly=LGCNS.iPharmMES.Common"
+    xmlns:icontrol="clr-namespace:LGCNS.iPharmMES.Controls;assembly=LGCNS.iPharmMES.Controls"
+    xmlns:controlsLib="clr-namespace:LGCNS.EZMES.ControlsLib;assembly=LGCNS.EZMES.ControlsLib"
+    xmlns:vsm="clr-namespace:System.Windows;assembly=System.Windows"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:ezmes="clr-namespace:LGCNS.EZMES.ControlsLib;assembly=LGCNS.EZMES.ControlsLib"
+    mc:Ignorable="d"
+    x:Name="Main"
+    Title="정제체크마스터" 
+    Height="450" 
+    Width="1100">
+    <ShopFloorUI:ShopFloorCustomWindow.Resources>
+        <Style x:Key="TextBoxAlignmentStyle" TargetType="TextBox">
+            <Setter Property="Foreground" Value="black"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="#FFFFFFFF"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="Border" BorderThickness="{TemplateBinding BorderThickness}" Opacity="1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}">
+                            <Grid>
+                                <Border x:Name="ReadOnlyVisualElement" Opacity="0" Background="#5EC9C9C9"/>
+                                <Border x:Name="MouseOverBorder" BorderThickness="1" BorderBrush="Transparent">
+                                    <ScrollViewer x:Name="ContentElement" Padding="{TemplateBinding Padding}" BorderThickness="0" IsTabStop="False" VerticalAlignment="Center" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <my:정제체크마스터조회ViewModel x:Name="ViewModel"/>
+    </ShopFloorUI:ShopFloorCustomWindow.Resources>
+    <toolkit:BusyIndicator Name="BusyIndicator" IsBusy="False">
+        <Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource ViewModel}}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Loaded">
+                    <i:InvokeCommandAction Command="{Binding LoadCommand}" CommandParameter="{Binding ElementName=Main}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="60"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
+            <sdk:Label Grid.Row="0" Grid.Column="0" Content="타정기 정보" HorizontalAlignment="Center"/>
+            <Grid Grid.Column="1" Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" x:Name="txtEqptId" Style="{StaticResource TextBoxAlignmentStyle}" HorizontalContentAlignment="Center" Margin="5" Padding="0,0,10,0" BorderThickness="1"
+                 Text="{Binding EqptId, Mode=TwoWay}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="KeyDown">
+                            <icommon:EditBoxKeyDownAction Command="{Binding EqptSearchCommand}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+                <TextBox Grid.Column="1" IsReadOnly="True" Style="{StaticResource TextBoxAlignmentStyle}" HorizontalContentAlignment="Center" Background="#FFEBEBEB" Margin="5" BorderThickness="1"
+                 Text="{Binding EqptName, Mode=OneWay}"/>
+            </Grid>
+            <sdk:Label Grid.Row="1" Grid.Column="0" Content="점검 일시" HorizontalAlignment="Center"/>
+            <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <sdk:Label Content="From " Grid.Column="0" HorizontalAlignment="Center"/>
+                <Grid Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="70"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="70"/>
+                    </Grid.ColumnDefinitions>
+                    <c1:C1DateTimePicker x:Name="From" Grid.Column="0" DateTime="{Binding FromDatetime, Mode=TwoWay}" EditMode="Date"/>
+                    <ComboBox x:Name="FromHour" Grid.Column="1" HorizontalContentAlignment="Center" ItemsSource="{Binding BR_PHR_GET_HOUR_MINUTE_CBO.OUTDATA_HOURs}" SelectedItem="{Binding FromHour, Mode=TwoWay}" DisplayMemberPath="HOUR" SelectedValuePath="HOUR"/>
+                    <sdk:Label Grid.Column="2" Content=" : "/>
+                    <ComboBox x:Name="FromMin" Grid.Column="3" HorizontalContentAlignment="Center" ItemsSource="{Binding BR_PHR_GET_HOUR_MINUTE_CBO.OUTDATA_MINUTEs}" SelectedItem="{Binding FromMin, Mode=TwoWay}" DisplayMemberPath="MINUTE" SelectedValuePath="MINUTE"/>
+                </Grid>
+
+                <sdk:Label Content=" To " Grid.Column="2" HorizontalAlignment="Center"/>
+                <Grid Grid.Column="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="70"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="70"/>
+                    </Grid.ColumnDefinitions>
+                    <c1:C1DateTimePicker x:Name="To" Grid.Column="0" EditMode="Date" DateTime="{Binding ToDatetime, Mode=TwoWay}"/>
+                    <ComboBox x:Name="ToHour" Grid.Column="1" HorizontalContentAlignment="Center" ItemsSource="{Binding BR_PHR_GET_HOUR_MINUTE_CBO.OUTDATA_HOURs}" SelectedItem="{Binding ToHour, Mode=TwoWay}" DisplayMemberPath="HOUR" SelectedValuePath="HOUR"/>
+                    <sdk:Label Grid.Column="2" Content=" : "/>
+                    <ComboBox x:Name="ToMin" Grid.Column="3" HorizontalContentAlignment="Center" ItemsSource="{Binding BR_PHR_GET_HOUR_MINUTE_CBO.OUTDATA_MINUTEs}" SelectedItem="{Binding ToMin, Mode=TwoWay}" DisplayMemberPath="MINUTE" SelectedValuePath="MINUTE"/>
+                </Grid>
+            </Grid>
+            <Button Grid.Row="1" Grid.Column="3" x:Name="Search" Content="조회" Margin="5" Command="{Binding SearchCommand}"/>
+            <ezmes:CNSDataGrid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" x:Name="grid"
+                               IsRowAdd="False" IsRowDelete="False" IsEditMode="True" IsEditSection="True"
+                               ItemsSource="{Binding Path=BR_BRS_GET_Selector_Check_Master.OUTDATAs}">
+                <ezmes:CNSDataGrid.DataColumns>
+                    <ezmes:DataColumn DataField="STDATETIME" HeadName="점검 일시" Excel="True" HeaderWidth="150" HorizontalAlignment="Center" ReadOnly="False"/>
+                    <ezmes:DataColumn DataField="AVG_WEIGHT" HeadName="평균 질량" Excel="True" HeaderWidth="100" HorizontalAlignment="Center" ReadOnly="False"/>
+                    <ezmes:DataColumn DataField="MIN_WEIGHT" HeadName="개개질량(최소)" Excel="True" HeaderWidth="100" HorizontalAlignment="Center" ReadOnly="False"/>
+                    <ezmes:DataColumn DataField="MAX_WEIGHT" HeadName="개개질량(최대)" Excel="True" HeaderWidth="100" HorizontalAlignment="Center" ReadOnly="False"/>
+                    <ezmes:DataColumn DataField="AVG_THICK" HeadName="두께(평균)" Excel="True" HeaderWidth="100" HorizontalAlignment="Center" ReadOnly="False"/>
+                    <ezmes:DataColumn DataField="MIN_THICK" HeadName="두께(최소)" Excel="True" HeaderWidth="100" HorizontalAlignment="Center" ReadOnly="False"/>
+                    <ezmes:DataColumn DataField="MAX_THICK" HeadName="두께(최대)" Excel="True" HeaderWidth="100" HorizontalAlignment="Center" ReadOnly="False"/>
+                    <ezmes:DataColumn DataField="AVG_HARDNESS" HeadName="경도(평균)" Excel="True" HeaderWidth="100" HorizontalAlignment="Center" ReadOnly="False"/>
+                    <ezmes:DataColumn DataField="MIN_HARDNESS" HeadName="경도(최소)" Excel="True" HeaderWidth="100" HorizontalAlignment="Center" ReadOnly="False"/>
+                    <ezmes:DataColumn DataField="MAX_HARDNESS" HeadName="경도(최대)" Excel="True" HeaderWidth="100" HorizontalAlignment="Center" ReadOnly="False"/>
+                    <ezmes:DataColumn DataField="AVG_DIAMETER" HeadName="직경(평균)" Excel="True" HeaderWidth="100" HorizontalAlignment="Center" ReadOnly="False"/>
+                    <ezmes:DataColumn DataField="MIN_DIAMETER" HeadName="직경(최소)" Excel="True" HeaderWidth="100" HorizontalAlignment="Center" ReadOnly="False"/>
+                    <ezmes:DataColumn DataField="MAX_DIAMETER" HeadName="직경(최대)" Excel="True" HeaderWidth="100" HorizontalAlignment="Center" ReadOnly="False"/>
+                </ezmes:CNSDataGrid.DataColumns>
+            </ezmes:CNSDataGrid>
+            <!--<sdk:DataGrid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" x:Name="grid" 
+                      AutoGenerateColumns="False" ItemsSource="{Binding Path=BR_BRS_GET_Selector_Check_Master.OUTDATAs}" LoadingRow="grid_LoadingRow">
+                <sdk:DataGrid.Columns>
+                    <sdk:DataGridTextColumn Header="점검 일시" Width="1.5*" IsReadOnly="True" Binding="{Binding Path=STDATETIME}"/>
+                    <sdk:DataGridTextColumn Header="평균 질량" Width="*" IsReadOnly="True" Binding="{Binding Path=AVG_WEIGHT}"/>
+                    <sdk:DataGridTextColumn Header="개개질량(최소)" Width="*" IsReadOnly="True" Binding="{Binding Path=MIN_WEIGHT}"/>
+                    <sdk:DataGridTextColumn Header="개개질량(최대)" Width="*" IsReadOnly="True" Binding="{Binding Path=MAX_WEIGHT}"/>
+                    <sdk:DataGridTextColumn Header="두께(평균)" Width="*" IsReadOnly="True" Binding="{Binding Path=AVG_THICK}"/>
+                    <sdk:DataGridTextColumn Header="두께(최소)" Width="*" IsReadOnly="True" Binding="{Binding Path=MIN_THICK}"/>
+                    <sdk:DataGridTextColumn Header="두께(최대)" Width="*" IsReadOnly="True" Binding="{Binding Path=MAX_THICK}"/>
+                    <sdk:DataGridTextColumn Header="경도(평균)" Width="*" IsReadOnly="True" Binding="{Binding Path=AVG_HARDNESS}"/>
+                    <sdk:DataGridTextColumn Header="경도(최소)" Width="*" IsReadOnly="True" Binding="{Binding Path=MIN_HARDNESS}"/>
+                    <sdk:DataGridTextColumn Header="경도(최대)" Width="*" IsReadOnly="True" Binding="{Binding Path=MAX_HARDNESS}"/>
+                    <sdk:DataGridTextColumn Header="직경(평균)" Width="*" IsReadOnly="True" Binding="{Binding Path=AVG_DIAMETER}"/>
+                    <sdk:DataGridTextColumn Header="직경(최소)" Width="*" IsReadOnly="True" Binding="{Binding Path=MIN_DIAMETER}"/>
+                    <sdk:DataGridTextColumn Header="직경(최대)" Width="*" IsReadOnly="True" Binding="{Binding Path=MAX_DIAMETER}"/>
+                </sdk:DataGrid.Columns>
+            </sdk:DataGrid>-->
+            <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Content="기 록" Width="100" HorizontalAlignment="Right" Margin="5" x:Name="Record" Command="{Binding RecordCommand}"/>
+            <Button Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Content="닫 기" Width="100" HorizontalAlignment="Left" Margin="5" Click="btnCancel_Click"/>
+        </Grid>
+    </toolkit:BusyIndicator>
+</ShopFloorUI:ShopFloorCustomWindow>
