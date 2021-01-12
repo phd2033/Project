@@ -277,7 +277,9 @@ namespace 보령
                                 IsPrintLabel = Visibility.Collapsed;
 
                             _mainWnd.txtContainer.Focus();
-                            
+
+                            ///
+
                             CommandResults["LoadedCommand"] = true;
                         }
                         catch (Exception ex)
