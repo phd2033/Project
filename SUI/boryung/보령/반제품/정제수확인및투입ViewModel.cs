@@ -136,7 +136,13 @@ namespace 보령
         private ScaleWeight _TotalWeight = new ScaleWeight();
         public string TotalWeight
         {
-            get { return _TotalWeight.WeightUOMString; }
+            get
+            {
+                if (_ScaleException)
+                    return _ScaleExceptionMsg;
+                else
+                    return _TotalWeight.WeightUOMString;
+            }
         }
         private SolidColorBrush _ScaleBackground;
         public SolidColorBrush ScaleBackground
@@ -158,6 +164,10 @@ namespace 보령
         {
             get { return _LowerWeight.WeightUOMString; }
         }
+
+        // 저울에러
+        private bool _ScaleException;
+        private string _ScaleExceptionMsg = "저울 연결 실패";
         #endregion
         /// <summary>
         /// 투입버튼
@@ -184,7 +194,7 @@ namespace 보령
                 _isEnabled = value;
                 OnPropertyChanged("IsEnabled");
             }
-        }
+        }       
         #endregion
         #region [Bizrule]
         private BR_BRS_SEL_Charging_Solvent _BR_BRS_SEL_Charging_Solvent;
@@ -312,13 +322,13 @@ namespace 보령
             {
                 return new AsyncCommandBase(async arg =>
                 {
-                    using (await AwaitableLocks["ScanScaleCommand"].EnterAsync())
+                    using (await AwaitableLocks["ScanScaleCommandAsync"].EnterAsync())
                     {
                         try
                         {
                             IsBusy = true;
-                            CommandResults["ScanScaleCommand"] = false;
-                            CommandCanExecutes["ScanScaleCommand"] = false;
+                            CommandResults["ScanScaleCommandAsync"] = false;
+                            CommandCanExecutes["ScanScaleCommandAsync"] = false;
 
                             ///
                             _DispatcherTimer.Stop();
@@ -326,7 +336,7 @@ namespace 보령
                             ScanPopup.tbMsg.Text = "저울 바코드를 스캔하세요.";
                             ScanPopup.Closed += async (sender, e) =>
                             {
-                                if (ScanPopup.DialogResult.GetValueOrDefault() && !string.IsNullOrWhiteSpace(ScanPopup.tbText.Text))
+                                if(ScanPopup.DialogResult.GetValueOrDefault() && !string.IsNullOrWhiteSpace(ScanPopup.tbText.Text))
                                 {
                                     string text = ScanPopup.tbText.Text;
 
@@ -345,7 +355,7 @@ namespace 보령
                                         scalePrecision = _BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.OUTDATAs[0].PRECISION.HasValue ? Convert.ToInt32(_BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.OUTDATAs[0].PRECISION.Value) : 3;
                                         ScaleId = text;
                                         _DispatcherTimer.Start();
-                                    }
+                                    }   
                                 }
                                 else
                                     ScaleId = "미설정";
@@ -354,45 +364,45 @@ namespace 보령
                             ScanPopup.Show();
                             ///
 
-                            CommandResults["ScanScaleCommand"] = true;
+                            CommandResults["ScanScaleCommandAsync"] = true;
                         }
                         catch (Exception ex)
                         {
                             _DispatcherTimer.Stop();
-                            CommandResults["ScanScaleCommand"] = false;
+                            CommandResults["ScanScaleCommandAsync"] = false;
                             OnException(ex.Message, ex);
                         }
                         finally
                         {
-                            CommandCanExecutes["ScanScaleCommand"] = true;
+                            CommandCanExecutes["ScanScaleCommandAsync"] = true;
                             IsBusy = false;
                         }
                     }
                 }, arg =>
                 {
-                    return CommandCanExecutes.ContainsKey("ScanScaleCommand") ?
-                        CommandCanExecutes["ScanScaleCommand"] : (CommandCanExecutes["ScanScaleCommand"] = true);
+                    return CommandCanExecutes.ContainsKey("ScanScaleCommandAsync") ?
+                        CommandCanExecutes["ScanScaleCommandAsync"] : (CommandCanExecutes["ScanScaleCommandAsync"] = true);
                 });
             }
         }
-
         public ICommand ChargingCommandAsync
         {
             get
             {
                 return new AsyncCommandBase(async arg =>
                 {
-                    using (await AwaitableLocks["ChargingCommand"].EnterAsync())
+                    using (await AwaitableLocks["ChargingCommandAsync"].EnterAsync())
                     {
                         try
                         {
                             IsBusy = true;
 
-                            CommandResults["ChargingCommand"] = false;
-                            CommandCanExecutes["ChargingCommand"] = false;
+                            CommandResults["ChargingCommandAsync"] = false;
+                            CommandCanExecutes["ChargingCommandAsync"] = false;
 
                             ///
                             _DispatcherTimer.Stop();
+                                                        
                             // 칭량범위를 넘어가지 않은 경우
                             if (_TotalWeight.Value <= _UpperWeight.Value)
                             {
@@ -404,7 +414,7 @@ namespace 보령
                                     selectedComponent.TOTALQTY = _TotalWeight.Value;
 
                                     // 기록버튼 활성화 여부
-                                    if (_LowerWeight.Value <= _TotalWeight.Value && await OnMessageAsync("칭량을 종료하시겠습니까?", true))
+                                    if(_LowerWeight.Value <= _TotalWeight.Value && await OnMessageAsync("칭량을 종료하시겠습니까?", true))
                                     {
                                         IsEnabled = true;
                                         IsCharging = false;
@@ -440,7 +450,7 @@ namespace 보령
                                 {
                                     _DispatcherTimer.Start();
                                     selectedComponent.CHECK = "투입대기";
-                                }
+                                }    
                             }
                             else
                             {
@@ -449,24 +459,24 @@ namespace 보령
                             }
                             ///
 
-                            CommandResults["ChargingCommand"] = true;
+                            CommandResults["ChargingCommandAsync"] = true;
                         }
                         catch (Exception ex)
                         {
-                            CommandResults["ChargingCommand"] = false;
+                            CommandResults["ChargingCommandAsync"] = false;
                             OnException(ex.Message, ex);
                         }
                         finally
                         {
-                            CommandCanExecutes["ChargingCommand"] = true;
+                            CommandCanExecutes["ChargingCommandAsync"] = true;
                             IsBusy = false;
                         }
                     }
                 }, arg =>
-                {
-                    return CommandCanExecutes.ContainsKey("ChargingCommand") ?
-                        CommandCanExecutes["ChargingCommand"] : (CommandCanExecutes["ChargingCommand"] = true);
-                });
+               {
+                   return CommandCanExecutes.ContainsKey("ChargingCommandAsync") ?
+                       CommandCanExecutes["ChargingCommandAsync"] : (CommandCanExecutes["ChargingCommandAsync"] = true);
+               });
             }
         }
         public ICommand ConfirmCommandAsync
@@ -506,6 +516,7 @@ namespace 보령
                             }
 
                             authHelper.InitializeAsync(Common.enumCertificationType.Function, Common.enumAccessType.Create, "OM_ProductionOrder_Charging");
+
                             if (await authHelper.ClickAsync(
                                 Common.enumCertificationType.Function,
                                 Common.enumAccessType.Create,
@@ -553,9 +564,9 @@ namespace 보령
                             });
                             _BR_RHR_REG_MaterialSubLot_Dispense_Charging_NEW.INDATA_INVs.Add(new BR_RHR_REG_MaterialSubLot_Dispense_Charging_NEW.INDATA_INV()
                             {
-                                COMPONENTGUID = _BR_BRS_SEL_Charging_Solvent.OUTDATA_BOMs[0].COMPONENTGUID.ToString()
+                                COMPONENTGUID = _BR_BRS_SEL_Charging_Solvent.OUTDATA_BOMs[0].COMPONENTGUID
                             });
-
+                            
                             // XML 저장
                             if (await _BR_RHR_REG_MaterialSubLot_Dispense_Charging_NEW.Execute() == true)
                             {
@@ -590,7 +601,6 @@ namespace 보령
                         }
                         catch (Exception ex)
                         {
-                            _DispatcherTimer.Start();
                             CommandResults["ConfirmCommandAsync"] = false;
                             OnException(ex.Message, ex);
                         }
@@ -616,26 +626,21 @@ namespace 보령
             {
                 _DispatcherTimer.Stop();
 
-                if (_ScaleInfo != null && _selectedComponent != null)
+                if(_ScaleInfo != null && _selectedComponent != null)
                 {
                     bool success = false;
 
                     decimal weight;
-                    if (_ScaleInfo.INTERFACE.ToUpper() == "REST")
+                    if(_ScaleInfo.INTERFACE.ToUpper() == "REST")
                     {
                         var result = await _restScaleService.DownloadString(_ScaleInfo.EQPTID, ScaleCommand.GW);
-
+                               
                         if (result.code == "1" && Decimal.TryParse(result.data, out weight) == true)
                         {
                             success = true;
                             _ScaleValue.SetWeight(result.data, result.unit);
                             _TotalWeight.SetWeight(_selectedComponent.TOTALQTY + _ScaleValue.Value, _ScaleValue.Uom, _ScaleValue.Precision);
                             scalePrecision = _ScaleValue.Precision;
-                        }
-                        else
-                        {
-                            _mainWnd.txtScaleValue.Background = new SolidColorBrush(Colors.Red);
-                            ScaleId = "연결 끊김";
                         }
                     }
                     else
@@ -653,25 +658,28 @@ namespace 보령
                             _ScaleValue.SetWeight(current_wight.OUTDATAs[0].Weight.Value, current_wight.OUTDATAs[0].UOM, _scalePrecision);
                             _TotalWeight.SetWeight(_selectedComponent.TOTALQTY + _ScaleValue.Value, _ScaleValue.Uom, _scalePrecision);
                         }
-                        else
-                        {
-                            _mainWnd.txtScaleValue.Background = new SolidColorBrush(Colors.Red);
-                            ScaleId = "연결 끊김";
-                            _mainWnd.btnConfirm.IsEnabled = false;
-                        }
                     }
 
                     // 저울 연결 시 투입버튼 활성화
                     if (success)
                     {
                         IsCharging = true;
+                        _ScaleException = false;
                         decimal total = _ScaleValue.Value + selectedComponent.TOTALQTY;
                         if (_LowerWeight.Value <= _TotalWeight.Value && _TotalWeight.Value <= _UpperWeight.Value)
                             ScaleBackground = new SolidColorBrush(Colors.Green);
                         else
                             ScaleBackground = new SolidColorBrush(Colors.Yellow);
                     }
-
+                    else
+                    {
+                        IsCharging = false;
+                        _ScaleException = true;
+                        _ScaleValue.SetWeight(0, _ScaleValue.Uom, _scalePrecision);
+                        _TotalWeight.SetWeight(_selectedComponent.TOTALQTY + _ScaleValue.Value, _ScaleValue.Uom, _scalePrecision);
+                        ScaleBackground = new SolidColorBrush(Colors.Red);
+                    }
+                       
                     OnPropertyChanged("ScaleValue");
                     OnPropertyChanged("TotalWeight");
                     OnPropertyChanged("UpperWeight");
@@ -681,7 +689,6 @@ namespace 보령
             }
             catch (Exception ex)
             {
-                IsEnabled = false;
                 IsCharging = false;
                 OnException(ex.Message, ex);
             }
