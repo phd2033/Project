@@ -517,7 +517,7 @@ namespace 보령
                             RetrieveMaterialSublotWithVessel();
 
                             bool checkFlag = false;
-
+                            // 적재 취소 할 경우 기록 준비 항목에서 동일한 VessalID 삭제. 2021.01.12 phd
                             for(int i = ListContainer.Count - 1; i >= 0; i--)
                             {
                                 if (ListContainer[i].VESSELID.Equals(_lblEqptID))
@@ -656,6 +656,9 @@ namespace 보령
             }
         }
 
+        /// <summary>
+        /// 여러 용기를 기록하기 위해 추가. 2021.01.12 phd
+        /// </summary>
         public ICommand ConfirmReadyCommand
         {
             get
@@ -1010,7 +1013,12 @@ namespace 보령
                             CommandResults["ConfirmCommand"] = false;
                             CommandCanExecutes["ConfirmCommand"] = false;
 
-                            if (ListContainer.Count > 0)
+                            //if (ListContainer.Count > 0)
+                            if (ListContainer.Count == 0)
+                            {
+                                OnMessage("기록 준비 항목이 없습니다.");
+                            }
+                            else
                             {
                                 DataSet ds = new DataSet();
                                 DataTable dt = new DataTable("DATA");
