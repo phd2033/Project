@@ -86,6 +86,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Reference Assemblies(br)\CheckScale.dll</HintPath>
     </Reference>
+    <Reference Include="ImageTools">
+      <HintPath>..\Reference Assemblies(br)\ImageTools.dll</HintPath>
+    </Reference>
+    <Reference Include="ImageTools.IO.Png">
+      <HintPath>..\Reference Assemblies(br)\ImageTools.IO.Png.dll</HintPath>
+    </Reference>
+    <Reference Include="ImageTools.Utils">
+      <HintPath>..\Reference Assemblies(br)\ImageTools.Utils.dll</HintPath>
+    </Reference>
     <Reference Include="LGCNS.EZMES.Common, Version=3.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Reference Assemblies(br)\LGCNS.EZMES.Common.dll</HintPath>
@@ -183,6 +192,7 @@
     <Compile Include="Model.Access\TNT\BR_UDB_REG_ProductionOrder_Packing_Start.Access.cs" />
     <Compile Include="Model.Access\WMS\BR_BRS_CHK_EMPTY_VESSEL_Info.Access.cs" />
     <Compile Include="Model.Access\WMS\BR_BRS_CHK_ProductionOrderBOM_NonWeighing.Access.cs" />
+    <Compile Include="Model.Access\WMS\BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.Access.cs" />
     <Compile Include="Model.Access\WMS\BR_BRS_GET_VESSEL_StorageOutList.Access.cs" />
     <Compile Include="Model.Access\WMS\BR_BRS_GET_VESSEL_StorageOutList_EMPTY.Access.cs" />
     <Compile Include="Model.Access\WMS\BR_BRS_REG_MaterialSubLot_Dispense_Charging.Access.cs" />
@@ -293,6 +303,9 @@
       <DependentUpon>BarcodePopup.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\BarcodeTextBox.cs" />
+    <Compile Include="UserControls\CustomUIHeader.xaml.cs">
+      <DependentUpon>CustomUIHeader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\ScaleControl.xaml.cs">
       <DependentUpon>ScaleControl.xaml</DependentUpon>
     </Compile>
@@ -370,6 +383,10 @@
       <DependentUpon>샘플수량수동입력.xaml</DependentUpon>
     </Compile>
     <Compile Include="공통\포장\샘플수량수동입력ViewModel.cs" />
+    <Compile Include="공통\포장\이미지등록.xaml.cs">
+      <DependentUpon>이미지등록.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="공통\포장\이미지등록ViewModel.cs" />
     <Compile Include="라벨발행\라벨발행.xaml.cs">
       <DependentUpon>라벨발행.xaml</DependentUpon>
     </Compile>
@@ -799,6 +816,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="UserControls\CustomUIHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\ScaleControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -872,6 +893,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="공통\포장\샘플수량수동입력.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="공통\포장\이미지등록.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
