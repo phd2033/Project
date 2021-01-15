@@ -14,6 +14,7 @@ using System.Linq;
 using ShopFloorUI;
 using C1.Silverlight.Data;
 using System.Text;
+using 보령.UserControls;
 
 namespace 보령
 {
@@ -24,7 +25,7 @@ namespace 보령
         {
             _BR_BRS_SEL_ProductionOrder_IBCList = new BR_BRS_SEL_ProductionOrder_IBCList();
             _BR_BRS_REG_WMS_Request_OUT = new BR_BRS_REG_WMS_Request_OUT();
-            _BR_BRS_GET_VESSEL_StorageOutList = new BR_BRS_GET_VESSEL_StorageOutList();
+            _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT = new BR_BRS_CHK_VESSEL_INFO_REQUESTOUT();
             _ListContainer = new ObservableCollection<IBCInfo>();
             _CompleteComponent = new ObservableCollection<IBCInfo>();
         }
@@ -54,7 +55,6 @@ namespace 보령
             }
         }
         #endregion
-
         #region [BizRule]
         private BR_BRS_SEL_ProductionOrder_IBCList _BR_BRS_SEL_ProductionOrder_IBCList;
         public BR_BRS_SEL_ProductionOrder_IBCList BR_BRS_SEL_ProductionOrder_IBCList
@@ -66,52 +66,9 @@ namespace 보령
                 OnPropertyChanged("BR_BRS_SEL_ProductionOrder_IBCList");
             }
         }
-
         private BR_BRS_REG_WMS_Request_OUT _BR_BRS_REG_WMS_Request_OUT;
-        public BR_BRS_REG_WMS_Request_OUT BR_BRS_REG_WMS_Request_OUT
-        {
-            get { return _BR_BRS_REG_WMS_Request_OUT; }
-            set
-            {
-                _BR_BRS_REG_WMS_Request_OUT = value;
-                OnPropertyChanged("BR_BRS_REG_WMS_Request_OUT");
-            }
-        }
-
-        private BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo _BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo;
-        public BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo
-        {
-            get { return _BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo; }
-            set
-            {
-                _BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo = value;
-                OnPropertyChanged("BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo");
-            }
-        }
-
-        private BR_PHR_UPD_MaterialSubLot_CheckWeight _BR_PHR_UPD_MaterialSubLot_CheckWeight;
-        public BR_PHR_UPD_MaterialSubLot_CheckWeight BR_PHR_UPD_MaterialSubLot_CheckWeight
-        {
-            get { return _BR_PHR_UPD_MaterialSubLot_CheckWeight; }
-            set
-            {
-                _BR_PHR_UPD_MaterialSubLot_CheckWeight = value;
-                OnPropertyChanged("BR_PHR_UPD_MaterialSubLot_CheckWeight");
-            }
-        }
-
-        private BR_BRS_GET_VESSEL_StorageOutList _BR_BRS_GET_VESSEL_StorageOutList;
-        public BR_BRS_GET_VESSEL_StorageOutList BR_BRS_GET_VESSEL_StorageOutList
-        {
-            get { return _BR_BRS_GET_VESSEL_StorageOutList; }
-            set
-            {
-                _BR_BRS_GET_VESSEL_StorageOutList = value;
-                OnPropertyChanged("BR_BRS_GET_VESSEL_StorageOutList");
-            }
-        }
+        private BR_BRS_CHK_VESSEL_INFO_REQUESTOUT _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT;
         #endregion
-
         #region [Command]
         public ICommand LoadedCommandAsync
         {
@@ -162,8 +119,8 @@ namespace 보령
                                         }
                                     }
 
-                                    // 현재 Custom UI에서 출고완료한 용기 목록 조회(XML기록 결과 조회)
-                                    if(_mainWnd.CurrentInstruction.Raw.NOTE != null)
+                                    // 현재 페이즈가 완료 상태이고 기록이 있는 경우 XML기록 결과를 보여줌
+                                    if (_mainWnd.CurrentInstruction.Raw.INSERTEDYN.Equals("Y") && _mainWnd.CurrentInstruction.PhaseState.Equals("COMP") && _mainWnd.CurrentInstruction.Raw.NOTE != null)
                                     {
                                         DataSet ds = new DataSet();
                                         DataTable dt = new DataTable();
@@ -175,15 +132,15 @@ namespace 보령
 
                                         foreach (var row in dt.Rows)
                                         {
-                                        CompleteComponent.Add(new IBCInfo
-                                        {
-                                            CHK = false,
-                                            VESSELID = row["용기번호"] != null ? row["용기번호"].ToString() : "",
-                                            OPSGNAME = row["공정명"] != null ? row["공정명"].ToString() : "",
-                                            STATUS = row["상태"] != null ? row["상태"].ToString() : ""
+                                            CompleteComponent.Add(new IBCInfo
+                                            {
+                                                CHK = false,
+                                                VESSELID = row["용기번호"] != null ? row["용기번호"].ToString() : "",
+                                                OPSGNAME = row["공정명"] != null ? row["공정명"].ToString() : "",
+                                                STATUS = row["상태"] != null ? row["상태"].ToString() : ""
                                             });
                                         }
-                                    }
+                                    }                                     
                                 }
 
                                 IsBusy = false;
@@ -304,6 +261,108 @@ namespace 보령
             }
         }
 
+        public ICommand CheckVesselCommandAsync
+        {
+            get
+            {
+                return new AsyncCommandBase(async arg =>
+                {
+                    using (await AwaitableLocks["CheckVesselCommand"].EnterAsync())
+                    {
+                        try
+                        {
+                            IsBusy = true;
+
+                            CommandResults["CheckVesselCommand"] = false;
+                            CommandCanExecutes["CheckVesselCommand"] = false;
+
+                            ///
+                            var ScanPopup = new BarcodePopup();
+                            ScanPopup.tbMsg.Text = "용기를 스캔하세요";
+                            ScanPopup.Closed += async (sender, e) =>
+                            {
+                                try
+                                {
+                                    if (ScanPopup.DialogResult.GetValueOrDefault() && !string.IsNullOrWhiteSpace(ScanPopup.tbText.Text))
+                                    {
+                                        string text = ScanPopup.tbText.Text;
+
+                                        // 용기 정보 조회
+                                        _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.INDATAs.Clear();
+                                        _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.OUTDATAs.Clear();
+                                        _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.INDATAs.Add(new BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.INDATA
+                                        {
+                                            POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                            OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
+                                            VESSELID = text
+                                        });
+
+                                        if (await _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.Execute())
+                                        {
+                                            if (_BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.OUTDATAs.Count == 1) 
+                                            {
+                                                if (_BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.OUTDATAs[0].TYPE.Equals("FILLED"))
+                                                {
+                                                    bool hasVessel = false;
+                                                    foreach (var item in CompleteComponent)
+                                                    {
+                                                        if (item.VESSELID == text)
+                                                            hasVessel = true;
+                                                    }
+
+                                                    if (!hasVessel)
+                                                    {
+                                                        CompleteComponent.Add(new IBCInfo
+                                                        {
+                                                            STATUS = "출고완료",
+                                                            VESSELID = _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.OUTDATAs[0].EQPTID,
+                                                            OPSGNAME = string.IsNullOrWhiteSpace(_BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.OUTDATAs[0].VESSEL_DESC) ? _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.OUTDATAs[0].OPSGNAME : _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.OUTDATAs[0].VESSEL_DESC
+                                                        });
+                                                    }
+                                                    else
+                                                        throw new Exception("이미 기록된 용기 입니다.");
+                                                }
+                                                else
+                                                    throw new Exception("반제품 용기가 아닙니다.");
+                                            }
+                                            else
+                                                throw new Exception("용기 정보를 다시 확인하세요.");
+                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    OnException(ex.Message, ex);
+                                }
+                            };
+
+                            ScanPopup.Show();
+
+                            
+                            ///
+
+                            CommandResults["CheckVesselCommand"] = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            CommandResults["CheckVesselCommand"] = false;
+                            OnException(ex.Message, ex);
+                        }
+                        finally
+                        {
+                            CommandCanExecutes["CheckVesselCommand"] = true;
+
+                            IsBusy = false;
+                        }
+                    }
+                }, arg =>
+               {
+                   return CommandCanExecutes.ContainsKey("CheckVesselCommand") ?
+                       CommandCanExecutes["CheckVesselCommand"] : (CommandCanExecutes["CheckVesselCommand"] = true);
+               });
+            }
+        }
+
         public ICommand ConfirmCommandAsync
         {
             get
@@ -319,79 +378,78 @@ namespace 보령
                             ///
                             IsBusy = true;
 
-                            if (CompleteComponent.Count > 0)
+                            if (CompleteComponent.Count <= 0)
+                                throw new Exception("출고완료된 용기정보가 없습니다.");
+
+                            var authHelper = new iPharmAuthCommandHelper();
+
+                            if (_mainWnd.CurrentInstruction.Raw.INSERTEDYN.Equals("Y") && _mainWnd.CurrentInstruction.PhaseState.Equals("COMP"))
                             {
-                                var authHelper = new iPharmAuthCommandHelper();
-
-                                if (_mainWnd.CurrentInstruction.Raw.INSDTTM.Equals("Y") && _mainWnd.CurrentInstruction.PhaseState.Equals("COMP"))
-                                {
-                                    authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
-
-                                    if (await authHelper.ClickAsync(
-                                        Common.enumCertificationType.Function,
-                                        Common.enumAccessType.Create,
-                                        string.Format("기록값을 변경합니다."),
-                                        string.Format("기록값 변경"),
-                                        true,
-                                        "OM_ProductionOrder_SUI",
-                                        "", _mainWnd.CurrentInstruction.Raw.RECIPEISTGUID, null) == false)
-                                    {
-                                        throw new Exception(string.Format("서명이 완료되지 않았습니다."));
-                                    }
-                                }
-
-                                authHelper.InitializeAsync(Common.enumCertificationType.Function, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
+                                authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
 
                                 if (await authHelper.ClickAsync(
                                     Common.enumCertificationType.Function,
                                     Common.enumAccessType.Create,
-                                    "반제품출고",
-                                    "반제품출고",
-                                    false,
+                                    string.Format("기록값을 변경합니다."),
+                                    string.Format("기록값 변경"),
+                                    true,
                                     "OM_ProductionOrder_SUI",
-                                    "", null, null) == false)
+                                    "", _mainWnd.CurrentInstruction.Raw.RECIPEISTGUID, null) == false)
                                 {
                                     throw new Exception(string.Format("서명이 완료되지 않았습니다."));
                                 }
-
-                                DataSet ds = new DataSet();
-                                DataTable dt = new DataTable("DATA");
-                                ds.Tables.Add(dt);
-
-                                dt.Columns.Add(new DataColumn("상태"));
-                                dt.Columns.Add(new DataColumn("용기번호"));
-                                dt.Columns.Add(new DataColumn("공정명"));
-
-                                foreach (var item in CompleteComponent)
-                                {
-                                    var row = dt.NewRow();
-
-                                    row["상태"] = item.STATUS != null ? item.STATUS : "";
-                                    row["용기번호"] = item.VESSELID != null ? item.VESSELID : "";
-                                    row["공정명"] = item.OPSGNAME != null ? item.OPSGNAME : "";
-
-                                    dt.Rows.Add(row);
-                                }
-
-                                var xml = BizActorRuleBase.CreateXMLStream(ds);
-                                var bytesArray = System.Text.Encoding.UTF8.GetBytes(xml);
-
-                                _mainWnd.CurrentInstruction.Raw.ACTVAL = _mainWnd.TableTypeName;
-                                _mainWnd.CurrentInstruction.Raw.NOTE = bytesArray;
-
-                                var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction, true);
-                                if (result != enumInstructionRegistErrorType.Ok)
-                                {
-                                    throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", _mainWnd.CurrentInstruction.Raw.IRTGUID, result));
-                                }
-
-                                if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
-                                else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
                             }
-                            else
-                                OnMessage("출고완료된 용기정보가 없습니다.");
+
+                            authHelper.InitializeAsync(Common.enumCertificationType.Function, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
+
+                            if (await authHelper.ClickAsync(
+                                Common.enumCertificationType.Function,
+                                Common.enumAccessType.Create,
+                                "반제품출고",
+                                "반제품출고",
+                                false,
+                                "OM_ProductionOrder_SUI",
+                                "", null, null) == false)
+                            {
+                                throw new Exception(string.Format("서명이 완료되지 않았습니다."));
+                            }
+
+                            DataSet ds = new DataSet();
+                            DataTable dt = new DataTable("DATA");
+                            ds.Tables.Add(dt);
+
+                            dt.Columns.Add(new DataColumn("상태"));
+                            dt.Columns.Add(new DataColumn("용기번호"));
+                            dt.Columns.Add(new DataColumn("공정명"));
+
+                            foreach (var item in CompleteComponent)
+                            {
+                                var row = dt.NewRow();
+
+                                row["상태"] = item.STATUS != null ? item.STATUS : "";
+                                row["용기번호"] = item.VESSELID != null ? item.VESSELID : "";
+                                row["공정명"] = item.OPSGNAME != null ? item.OPSGNAME : "";
+
+                                dt.Rows.Add(row);
+                            }
+
+                            var xml = BizActorRuleBase.CreateXMLStream(ds);
+                            var bytesArray = System.Text.Encoding.UTF8.GetBytes(xml);
+
+                            _mainWnd.CurrentInstruction.Raw.ACTVAL = _mainWnd.TableTypeName;
+                            _mainWnd.CurrentInstruction.Raw.NOTE = bytesArray;
+
+                            var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction, true);
+                            if (result != enumInstructionRegistErrorType.Ok)
+                            {
+                                throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", _mainWnd.CurrentInstruction.Raw.IRTGUID, result));
+                            }
+
+                            if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
+                            else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
 
                             IsBusy = false;
+
                             ///
                             CommandResults["ConfirmCommandAsync"] = true;
                         }

@@ -14,15 +14,25 @@ using System.Linq;
 using ShopFloorUI;
 using C1.Silverlight.Data;
 using System.Text;
+using 보령.UserControls;
 
 namespace 보령
 {
     public class 빈용기출고ViewModel : ViewModelBase
     {
         #region [Property]
-        private 빈용기출고 _mainWnd;
+        public 빈용기출고ViewModel()
+        {
+            _BR_PHR_SEL_EquipmentGroup = new BR_PHR_SEL_EquipmentGroup();
+            _BR_PHR_SEL_ProductionOrderOutput_Define = new BR_PHR_SEL_ProductionOrderOutput_Define();
+            _BR_BRS_SEL_ProductionOrder_IBCList = new BR_BRS_SEL_ProductionOrder_IBCList();
+            _BR_BRS_REG_WMS_Request_OUT = new BR_BRS_REG_WMS_Request_OUT();
+            _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT = new BR_BRS_CHK_VESSEL_INFO_REQUESTOUT();
 
-        private string scaleid;
+            _ListContainer = new ObservableCollection<IBCInfo>();
+            _CompleteComponent = new ObservableCollection<IBCInfo>();
+        }
+        private 빈용기출고 _mainWnd;
 
         private BR_PHR_SEL_EquipmentGroup.OUTDATA _VesselType;
         public BR_PHR_SEL_EquipmentGroup.OUTDATA VesselType
@@ -56,53 +66,9 @@ namespace 보령
                 OnPropertyChanged("CompleteComponent");
             }
         }
-
-        private bool _IsBusy;
-        public bool IsBusy
-        {
-            get { return _IsBusy; }
-            set
-            {
-                _IsBusy = value;
-                OnPropertyChanged("IsBusy");
-            }
-        }
         #endregion
 
         #region [BizRule] 
-        private BR_PHR_SEL_ProductionOrderOutput_Define _BR_PHR_SEL_ProductionOrderOutput_Define;
-        public BR_PHR_SEL_ProductionOrderOutput_Define BR_PHR_SEL_ProductionOrderOutput_Define
-        {
-            get { return _BR_PHR_SEL_ProductionOrderOutput_Define; }
-            set
-            {
-                _BR_PHR_SEL_ProductionOrderOutput_Define = value;
-                OnPropertyChanged("BR_PHR_SEL_ProductionOrderOutput_Define");
-            }
-        }
-
-        private BR_BRS_SEL_ProductionOrder_IBCList _BR_BRS_SEL_ProductionOrder_IBCList;
-        public BR_BRS_SEL_ProductionOrder_IBCList BR_BRS_SEL_ProductionOrder_IBCList
-        {
-            get { return _BR_BRS_SEL_ProductionOrder_IBCList; }
-            set
-            {
-                _BR_BRS_SEL_ProductionOrder_IBCList = value;
-                OnPropertyChanged("BR_BRS_SEL_ProductionOrder_IBCList");
-            }
-        }
-
-        private BR_BRS_REG_WMS_Request_OUT _BR_BRS_REG_WMS_Request_OUT;
-        public BR_BRS_REG_WMS_Request_OUT BR_BRS_REG_WMS_Request_OUT
-        {
-            get { return _BR_BRS_REG_WMS_Request_OUT; }
-            set
-            {
-                _BR_BRS_REG_WMS_Request_OUT = value;
-                OnPropertyChanged("BR_BRS_REG_WMS_Request_OUT");
-            }
-        }
-
         private BR_PHR_SEL_EquipmentGroup _BR_PHR_SEL_EquipmentGroup;
         public BR_PHR_SEL_EquipmentGroup BR_PHR_SEL_EquipmentGroup
         {
@@ -113,39 +79,19 @@ namespace 보령
                 OnPropertyChanged("BR_PHR_SEL_EquipmentGroup");
             }
         }
-
-        private BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo _BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo;
-        public BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo
+        private BR_PHR_SEL_ProductionOrderOutput_Define _BR_PHR_SEL_ProductionOrderOutput_Define;
+        private BR_BRS_SEL_ProductionOrder_IBCList _BR_BRS_SEL_ProductionOrder_IBCList;
+        public BR_BRS_SEL_ProductionOrder_IBCList BR_BRS_SEL_ProductionOrder_IBCList
         {
-            get { return _BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo; }
+            get { return _BR_BRS_SEL_ProductionOrder_IBCList; }
             set
             {
-                _BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo = value;
-                OnPropertyChanged("BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo");
+                _BR_BRS_SEL_ProductionOrder_IBCList = value;
+                OnPropertyChanged("BR_BRS_SEL_ProductionOrder_IBCList");
             }
         }
-
-        private BR_BRS_REG_VESSEL_WEIGHT _BR_BRS_REG_VESSEL_WEIGHT;
-        public BR_BRS_REG_VESSEL_WEIGHT BR_BRS_REG_VESSEL_WEIGHT
-        {
-            get { return _BR_BRS_REG_VESSEL_WEIGHT; }
-            set
-            {
-                _BR_BRS_REG_VESSEL_WEIGHT = value;
-                OnPropertyChanged("BR_BRS_REG_VESSEL_WEIGHT");
-            }
-        }
-
-        private BR_BRS_GET_VESSEL_StorageOutList_EMPTY _BR_BRS_GET_VESSEL_StorageOutList_EMPTY;
-        public BR_BRS_GET_VESSEL_StorageOutList_EMPTY BR_BRS_GET_VESSEL_StorageOutList_EMPTY
-        {
-            get { return _BR_BRS_GET_VESSEL_StorageOutList_EMPTY; }
-            set
-            {
-                _BR_BRS_GET_VESSEL_StorageOutList_EMPTY = value;
-                OnPropertyChanged("BR_BRS_GET_VESSEL_StorageOutList_EMPTY");
-            }
-        }
+        private BR_BRS_REG_WMS_Request_OUT _BR_BRS_REG_WMS_Request_OUT;
+        private BR_BRS_CHK_VESSEL_INFO_REQUESTOUT _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT;
         #endregion
 
         #region [Command]
@@ -169,6 +115,33 @@ namespace 보령
                             {
                                 _mainWnd = arg as 빈용기출고;
 
+                                // 현재 페이즈가 완료 상태이고 기록이 있는 경우 XML기록 결과를 보여줌
+                                if (_mainWnd.CurrentInstruction.Raw.INSERTEDYN.Equals("Y") && _mainWnd.CurrentInstruction.PhaseState.Equals("COMP") && _mainWnd.CurrentInstruction.Raw.NOTE != null)
+                                {
+                                    var bytearray = _mainWnd.CurrentInstruction.Raw.NOTE;
+                                    string xml = Encoding.UTF8.GetString(bytearray, 0, bytearray.Length);
+                                    DataSet ds = new DataSet();
+                                    ds.ReadXmlFromString(xml);
+
+                                    if (ds.Tables.Count == 1 && ds.Tables[0].TableName == "DATA")
+                                    {
+                                        foreach (DataRow row in ds.Tables[0].Rows)
+                                        {
+                                            CompleteComponent.Add(new IBCInfo
+                                            {
+                                                CHK = false,
+                                                VESSELID = row["용기번호"] != null ? row["용기번호"].ToString() : "",
+                                                OPSGNAME = row["공정명"] != null ? row["공정명"].ToString() : "",
+                                                OUTPUTID = row["공정중제품"] != null ? row["공정중제품"].ToString() : "",
+                                                WASHINGDTTM = row["세척일시"] != null ? row["세척일시"].ToString() : "",
+                                                CLEANEXPIREDTTM = row["세척유효기간"] != null ? row["세척유효기간"].ToString() : "",
+                                                STATUS = row["상태"] != null ? row["상태"].ToString() : ""
+                                            });
+                                        }
+                                    }
+                                }
+
+                                // 용기 Type 콤보박스
                                 _BR_PHR_SEL_EquipmentGroup.INDATAs.Clear();
                                 _BR_PHR_SEL_EquipmentGroup.OUTDATAs.Clear();
                                 _BR_PHR_SEL_EquipmentGroup.INDATAs.Add(new BR_PHR_SEL_EquipmentGroup.INDATA
@@ -186,49 +159,7 @@ namespace 보령
 
                                 });
 
-                                await _BR_PHR_SEL_EquipmentGroup.Execute();
-
-                                _BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo.INDATAs.Clear();
-                                _BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo.OUTDATAs.Clear();
-
-                                _BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo.INDATAs.Add(new BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo.INDATA
-                                {
-                                    EQPTID = AuthRepositoryViewModel.Instance.RoomID
-                                });
-
-                                if (await _BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo.Execute() && _BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo.OUTDATAs.Count > 0)
-                                {
-                                    for (int idx = 0; idx < _BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo.OUTDATAs.Count; idx++)
-                                    {
-                                        scaleid = _BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo.OUTDATAs[idx].MODEL.Contains("IFS4") ? _BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo.OUTDATAs[idx].EQPTID : "";
-                                    }
-                                }
-
-                                // xml조회 로직 필요
-                                if (_mainWnd.CurrentInstruction.Raw.NOTE != null)
-                                {
-                                    var bytearray = _mainWnd.CurrentInstruction.Raw.NOTE;
-                                    string xml = Encoding.UTF8.GetString(bytearray, 0, bytearray.Length);
-                                    DataSet ds = new DataSet();
-                                    ds.ReadXmlFromString(xml);
-
-                                    if(ds.Tables.Count == 1 && ds.Tables[0].TableName == "DATA")
-                                    {
-                                        foreach (DataRow row in ds.Tables[0].Rows)
-                                        {
-                                            CompleteComponent.Add(new IBCInfo
-                                            {
-                                                CHK = false,
-                                                VESSELID = row["용기번호"] != null ? row["용기번호"].ToString() : "",
-                                                OPSGNAME = row["공정명"] != null ? row["공정명"].ToString() : "",
-                                                OUTPUTID = row["공정중제품"] != null ? row["공정중제품"].ToString() : "",
-                                                WASHINGDTTM = row["세척일시"] != null ? row["세척일시"].ToString() : "",
-                                                CLEANEXPIREDTTM = row["세척유효기간"] != null ? row["세척유효기간"].ToString() : "",
-                                                STATUS = row["상태"] != null ? row["상태"].ToString() : ""
-                                            });
-                                        }
-                                    }
-                                }
+                                await _BR_PHR_SEL_EquipmentGroup.Execute();                               
                             }
                             ///
 
@@ -438,7 +369,110 @@ namespace 보령
                 });
             }
         }
+        public ICommand CheckVesselCommandAsync
+        {
+            get
+            {
+                return new AsyncCommandBase(async arg =>
+                {
+                    using (await AwaitableLocks["CheckVesselCommand"].EnterAsync())
+                    {
+                        try
+                        {
+                            IsBusy = true;
 
+                            CommandResults["CheckVesselCommand"] = false;
+                            CommandCanExecutes["CheckVesselCommand"] = false;
+
+                            ///
+                            var ScanPopup = new BarcodePopup();
+                            ScanPopup.tbMsg.Text = "용기를 스캔하세요";
+                            ScanPopup.Closed += async (sender, e) =>
+                            {
+                                try
+                                {
+                                    if (ScanPopup.DialogResult.GetValueOrDefault() && !string.IsNullOrWhiteSpace(ScanPopup.tbText.Text))
+                                    {
+                                        string text = ScanPopup.tbText.Text;
+
+                                        // 용기 정보 조회
+                                        _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.INDATAs.Clear();
+                                        _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.OUTDATAs.Clear();
+                                        _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.INDATAs.Add(new BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.INDATA
+                                        {
+                                            POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                            OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
+                                            VESSELID = text
+                                        });
+
+                                        if (await _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.Execute())
+                                        {
+                                            if (_BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.OUTDATAs.Count == 1)                                            
+                                            {
+                                                if(_BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.OUTDATAs[0].TYPE.Equals("EMPTY"))
+                                                {
+                                                    bool hasVessel = false;
+                                                    foreach (var item in CompleteComponent)
+                                                    {
+                                                        if (item.VESSELID == text)
+                                                            hasVessel = true;
+                                                    }
+
+                                                    if (!hasVessel)
+                                                    {
+                                                        CompleteComponent.Add(new IBCInfo
+                                                        {
+                                                            STATUS = "출고완료",
+                                                            VESSELID = _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.OUTDATAs[0].EQPTID,
+                                                            OUTPUTID = _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.OUTDATAs[0].OUTPUTID,
+                                                            OPSGNAME = _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.OUTDATAs[0].OPSGNAME,
+                                                            WASHINGDTTM = _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.OUTDATAs[0].WASHINGDTTM,
+                                                            CLEANEXPIREDTTM = _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.OUTDATAs[0].CLEANEXPIREDTTM
+                                                        });
+                                                    }
+                                                    else
+                                                        throw new Exception("이미 기록된 용기 입니다.");
+                                                }
+                                                else
+                                                    throw new Exception("빈 용기가 아닙니다.");
+                                            }
+                                            else
+                                                throw new Exception("용기 정보를 다시 확인하세요.");
+                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    OnException(ex.Message, ex);
+                                }                                
+                            };
+
+                            ScanPopup.Show();
+
+
+                            ///
+
+                            CommandResults["CheckVesselCommand"] = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            CommandResults["CheckVesselCommand"] = false;
+                            OnException(ex.Message, ex);
+                        }
+                        finally
+                        {
+                            CommandCanExecutes["CheckVesselCommand"] = true;
+
+                            IsBusy = false;
+                        }
+                    }
+                }, arg =>
+                {
+                    return CommandCanExecutes.ContainsKey("CheckVesselCommand") ?
+                        CommandCanExecutes["CheckVesselCommand"] : (CommandCanExecutes["CheckVesselCommand"] = true);
+                });
+            }
+        }
         public ICommand ConfirmCommandAsync
         {
             get
@@ -455,86 +489,84 @@ namespace 보령
                             ///
                             IsBusy = true;
 
-                            if (CompleteComponent.Count > 0)
+                            if (CompleteComponent.Count <= 0)
+                                throw new Exception("출고완료된 용기정보가 없습니다.");
+
+                            var authHelper = new iPharmAuthCommandHelper();
+
+                            if (_mainWnd.CurrentInstruction.Raw.INSDTTM.Equals("Y") && _mainWnd.CurrentInstruction.PhaseState.Equals("COMP"))
                             {
-                                var authHelper = new iPharmAuthCommandHelper();
-
-                                if (_mainWnd.CurrentInstruction.Raw.INSDTTM.Equals("Y") && _mainWnd.CurrentInstruction.PhaseState.Equals("COMP"))
-                                {
-                                    authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
-
-                                    if (await authHelper.ClickAsync(
-                                        Common.enumCertificationType.Function,
-                                        Common.enumAccessType.Create,
-                                        string.Format("기록값을 변경합니다."),
-                                        string.Format("기록값 변경"),
-                                        true,
-                                        "OM_ProductionOrder_SUI",
-                                        "", _mainWnd.CurrentInstruction.Raw.RECIPEISTGUID, null) == false)
-                                    {
-                                        throw new Exception(string.Format("서명이 완료되지 않았습니다."));
-                                    }
-                                }
-
-                                authHelper.InitializeAsync(Common.enumCertificationType.Function, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
+                                authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
 
                                 if (await authHelper.ClickAsync(
                                     Common.enumCertificationType.Function,
                                     Common.enumAccessType.Create,
-                                    "빈용기출고",
-                                    "빈용기출고",
-                                    false,
+                                    string.Format("기록값을 변경합니다."),
+                                    string.Format("기록값 변경"),
+                                    true,
                                     "OM_ProductionOrder_SUI",
-                                    "", null, null) == false)
+                                    "", _mainWnd.CurrentInstruction.Raw.RECIPEISTGUID, null) == false)
                                 {
                                     throw new Exception(string.Format("서명이 완료되지 않았습니다."));
                                 }
-
-                                DataSet ds = new DataSet();
-                                DataTable dt = new DataTable("DATA");
-                                ds.Tables.Add(dt);
-
-                                dt.Columns.Add(new DataColumn("상태"));
-                                dt.Columns.Add(new DataColumn("용기번호"));
-                                dt.Columns.Add(new DataColumn("공정중제품"));
-                                dt.Columns.Add(new DataColumn("공정명"));
-                                dt.Columns.Add(new DataColumn("세척일시"));
-                                dt.Columns.Add(new DataColumn("세척유효기간"));
-
-                                foreach (var item in CompleteComponent)
-                                {
-                                    if (item.STATUS.Equals("출고완료"))
-                                    {
-                                        var row = dt.NewRow();
-
-                                        row["상태"] = item.STATUS != null ? item.STATUS : "";
-                                        row["용기번호"] = item.VESSELID != null ? item.VESSELID : "";
-                                        row["공정중제품"] = item.OUTPUTID != null ? item.OUTPUTID : "";
-                                        row["공정명"] = item.OPSGNAME != null ? item.OPSGNAME : "";
-                                        row["세척일시"] = item.WASHINGDTTM != null ? item.WASHINGDTTM : "";
-                                        row["세척유효기간"] = item.CLEANEXPIREDTTM != null ? item.CLEANEXPIREDTTM : "";
-
-                                        dt.Rows.Add(row);
-                                    }
-                                }
-
-                                var xml = BizActorRuleBase.CreateXMLStream(ds);
-                                var bytesArray = System.Text.Encoding.UTF8.GetBytes(xml);
-
-                                _mainWnd.CurrentInstruction.Raw.ACTVAL = _mainWnd.TableTypeName;
-                                _mainWnd.CurrentInstruction.Raw.NOTE = bytesArray;
-
-                                var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction, true);
-                                if (result != enumInstructionRegistErrorType.Ok)
-                                {
-                                    throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", _mainWnd.CurrentInstruction.Raw.IRTGUID, result));
-                                }
-
-                                if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
-                                else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
                             }
-                            else
-                                OnMessage("출고된 용기정보가 없습니다.");
+
+                            authHelper.InitializeAsync(Common.enumCertificationType.Function, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
+
+                            if (await authHelper.ClickAsync(
+                                Common.enumCertificationType.Function,
+                                Common.enumAccessType.Create,
+                                "빈용기출고",
+                                "빈용기출고",
+                                false,
+                                "OM_ProductionOrder_SUI",
+                                "", null, null) == false)
+                            {
+                                throw new Exception(string.Format("서명이 완료되지 않았습니다."));
+                            }
+
+                            DataSet ds = new DataSet();
+                            DataTable dt = new DataTable("DATA");
+                            ds.Tables.Add(dt);
+
+                            dt.Columns.Add(new DataColumn("상태"));
+                            dt.Columns.Add(new DataColumn("용기번호"));
+                            dt.Columns.Add(new DataColumn("공정중제품"));
+                            dt.Columns.Add(new DataColumn("공정명"));
+                            dt.Columns.Add(new DataColumn("세척일시"));
+                            dt.Columns.Add(new DataColumn("세척유효기간"));
+
+                            foreach (var item in CompleteComponent)
+                            {
+                                if (item.STATUS.Equals("출고완료"))
+                                {
+                                    var row = dt.NewRow();
+
+                                    row["상태"] = item.STATUS != null ? item.STATUS : "";
+                                    row["용기번호"] = item.VESSELID != null ? item.VESSELID : "";
+                                    row["공정중제품"] = item.OUTPUTID != null ? item.OUTPUTID : "";
+                                    row["공정명"] = item.OPSGNAME != null ? item.OPSGNAME : "";
+                                    row["세척일시"] = item.WASHINGDTTM != null ? item.WASHINGDTTM : "";
+                                    row["세척유효기간"] = item.CLEANEXPIREDTTM != null ? item.CLEANEXPIREDTTM : "";
+
+                                    dt.Rows.Add(row);
+                                }
+                            }
+
+                            var xml = BizActorRuleBase.CreateXMLStream(ds);
+                            var bytesArray = System.Text.Encoding.UTF8.GetBytes(xml);
+
+                            _mainWnd.CurrentInstruction.Raw.ACTVAL = _mainWnd.TableTypeName;
+                            _mainWnd.CurrentInstruction.Raw.NOTE = bytesArray;
+
+                            var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction, true);
+                            if (result != enumInstructionRegistErrorType.Ok)
+                            {
+                                throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", _mainWnd.CurrentInstruction.Raw.IRTGUID, result));
+                            }
+
+                            if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
+                            else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);                       
                             ///
 
                             CommandResults["ConfirmCommandAsync"] = true;
@@ -560,18 +592,7 @@ namespace 보령
         #endregion
 
         #region [Constructor]
-        public 빈용기출고ViewModel()
-        {
-            _BR_BRS_SEL_ProductionOrder_IBCList = new BR_BRS_SEL_ProductionOrder_IBCList();
-            _BR_PHR_SEL_ProductionOrderOutput_Define = new BR_PHR_SEL_ProductionOrderOutput_Define();
-            _BR_BRS_REG_WMS_Request_OUT = new BR_BRS_REG_WMS_Request_OUT();
-            _BR_PHR_SEL_EquipmentGroup = new BR_PHR_SEL_EquipmentGroup();
-            _BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo = new BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo();
-            _BR_BRS_GET_VESSEL_StorageOutList_EMPTY = new BR_BRS_GET_VESSEL_StorageOutList_EMPTY();
-
-            _ListContainer = new ObservableCollection<IBCInfo>();
-            _CompleteComponent = new ObservableCollection<IBCInfo>();
-        }
+        
         #endregion
 
         #region [UserDefine]

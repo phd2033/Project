@@ -31,11 +31,11 @@ namespace 보령
 
         private void GridContainer_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (GridContainer.SelectedItem != null)
+            if (sender is C1.Silverlight.DataGrid.C1DataGrid && (sender as C1.Silverlight.DataGrid.C1DataGrid).CurrentRow.DataItem is 빈용기출고ViewModel.IBCInfo)
             {
-                (GridContainer.SelectedItem as 빈용기출고ViewModel.IBCInfo).CHK = !((GridContainer.SelectedItem as 빈용기출고ViewModel.IBCInfo).CHK);
-                GridContainer.SelectedItem = null;
-            }
+                var curRow = (sender as C1.Silverlight.DataGrid.C1DataGrid).CurrentRow.DataItem as 빈용기출고ViewModel.IBCInfo;
+                curRow.CHK = curRow.STATUS.Equals("출고완료") ? false : !curRow.CHK;
+            }           
         }
     }
 }

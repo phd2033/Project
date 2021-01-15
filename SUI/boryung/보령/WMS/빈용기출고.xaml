@@ -67,17 +67,13 @@
                     <c1:DataGridTextColumn Header="상태" Binding="{Binding Path=STATUS}"/>
                 </c1:C1DataGrid.Columns>
             </c1:C1DataGrid>
-            <Grid Grid.Row="4" Name="btnGroup1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="110"/>
-                    <ColumnDefinition Width="110"/>
-                    <ColumnDefinition Width="110"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Button Grid.Column="1" Width="100" Height="40"  Content="출고요청" Name="btnRequestOut" Command="{Binding RequestOUTCommandAsync}"/>
-                <Button Grid.Column="2" Width="100" Height="40"  Content="기록" Name="btnConfirm" Command="{Binding ConfirmCommandAsync}"/>
-                <Button Grid.Column="3" Width="100" Height="40" HorizontalAlignment="Left" Content="취소" Name="btnCancel" Margin="10,0,0,0" Click="btnCancel_Click"/>
+            <Grid Grid.Row="4" Name="Footer">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Width="100" Height="40" Content="출고된용기확인" Name="btnCheckVessel" Command="{Binding CheckVesselCommandAsync}" Margin="5,0"/>
+                    <Button Width="100" Height="40" Content="출고요청" Name="btnRequestOut" Command="{Binding RequestOUTCommandAsync}" Margin="5,0"/>
+                    <Button Width="100" Height="40" Content="기록" Name="btnConfirm" Command="{Binding ConfirmCommandAsync}" Margin="5,0"/>
+                    <Button Width="100" Height="40" HorizontalAlignment="Left" VerticalAlignment="Center" Content="취소" Name="btnCancel" Margin="5,0" Click="btnCancel_Click"/>
+                </StackPanel>
             </Grid>
         </Grid>
     </toolkit:BusyIndicator>

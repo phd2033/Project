@@ -1,4 +1,4 @@
-﻿﻿using LGCNS.iPharmMES.Common;
+﻿using LGCNS.iPharmMES.Common;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -1043,6 +1043,70 @@ namespace 보령
                         this._TAREWEIGHT = value;
                         this.CheckIsOriginal("TAREWEIGHT", value);
                         this.OnPropertyChanged("TAREWEIGHT");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+            private System.Nullable<int> _PRECISION;
+            [BizActorOutputItemAttribute()]
+            public System.Nullable<int> PRECISION
+            {
+                get
+                {
+                    return this._PRECISION;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._PRECISION = value;
+                        this.CheckIsOriginal("PRECISION", value);
+                        this.OnPropertyChanged("PRECISION");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+            private string _UOM;
+            [BizActorOutputItemAttribute()]
+            public string UOM
+            {
+                get
+                {
+                    return this._UOM;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._UOM = value;
+                        this.CheckIsOriginal("UOM", value);
+                        this.OnPropertyChanged("UOM");
                         if (RowLoadedFlag)
                         {
                             if (this.CheckIsOriginalRow())

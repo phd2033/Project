@@ -16,50 +16,46 @@ namespace 보령
     {
         public partial class OUTDATA
         {
-            private string PRECISION = "N0";
-
-            public string TOTALWEIGHT
+            private bool _ISSELECTED = false;
+            public bool ISSELECTED
             {
-                get
-                {
-                    if(_MSUBLOTQTY.HasValue && _TAREWEIGHT.HasValue)
-                        return (_MSUBLOTQTY.Value + _TAREWEIGHT.Value).ToString(PRECISION);
-                    else
-                        return (-999999).ToString(PRECISION);
-                }
-            }
-            public string GROSSWEIGHT
-            {
+                get { return _ISSELECTED; }
                 set
                 {
-                    decimal chk;
-                    if (decimal.TryParse(value, out chk))
-                        _MSUBLOTQTY = chk;
-                }
-                get
-                {
-                    if (_MSUBLOTQTY.HasValue)
-                        return (_MSUBLOTQTY.Value).ToString(PRECISION);
-                    else
-                        return (-999999).ToString(PRECISION);
+                    _ISSELECTED = value;
+                    OnPropertyChanged("ISSELECTED");
                 }
             }
-            public string VESSELWEIGHT
+            private ScaleWeight _TARE = new ScaleWeight();
+            public ScaleWeight TARE
             {
+                get { return _TARE; }
                 set
                 {
-                    decimal chk;
-                    if (decimal.TryParse(value, out chk))
-                        _TAREWEIGHT = chk;
+                    _TARE = value;
+                    OnPropertyChanged("TARE");
                 }
-                get
+            }
+            private ScaleWeight _GROSS = new ScaleWeight();
+            public ScaleWeight GROSS
+            {
+                get { return _GROSS; }
+                set
                 {
-                    if (_TAREWEIGHT.HasValue)
-                        return (_TAREWEIGHT.Value).ToString(PRECISION);
-                    else
-                        return (-999999).ToString(PRECISION);
+                    _GROSS = value;
+                    OnPropertyChanged("GROSS");
                 }
-            }           
+            }
+            private ScaleWeight _TOTAL = new ScaleWeight();
+            public ScaleWeight TOTAL
+            {
+                get { return _TOTAL; }
+                set
+                {
+                    _TOTAL = value;
+                    OnPropertyChanged("TOTAL");
+                }
+            }
         }
     }
 }
