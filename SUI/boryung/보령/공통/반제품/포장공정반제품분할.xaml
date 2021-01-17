@@ -10,16 +10,21 @@
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:c1="http://schemas.componentone.com/winfx/2006/xaml"
     xmlns:my="clr-namespace:보령"
-    x:Name="Main" Width="1000" Height="700" Title="반제품분할">
+    xmlns:UserCtrl="clr-namespace:보령.UserControls"                                   
+    x:Name="Main" Width="1200" Height="500" Title="반제품분할">
     <ShopFloorUI:ShopFloorCustomWindow.Resources>
         <my:포장공정반제품분할ViewModel x:Key="ViewModel"/>
+        <Style TargetType="c1:DataGridColumnHeaderPresenter">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
         <Style x:Key="txtCenterAlignment" TargetType="TextBox">
             <Setter Property="TextAlignment" Value="Center" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="FontFamily" Value="Malgun Gothic" />
             <Setter Property="FontSize" Value="14" />
-            <Setter Property="Margin" Value="0 2 0 2" />
+            <Setter Property="Margin" Value="0,2" />
+            <Setter Property="Padding" Value="0,2,0,0"/>
         </Style>
         <Style x:Key="txtNemeric" TargetType="TextBox">
         <Setter Property="TextAlignment" Value="Right" />
@@ -44,19 +49,21 @@
             </i:EventTrigger>
         </i:Interaction.Triggers>
         <Grid x:Name="LayoutRoot" Background="White">
-
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition/>
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
-            <Grid x:Name="Section" Grid.Row="0">
+            <Grid x:Name="Header" Grid.Row="0">
+                <UserCtrl:CustomUIHeader CurrentOrder="{Binding ElementName=Main, Path=CurrentOrder}"/>
+            </Grid>
+            <Grid x:Name="Section" Grid.Row="1" Margin="5">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="0.5*"/>
+                    <!--<RowDefinition Height="0.5*"/>-->
                     <RowDefinition Height="200"/>
-                    <RowDefinition Height="60"/>
-                    <RowDefinition Height="0.5*"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <ControlsLib:FieldSet Grid.Row="0" HorizontalAlignment="Stretch" Name="CurrentWIPs" Margin="1,1,1,1" 
+                <!--<ControlsLib:FieldSet Grid.Row="0" HorizontalAlignment="Stretch" Name="CurrentWIPs" Margin="1,1,1,1" 
                                       VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" 
                                       Legend="1. 반제품 목록" LegendFontSize="12">
                     <c1:C1DataGrid Grid.Row="1" x:Name="CurrentWIPList" Margin="5"
@@ -70,8 +77,8 @@
                             <c1:DataGridTextColumn Header="총무게" Binding="{Binding TOTALWEIGHT}"/>
                         </c1:C1DataGrid.Columns>
                     </c1:C1DataGrid>
-                </ControlsLib:FieldSet>
-                <Grid x:Name="SplitSpace" Grid.Row="1">
+                </ControlsLib:FieldSet>-->
+                <Grid x:Name="SplitSpace" Grid.Row="0" Margin="0,5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition Width="Auto"/>
@@ -81,8 +88,8 @@
                     </Grid.ColumnDefinitions>
                     <ControlsLib:FieldSet Grid.Column="0" HorizontalAlignment="Stretch" Name="Source" Margin="1,1,1,1" 
                                       VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" 
-                                      Legend="2. 선택한 반제품 정보" LegendFontSize="12">
-                        <Grid Margin="5">
+                                      Legend="1. 반제품 정보(A+B)" LegendFontSize="12">
+                        <Grid Margin="10">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition/>
@@ -93,21 +100,21 @@
                                 <RowDefinition/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <sdk:Label Grid.Column="0" Grid.Row="0" Content="용기번호"/>
-                            <TextBox Grid.Column="1" Grid.Row="0" IsReadOnly="True" Text="{Binding selectedSourceWIP.VESSELID}" Style="{StaticResource txtCenterAlignment}"/>
-                            <sdk:Label Grid.Column="0" Grid.Row="1" Content="내용물무게"/>
-                            <TextBox Grid.Column="1" Grid.Row="1" IsReadOnly="True" Text="{Binding selectedSourceWIP.GROSSWEIGHT, Mode=TwoWay}" Style="{StaticResource txtNemeric}" />
-                            <sdk:Label Grid.Column="0" Grid.Row="2" Content="용기무게"/>
-                            <TextBox Grid.Column="1" Grid.Row="2" IsReadOnly="True" Text="{Binding selectedSourceWIP.VESSELWEIGHT, Mode=TwoWay}" Style="{StaticResource txtNemeric}"/>
-                            <sdk:Label Grid.Column="0" Grid.Row="3" Content="총무게"/>
-                            <TextBox Grid.Column="1" Grid.Row="3" IsReadOnly="True" Text="{Binding selectedSourceWIP.TOTALWEIGHT, Mode=TwoWay}" Style="{StaticResource txtNemeric}"/>
+                            <sdk:Label Grid.Column="0" Grid.Row="0" Content="{Binding W[CUIVesselId], Source={StaticResource R}}"/>
+                            <TextBox Grid.Column="1" Grid.Row="0" IsReadOnly="False" Text="{Binding SRC_VesselID, Mode=TwoWay}" Style="{StaticResource txtCenterAlignment}" x:Name="txtSrcVessel" KeyDown="txtSrcVessel_KeyDown"/>
+                            <sdk:Label Grid.Column="0" Grid.Row="1" Content="{Binding W[CUIGrossWeight], Source={StaticResource R}}"/>
+                            <TextBox Grid.Column="1" Grid.Row="1" IsReadOnly="True" Text="{Binding SourceMaterialSubLot.GROSS.WeightUOMString, Mode=TwoWay}" Style="{StaticResource txtNemeric}" />
+                            <sdk:Label Grid.Column="0" Grid.Row="2" Content="{Binding W[CUITareWeight], Source={StaticResource R}}"/>
+                            <TextBox Grid.Column="1" Grid.Row="2" IsReadOnly="True" Text="{Binding SourceMaterialSubLot.TARE.WeightUOMString, Mode=TwoWay}" Style="{StaticResource txtNemeric}"/>
+                            <sdk:Label Grid.Column="0" Grid.Row="3" Content="{Binding W[CUITotalWeight], Source={StaticResource R}}"/>
+                            <TextBox Grid.Column="1" Grid.Row="3" IsReadOnly="True" Text="{Binding SourceMaterialSubLot.TOTAL.WeightUOMString, Mode=TwoWay}" Style="{StaticResource txtNemeric}"/>
                         </Grid>
                     </ControlsLib:FieldSet>
                     <sdk:Label Grid.Column="1" Content="=" FontWeight="Bold" FontSize="20" Margin="2"/>
                     <ControlsLib:FieldSet Grid.Column="2" HorizontalAlignment="Stretch" Name="SplitFrom" Margin="1,1,1,1" 
                                       VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" 
-                                      Legend="3. 분할 정보(From)" LegendFontSize="12">
-                        <Grid Margin="5">
+                                      Legend="2. 분할 예상결과(A : 반제품 있는 용기)" LegendFontSize="12">
+                        <Grid Margin="10">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition/>
@@ -118,21 +125,21 @@
                                 <RowDefinition/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <sdk:Label Grid.Column="0" Grid.Row="0" Content="용기번호"/>
-                            <TextBox Grid.Column="1" Grid.Row="0" IsReadOnly="True" Text="{Binding srcVesselId}" Style="{StaticResource txtCenterAlignment}"/>
-                            <sdk:Label Grid.Column="0" Grid.Row="1" Content="내용물무게"/>
-                            <TextBox Grid.Column="1" Grid.Row="1" IsReadOnly="True" Text="{Binding srcGross, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource txtNemeric}"/>
-                            <sdk:Label Grid.Column="0" Grid.Row="2" Content="용기무게"/>
-                            <TextBox Grid.Column="1" Grid.Row="2" IsReadOnly="True" Text="{Binding srcTare}" Style="{StaticResource txtNemeric}"/>
-                            <sdk:Label Grid.Column="0" Grid.Row="3" Content="총무게"/>
-                            <TextBox Grid.Column="1" Grid.Row="3" IsReadOnly="True" Text="{Binding srcTotal, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource txtNemeric}"/>
+                            <sdk:Label Grid.Column="0" Grid.Row="0" Content="{Binding W[CUIVesselId], Source={StaticResource R}}"/>
+                            <TextBox Grid.Column="1" Grid.Row="0" IsReadOnly="True" Text="{Binding Path=Text, ElementName=txtSrcVessel}" Style="{StaticResource txtCenterAlignment}"/>
+                            <sdk:Label Grid.Column="0" Grid.Row="1" Content="{Binding W[CUIGrossWeight], Source={StaticResource R}}"/>
+                            <TextBox Grid.Column="1" Grid.Row="1" IsReadOnly="True" Text="{Binding SplitMaterialSubLot_A.GROSS.WeightUOMString, Mode=TwoWay}" Style="{StaticResource txtNemeric}"/>
+                            <sdk:Label Grid.Column="0" Grid.Row="2" Content="{Binding W[CUITareWeight], Source={StaticResource R}}"/>
+                            <TextBox Grid.Column="1" Grid.Row="2" IsReadOnly="True" Text="{Binding SplitMaterialSubLot_A.TARE.WeightUOMString, Mode=TwoWay}" Style="{StaticResource txtNemeric}"/>
+                            <sdk:Label Grid.Column="0" Grid.Row="3" Content="{Binding W[CUITotalWeight], Source={StaticResource R}}"/>
+                            <TextBox Grid.Column="1" Grid.Row="3" IsReadOnly="True" Text="{Binding SplitMaterialSubLot_A.TOTAL.WeightUOMString, Mode=TwoWay}" Style="{StaticResource txtNemeric}"/>
                         </Grid>
                     </ControlsLib:FieldSet>
                     <sdk:Label Grid.Column="3" Content="+" FontWeight="Bold" FontSize="20" Margin="2"/>
                     <ControlsLib:FieldSet Grid.Column="4" HorizontalAlignment="Stretch" Name="SplitTo" Margin="1,1,1,1" 
                                       VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" 
-                                      Legend="4. 분할 정보(To)" LegendFontSize="12">
-                        <Grid Margin="5">
+                                      Legend="3. 분할 예상결과(B : 빈 용기)" LegendFontSize="12">
+                        <Grid Margin="10">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition/>
@@ -143,54 +150,57 @@
                                 <RowDefinition/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <sdk:Label Grid.Column="0" Grid.Row="0" Content="용기번호"/>
-                            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding splitVesselId}" Style="{StaticResource txtCenterAlignment}"/>
-                            <sdk:Label Grid.Column="0" Grid.Row="1" Content="내용물무게"/>
-                            <ShopFloorUI:NumericKeyPadType Grid.Column="1" x:Name="txtToGross" Grid.Row="1" Format="N0" Value="{Binding splitGross, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            <sdk:Label Grid.Column="0" Grid.Row="2" Content="용기무게"/>
-                            <ShopFloorUI:NumericKeyPadType Grid.Column="1" x:Name="txtToTare" Grid.Row="2" Format="N0" Value="{Binding splitTare, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            <sdk:Label Grid.Column="0" Grid.Row="3" Content="총무게"/>
-                            <ShopFloorUI:NumericKeyPadType Grid.Column="1" x:Name="txtToTotal" Grid.Row="3" Format="N0" IsEnabled="False" Value="{Binding splitTotal, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <sdk:Label Grid.Column="0" Grid.Row="0" Content="{Binding W[CUIVesselId], Source={StaticResource R}}"/>
+                            <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding EMPTY_VesselID, Mode=TwoWay}" Style="{StaticResource txtCenterAlignment}" x:Name="txtEmptyVessel" KeyDown="txtEmptyVessel_KeyDown"/>
+                            <sdk:Label Grid.Column="0" Grid.Row="1" Content="{Binding W[CUIGrossWeight], Source={StaticResource R}}"/>
+                            <ShopFloorUI:NumericKeyPadType Grid.Column="1" x:Name="txtToGross" Grid.Row="1" Format="{Binding PRECISION_FORMAT}" Value="{Binding EMPTY_GROSS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <sdk:Label Grid.Column="0" Grid.Row="2" Content="{Binding W[CUITareWeight], Source={StaticResource R}}"/>
+                            <ShopFloorUI:NumericKeyPadType Grid.Column="1" x:Name="txtToTare" Grid.Row="2" Format="{Binding PRECISION_FORMAT}" Value="{Binding EMPTY_TARE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <sdk:Label Grid.Column="0" Grid.Row="3" Content="{Binding W[CUITotalWeight], Source={StaticResource R}}"/>
+                            <TextBox Grid.Column="1" x:Name="txtToTotal" Grid.Row="3" IsEnabled="False" Text="{Binding SplitMaterialSubLot_B.TOTAL.WeightUOMString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource txtNemeric}"/>
                         </Grid>
                     </ControlsLib:FieldSet>
                 </Grid>
-                <Grid x:Name="Function" Grid.Row="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0" x:Name="btnLabel" Command="{Binding LabelPrintCommandAsync}" Content="라벨발행" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="5"/>
-                    <Button Grid.Column="1" x:Name="btnSplit" Command="{Binding SplictCommandAsync}" Content="반제품 분할" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="5"/>
+                <Grid Grid.Row="1" Margin="0,5">
+                    <ControlsLib:FieldSet HorizontalAlignment="Stretch" Name="Result" Margin="1,1,1,1" 
+                                          VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" 
+                                          Legend="4. 사용 가능한 반제품 목록" LegendFontSize="12">
+                        <c1:C1DataGrid Grid.Row="1" x:Name="availableWIPList" Margin="10" RowHeight="30"
+                                       AutoGenerateColumns="False" HeadersVisibility="Column" CanUserAddRows="False" SelectionMode="SingleRow"                                  
+                                       ItemsSource="{Binding BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATAs}"
+                                       MouseLeftButtonUp="availableWIPList_MouseLeftButtonUp">
+                            <c1:C1DataGrid.Columns>
+                                <c1:DataGridTemplateColumn Width="30">
+                                    <c1:DataGridTemplateColumn.Header>
+                                        <CheckBox IsThreeState="False" IsChecked="false" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    </c1:DataGridTemplateColumn.Header>
+                                    <c1:DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <CheckBox IsThreeState="False" IsChecked="{Binding ISSELECTED, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </DataTemplate>
+                                    </c1:DataGridTemplateColumn.CellTemplate>
+                                </c1:DataGridTemplateColumn>
+                                <c1:DataGridTextColumn Header="{Binding W[CUIVesselId], Source={StaticResource R}}" Binding="{Binding VESSELID}"/>
+                                <!--<c1:DataGridTextColumn Header="단위" Binding="{Binding UOM}" Width="50"/>-->
+                                <c1:DataGridTextColumn Header="{Binding W[CUIGrossWeight], Source={StaticResource R}}" Binding="{Binding GROSS.WeightUOMString}"/>
+                                <c1:DataGridTextColumn Header="{Binding W[CUITareWeight], Source={StaticResource R}}" Binding="{Binding TARE.WeightUOMString}"/>
+                                <c1:DataGridTextColumn Header="{Binding W[CUITotalWeight], Source={StaticResource R}}" Binding="{Binding TOTAL.WeightUOMString}"/>
+                            </c1:C1DataGrid.Columns>
+                        </c1:C1DataGrid>
+                    </ControlsLib:FieldSet>
                 </Grid>
-                <ControlsLib:FieldSet Grid.Row="3" HorizontalAlignment="Stretch" Name="Result" Margin="1,1,1,1" 
-                                      VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" 
-                                      Legend="4. 분할 결과" LegendFontSize="12">
-                    <c1:C1DataGrid Grid.Row="1" x:Name="SplitResultList" Margin="5"
-                                   AutoGenerateColumns="False" HeadersVisibility="Column" CanUserAddRows="False">
-                        <c1:C1DataGrid.Columns>
-                            <c1:DataGridTemplateColumn>
-                                <c1:DataGridTemplateColumn.Header>
-                                    <CheckBox IsThreeState="False" IsChecked="true" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                </c1:DataGridTemplateColumn.Header>
-                                <c1:DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <CheckBox IsThreeState="False" IsChecked="{Binding ISSELECTED, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                    </DataTemplate>
-                                </c1:DataGridTemplateColumn.CellTemplate>
-                            </c1:DataGridTemplateColumn>
-                            <c1:DataGridTextColumn Header="용기번호" Binding="{Binding VESSELID}"/>
-                            <c1:DataGridTextColumn Header="내용물무게" Binding="{Binding GROSSWEIGHT}"/>
-                            <c1:DataGridTextColumn Header="용기무게" Binding="{Binding TAREWEIGHT}"/>
-                            <c1:DataGridTextColumn Header="총무게" Binding="{Binding TOTALWEIGHT}"/>
-                        </c1:C1DataGrid.Columns>
-                    </c1:C1DataGrid>
-                </ControlsLib:FieldSet>
             </Grid>
-            <Grid x:Name="Footer" Grid.Row="1">
+            <Grid x:Name="Footer" Grid.Row="2" Margin="5">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                    <TextBlock Text="{Binding Path=W[CUICurrentPrintName], Source={StaticResource R}, FallbackValue=프린트명}" Margin="2,0"/>
+                    <TextBlock Text="{Binding curPrintName, FallbackValue=N/A}"/>
+                </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Margin="5,0" x:Name="btnSave" Width="100" Content="저장" Command="{Binding SaveCommand}"/>
-                    <Button Margin="5,0" x:Name="btnNoSplit" Width="100" Content="저장(분할없음)" Command="{Binding NoSplitCommand}"/>
-                    <Button Margin="5,0" x:Name="btnCancel" Width="100" Content="취소" Click="btnCancel_Click"/>
+                    <Button Margin="5,0" x:Name="btnSplit" Width="100" Content="{Binding W[CUISplitHLABButtonText], Source={StaticResource R}}" Command="{Binding SplictCommandAsync}" IsEnabled="{Binding CanSplitHLAB}"/>
+                    <Button Margin="5,0" x:Name="btnLabel" Width="100" Content="{Binding W[CUIPrintLabelButtonText], Source={StaticResource R}}" Command="{Binding LabelPrintCommandAsync}"/>
+                    <Button Margin="5,0" x:Name="btnSave" Width="100" Content="{Binding W[CUISelectedDataWriteToEBRButtonText], Source={StaticResource R}}" Command="{Binding SaveCommand}"/>
+                    <Button Margin="5,0" x:Name="btnNoSplit" Width="100" Content="{Binding W[CUIDefaultDataWriteToEBRButtonText], Source={StaticResource R}}" Command="{Binding NoSplitCommand}"/>
+                    <Button Margin="5,0" x:Name="btnCancel" Width="100" Content="{Binding W[CUICloseButtonText], Source={StaticResource R}}" Click="btnCancel_Click"/>
                 </StackPanel>
             </Grid>
         </Grid>

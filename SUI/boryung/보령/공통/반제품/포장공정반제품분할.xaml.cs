@@ -21,6 +21,8 @@ namespace 보령
         public 포장공정반제품분할()
         {
             InitializeComponent();
+            //System.Text.StringBuilder empty = new System.Text.StringBuilder();
+            //LGCNS.iPharmMES.Common.UIObject.SetObjectLang(this, ref empty, LGCNS.EZMES.Common.LogInInfo.LangID);
         }
         public override string TableTypeName
         {
@@ -37,13 +39,11 @@ namespace 보령
         {
             try
             {
-                if (SplitResultList.ItemsSource != null && SplitResultList.ItemsSource is BR_BRS_REG_MaterialSubLot_INV_Split.OUTDATACollection)
+                if (availableWIPList.ItemsSource != null && availableWIPList.ItemsSource is BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATACollection)
                 {
-                    BR_BRS_REG_MaterialSubLot_INV_Split.OUTDATACollection items = SplitResultList.ItemsSource as BR_BRS_REG_MaterialSubLot_INV_Split.OUTDATACollection;
-                    foreach (BR_BRS_REG_MaterialSubLot_INV_Split.OUTDATA item in items)
-                        //item.ISSELECTED = true;
-
-                    SplitResultList.Refresh();
+                    BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATACollection items = availableWIPList.ItemsSource as BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATACollection;
+                    foreach (BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATA item in items)
+                        item.ISSELECTED = true;
                 }
             }
             catch (Exception ex)
@@ -56,13 +56,11 @@ namespace 보령
         {
             try
             {
-                if (SplitResultList.ItemsSource != null && SplitResultList.ItemsSource is BR_BRS_REG_MaterialSubLot_INV_Split.OUTDATACollection)
+                if (availableWIPList.ItemsSource != null && availableWIPList.ItemsSource is BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATACollection)
                 {
-                    BR_BRS_REG_MaterialSubLot_INV_Split.OUTDATACollection items = SplitResultList.ItemsSource as BR_BRS_REG_MaterialSubLot_INV_Split.OUTDATACollection;
-                    foreach (BR_BRS_REG_MaterialSubLot_INV_Split.OUTDATA item in items)
-                        //item.ISSELECTED = false;
-
-                    SplitResultList.Refresh();
+                    BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATACollection items = availableWIPList.ItemsSource as BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATACollection;
+                    foreach (BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATA item in items)
+                        item.ISSELECTED = false;
                 }
             }
             catch (Exception ex)
@@ -70,5 +68,26 @@ namespace 보령
                 Console.WriteLine(ex.Message);
             }
         }
+
+        private void txtSrcVessel_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter && sender is TextBox)
+                (BusyIn.DataContext as 포장공정반제품분할ViewModel).SearchWIPCommandAsync.Execute((sender as TextBox).Text);
+        }
+        private void txtEmptyVessel_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && sender is TextBox)
+                (BusyIn.DataContext as 포장공정반제품분할ViewModel).CheckEMPTYVesselCommandAsync.Execute((sender as TextBox).Text);
+        }
+        private void availableWIPList_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if(sender is C1.Silverlight.DataGrid.C1DataGrid && (sender as C1.Silverlight.DataGrid.C1DataGrid).CurrentRow.DataItem is BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATA)
+            {
+                var curRow = (sender as C1.Silverlight.DataGrid.C1DataGrid).CurrentRow.DataItem as BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATA;
+                curRow.ISSELECTED = !curRow.ISSELECTED;
+            }
+        }
+
+
     }
 }

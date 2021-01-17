@@ -20,132 +20,142 @@ namespace 보령
         private 포장공정반제품분할 _mainWnd;
         public 포장공정반제품분할ViewModel()
         {
-            _SplitRslt = new BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATACollection();
+            _BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT = new BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT();
             _BR_PHR_SEL_System_Printer = new BR_PHR_SEL_System_Printer();
-            _BR_BRS_REG_MaterialSubLot_INV_Split.OnExecuteCompleted += new DelegateExecuteCompleted(BR_BRS_REG_MaterialSubLot_INV_Split_OnExecuteCompleted);
+            _BR_PHR_SEL_PRINT_LabelImage = new BR_PHR_SEL_PRINT_LabelImage();
+            _BR_BRS_REG_MaterialSubLot_INV_Split = new BR_BRS_REG_MaterialSubLot_INV_Split();
+            _BR_BRS_SEL_VESSEL_Info = new BR_BRS_SEL_VESSEL_Info();
         }
-        #region VIEW
-        private string _srcVesselId;
-        public string srcVesselId
-        {
-            get { return _srcVesselId; }
-            set
-            {
-                _srcVesselId = value;
-                OnPropertyChanged("srcVesselId");
-            }
-        }
-        private decimal _srcGross;
-        public string srcGross
-        {
-            get { return _srcGross.ToString("N0"); }
-            set
-            {
-                _srcGross = decimal.Parse(value);
-                OnPropertyChanged("srcGross");
-                OnPropertyChanged("srcTotal");
-            }
-        }
-        private decimal _srcTare;
-        public string srcTare
-        {
-            get { return _srcTare.ToString("N0"); }
-            set
-            {
-                _srcTare = decimal.Parse(value);
-                OnPropertyChanged("srcTare");
-                OnPropertyChanged("srcTotal");
-            }
-        }
-        public string srcTotal
-        {
-            get { return (_srcGross + _srcTare).ToString("N0"); }
-        }
-
-        private string _splitVesselId;
-        public string splitVesselId
-        {
-            get { return _splitVesselId; }
-            set
-            {
-                _splitVesselId = value;
-                OnPropertyChanged("splitVesselId");
-            }
-        }
-        private decimal _splitGross;
-        public string splitGross
-        {
-            get { return _splitGross.ToString("N0"); }
-            set
-            {
-                _splitGross = decimal.Parse(value);
-                setSourceRemained();
-                OnPropertyChanged("splitGross");
-                OnPropertyChanged("splitTotal");
-            }
-        }
-        private decimal _splitTare;
-        public string splitTare
-        {
-            get { return _splitTare.ToString("N0"); }
-            set
-            {
-                _splitTare = decimal.Parse(value);
-                setSourceRemained();
-                OnPropertyChanged("splitTare");
-                OnPropertyChanged("splitTotal");
-            }
-        }
-        public string splitTotal
-        {
-            get { return (_splitGross + _splitTare).ToString("N0"); }           
-        }
-        #endregion
-        private BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATA _selectedSourceWIP;
-        public BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATA selectedSourceWIP
-        {
-            get { return _selectedSourceWIP; }
-            set
-            {
-                _selectedSourceWIP = value;
-                _SourceWIP = _selectedSourceWIP;
-                srcVesselId = _SourceWIP.VESSELID;
-                srcGross = _SourceWIP.MSUBLOTQTY.ToString();
-                srcTare = _SourceWIP.TAREWEIGHT.ToString();
-                _SplitWIP = new BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATA { VESSELID = "", MSUBLOTQTY = 0, TAREWEIGHT = 0 };
-                OnPropertyChanged("selectedSourceWIP");
-            }
-        }
-        private BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATA _SourceWIP;
-        private BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATA _SplitWIP;
-        private BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATACollection _SplitRslt;
-        public BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATACollection SplitRslt
-        {
-            get { return _SplitRslt; }
-            set
-            {
-                _SplitRslt = value;
-                OnPropertyChanged("SplitRslt");
-            }
-        }
+        // 프린터
         private BR_PHR_SEL_System_Printer.OUTDATA _selectedPrint;
-        private BR_BRS_REG_MaterialSubLot_INV_Split.OUTDATACollection _rsltWIPs;
-        public BR_BRS_REG_MaterialSubLot_INV_Split.OUTDATACollection rsltWIPs
+        public string curPrintName
         {
-            get { return _rsltWIPs; }
+            get
+            {
+                if (_selectedPrint != null)
+                    return _selectedPrint.PRINTERNAME;
+                else
+                    return "N/A";
+            }           
+        }
+        // 분할 대상의 용기번호
+        private string _SRC_VesselID;
+        public string SRC_VesselID
+        {
+            get { return _SRC_VesselID; }
             set
             {
-                _rsltWIPs = value;
-                OnPropertyChanged("rsltWIPs");
+                _SRC_VesselID = value;
+                OnPropertyChanged("SRC_VesselID");
+            }
+        }
+        // 빈용기 용기번호
+        private string _EMPTY_VesselID;
+        public string EMPTY_VesselID
+        {
+            get { return _EMPTY_VesselID; }
+            set
+            {
+                _EMPTY_VesselID = value;
+                OnPropertyChanged("EMPTY_VesselID");
+            }
+        }
+        private decimal _EMPTY_GROSS;
+        public decimal EMPTY_GROSS
+        {
+            get { return _EMPTY_GROSS; }
+            set
+            {
+                _EMPTY_GROSS = value;
+                try
+                {
+                    setSplitMaterialSubLot();
+                }
+                catch (Exception ex)
+                {
+                    OnException(ex.Message, ex);
+                }
+                OnPropertyChanged("EMPTY_GROSS");
+            }
+        }
+        private decimal _EMPTY_TARE;
+        public decimal EMPTY_TARE
+        {
+            get { return _EMPTY_TARE; }
+            set
+            {
+                _EMPTY_TARE = value;
+                try
+                {
+                    setSplitMaterialSubLot();
+                }
+                catch (Exception ex)
+                {
+                    OnException(ex.Message, ex);
+                }
+                OnPropertyChanged("EMPTY_TARE");
+            }
+        }
+        private string _PRECISION_FORMAT;
+        public string PRECISION_FORMAT
+        {
+            get { return _PRECISION_FORMAT; }
+            set
+            {
+                _PRECISION_FORMAT = value;
+                OnPropertyChanged("PRECISION_FORMAT");
+            }
+        }
+        private BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATA _SourceMaterialSubLot;
+        public BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATA SourceMaterialSubLot
+        {
+            get { return _SourceMaterialSubLot; }
+            set
+            {
+                _SourceMaterialSubLot = value;
+                OnPropertyChanged("SourceMaterialSubLot");
+            }
+        }
+        private BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATA _SplitMaterialSubLot_A;
+        public BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATA SplitMaterialSubLot_A
+        {
+            get { return _SplitMaterialSubLot_A; }
+            set
+            {
+                _SplitMaterialSubLot_A = value;
+                OnPropertyChanged("SplitMaterialSubLot_A");
+            }
+        }
+        private BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATA _SplitMaterialSubLot_B;
+        public BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATA SplitMaterialSubLot_B
+        {
+            get { return _SplitMaterialSubLot_B; }
+            set
+            {
+                _SplitMaterialSubLot_B = value;
+                OnPropertyChanged("SplitMaterialSubLot_B");
             }
         }
 
+        private bool _CanSplitHLAB;
+        /// <summary>
+        /// ture : 분할버튼 활성화, false : 분할버튼 비활성화
+        /// </summary>
+        public bool CanSplitHLAB
+        {
+            get { return _CanSplitHLAB; }
+            set
+            {
+                _CanSplitHLAB = value;
+                OnPropertyChanged("CanSplitHLAB");
+            }
+        }        
         #endregion
         #region 1.BizRule
         /// <summary>
         /// 포장반제품 조회
         /// </summary>
-        private BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT _BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT = new BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT();
+        private BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT _BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT;
         public BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT
         {
             get { return _BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT; }
@@ -158,26 +168,19 @@ namespace 보령
         /// <summary>
         /// 프린터 조회
         /// </summary>
-        private BR_PHR_SEL_System_Printer _BR_PHR_SEL_System_Printer = new BR_PHR_SEL_System_Printer();
+        private BR_PHR_SEL_System_Printer _BR_PHR_SEL_System_Printer;
         /// <summary>
         /// 라벨 출력
         /// </summary>
-        private BR_PHR_SEL_PRINT_LabelImage _BR_PHR_SEL_PRINT_LabelImage = new BR_PHR_SEL_PRINT_LabelImage();        
+        private BR_PHR_SEL_PRINT_LabelImage _BR_PHR_SEL_PRINT_LabelImage;        
         /// <summary>
         /// 반제품 분할
         /// </summary>
-        private BR_BRS_REG_MaterialSubLot_INV_Split _BR_BRS_REG_MaterialSubLot_INV_Split = new BR_BRS_REG_MaterialSubLot_INV_Split();
-
-        private DataTable _CurrentWIPList;
-        public DataTable CurrentWIPList
-        {
-            get { return _CurrentWIPList; }
-            set
-            {
-                _CurrentWIPList = value;
-                OnPropertyChanged("CurrentWIPList");
-            }
-        }
+        private BR_BRS_REG_MaterialSubLot_INV_Split _BR_BRS_REG_MaterialSubLot_INV_Split;
+        /// <summary>
+        /// 스캔한 용기 확인
+        /// </summary>
+        private BR_BRS_SEL_VESSEL_Info _BR_BRS_SEL_VESSEL_Info;
         #endregion
         #region 2.Command
         public ICommand LoadedCommand
@@ -207,22 +210,21 @@ namespace 보령
                             _BR_PHR_SEL_System_Printer.INDATAs.Add(new BR_PHR_SEL_System_Printer.INDATA
                             {
                                 LANGID = AuthRepositoryViewModel.Instance.LangID,
-                                ROOMID = AuthRepositoryViewModel.Instance.RoomID                                 
+                                ROOMID = AuthRepositoryViewModel.Instance.RoomID,
+                                IPADDRESS = Common.ClientIP
                             });
 
-                            if(await _BR_PHR_SEL_System_Printer.Execute() && _BR_PHR_SEL_System_Printer.OUTDATAs.Count > 0)                            
-                                _selectedPrint = _BR_PHR_SEL_System_Printer.OUTDATAs[0];                            
-
-                            // 사용가능한 포장 반제품 조회
-                            _BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.INDATAs.Clear();
-                            _BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATAs.Clear();
-                            _BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.INDATAs.Add(new BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.INDATA
+                            if (await _BR_PHR_SEL_System_Printer.Execute() && _BR_PHR_SEL_System_Printer.OUTDATAs.Count > 0)
                             {
-                                POID = _mainWnd.CurrentOrder.ProductionOrderID,
-                                OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID
-                            });
+                                if(_BR_PHR_SEL_System_Printer.OUTDATAs.Count == 1)
+                                    _selectedPrint = _BR_PHR_SEL_System_Printer.OUTDATAs[0];
+                            }
 
-                            await BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.Execute();
+                            OnPropertyChanged("curPrintName");
+
+                            GetavailableWIPList();
+
+                            CanSplitHLAB = false;
                             ///
 
                             CommandResults["LoadedCommand"] = true;
@@ -245,6 +247,144 @@ namespace 보령
                 });
             }
         }
+
+        public ICommand SearchWIPCommandAsync
+        {
+            get
+            {
+                return new AsyncCommandBase(async arg =>
+                {
+                    using (await AwaitableLocks["SearchWIPCommand"].EnterAsync())
+                    {
+                        try
+                        {
+
+                            IsBusy = true;
+
+                            CommandResults["SearchWIPCommand"] = false;
+                            CommandCanExecutes["SearchWIPCommand"] = false;
+
+                            ///
+                            if (arg is string)
+                            {
+                                string ibcno = arg as string;
+                                foreach (var item in _BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATAs)
+                                {
+                                    if (item.VESSELID == ibcno)
+                                    {
+                                        SourceMaterialSubLot = item;
+
+                                        _SplitMaterialSubLot_A = new BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATA();
+                                        _SplitMaterialSubLot_A.POID = SourceMaterialSubLot.POID;
+                                        _SplitMaterialSubLot_A.OPSGGUID = SourceMaterialSubLot.OPSGGUID;
+                                        _SplitMaterialSubLot_A.OUTPUTGUID = SourceMaterialSubLot.OUTPUTGUID;
+                                        _SplitMaterialSubLot_A.VESSELID = SourceMaterialSubLot.VESSELID;
+                                        _SplitMaterialSubLot_A.MSUBLOTID = SourceMaterialSubLot.MSUBLOTID;
+                                        _SplitMaterialSubLot_A.TARE.SetWeight(SourceMaterialSubLot.TARE.Value, SourceMaterialSubLot.TARE.Uom, SourceMaterialSubLot.TARE.Precision);
+                                        _SplitMaterialSubLot_A.GROSS.SetWeight(SourceMaterialSubLot.GROSS.Value, SourceMaterialSubLot.GROSS.Uom, SourceMaterialSubLot.GROSS.Precision);
+                                        _SplitMaterialSubLot_A.TOTAL.SetWeight(SourceMaterialSubLot.TOTAL.Value, SourceMaterialSubLot.TOTAL.Uom, SourceMaterialSubLot.TOTAL.Precision);
+
+                                        _SplitMaterialSubLot_B = new BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATA();
+                                        _SplitMaterialSubLot_B.POID = SourceMaterialSubLot.POID;
+                                        _SplitMaterialSubLot_B.OPSGGUID = SourceMaterialSubLot.OPSGGUID;
+                                        _SplitMaterialSubLot_B.OUTPUTGUID = SourceMaterialSubLot.OUTPUTGUID;
+                                        _SplitMaterialSubLot_B.TARE.SetWeight(0, SourceMaterialSubLot.TARE.Uom, SourceMaterialSubLot.TARE.Precision);
+                                        _SplitMaterialSubLot_B.GROSS.SetWeight(0, SourceMaterialSubLot.GROSS.Uom, SourceMaterialSubLot.GROSS.Precision);
+                                        _SplitMaterialSubLot_B.TOTAL.SetWeight(0, SourceMaterialSubLot.TOTAL.Uom, SourceMaterialSubLot.TOTAL.Precision);
+
+                                        OnPropertyChanged("SplitMaterialSubLot_A");
+                                        OnPropertyChanged("SplitMaterialSubLot_B");
+
+                                        CanSplitHLAB = true;
+                                    }
+                                }
+                            }
+                            ///
+
+                            CommandResults["SearchWIPCommand"] = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            CommandResults["SearchWIPCommand"] = false;
+                            OnException(ex.Message, ex);
+                        }
+                        finally
+                        {
+                            CommandCanExecutes["SearchWIPCommand"] = true;
+
+                            IsBusy = false;
+                        }
+                    }
+                }, arg =>
+               {
+                   return CommandCanExecutes.ContainsKey("SearchWIPCommand") ?
+                       CommandCanExecutes["SearchWIPCommand"] : (CommandCanExecutes["SearchWIPCommand"] = true);
+               });
+            }
+        }
+        public ICommand CheckEMPTYVesselCommandAsync
+        {
+            get
+            {
+                return new AsyncCommandBase(async arg =>
+                {
+                    using (await AwaitableLocks["CheckEMPTYVesselCommandAsync"].EnterAsync())
+                    {
+                        try
+                        {
+
+                            IsBusy = true;
+
+                            CommandResults["CheckEMPTYVesselCommandAsync"] = false;
+                            CommandCanExecutes["CheckEMPTYVesselCommandAsync"] = false;
+
+                            ///
+                            if (arg is string && _SplitMaterialSubLot_B != null)
+                            {
+                                string ibcno = arg as string;
+
+                                _BR_BRS_SEL_VESSEL_Info.INDATAs.Clear();
+                                _BR_BRS_SEL_VESSEL_Info.OUTDATAs.Clear();
+                                _BR_BRS_SEL_VESSEL_Info.INDATAs.Add(new BR_BRS_SEL_VESSEL_Info.INDATA
+                                {
+                                    VESSELID = ibcno
+                                });
+
+                                if (await _BR_BRS_SEL_VESSEL_Info.Execute() && _BR_BRS_SEL_VESSEL_Info.OUTDATAs.Count == 1)
+                                {
+                                    EMPTY_TARE = _BR_BRS_SEL_VESSEL_Info.OUTDATAs[0].TAREWEIGHT.GetValueOrDefault();
+                                    EMPTY_VesselID = ibcno;
+                                    _SplitMaterialSubLot_B.MSUBLOTID = _BR_BRS_SEL_VESSEL_Info.OUTDATAs[0].MSUBLOTID;
+                                }
+                                else
+                                {
+                                    EMPTY_VesselID = "";
+                                }
+                            }
+                            ///
+                            CommandResults["CheckEMPTYVesselCommandAsync"] = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            EMPTY_VesselID = "";
+                            CommandResults["CheckEMPTYVesselCommandAsync"] = false;
+                            OnException(ex.Message, ex);
+                        }
+                        finally
+                        {
+                            CommandCanExecutes["CheckEMPTYVesselCommandAsync"] = true;
+
+                            IsBusy = false;
+                        }
+                    }
+                }, arg =>
+                {
+                    return CommandCanExecutes.ContainsKey("SearchWIPCommand") ?
+                        CommandCanExecutes["SearchWIPCommand"] : (CommandCanExecutes["SearchWIPCommand"] = true);
+                });
+            }
+        }
+
         public ICommand SplictCommandAsync
         {
             get
@@ -261,62 +401,71 @@ namespace 보령
                             CommandCanExecutes["SplictCommandAsync"] = false;
 
                             ///
-                            // 분할 내용 확인
-                            if (string.IsNullOrWhiteSpace(srcVesselId) || string.IsNullOrWhiteSpace(srcGross) || string.IsNullOrWhiteSpace(srcTare)
-                                || string.IsNullOrWhiteSpace(splitVesselId) || string.IsNullOrWhiteSpace(splitGross) || string.IsNullOrWhiteSpace(splitTare))
-                                throw new Exception("분할 정보에 없는 값이 있습니다.");
 
-                            // MM_MaterialLot_SplitMerge(Lot 분할 및 합침) 권한 확인
-                                if (AuthRepositoryViewModel.HaveFunctionCodeAuthority("MM_MaterialLot_SplitMerge", Common.enumAccessType.Create))
+                            // 값이 있는지 확인
+                            if (string.IsNullOrWhiteSpace(_SRC_VesselID) || string.IsNullOrWhiteSpace(_EMPTY_VesselID))
+                                throw new Exception("용기번호가 없습니다.");
+                            else if(_SplitMaterialSubLot_A.GROSS != null && _SplitMaterialSubLot_B.GROSS != null
+                                        && (_SplitMaterialSubLot_A.GROSS.Value <= 0 || _SplitMaterialSubLot_B.GROSS.Value <= 0))
+                                throw new Exception("내용물 무게가 없습니다.");
+                            else if (_SplitMaterialSubLot_A.TARE != null && _SplitMaterialSubLot_B.TARE != null
+                                        && (_SplitMaterialSubLot_A.TARE.Value <= 0 || _SplitMaterialSubLot_B.TARE.Value <= 0))
+                                throw new Exception("용기 무게가 없습니다.");
+
+                            // 전자서명 요청
+                            var authHelper = new iPharmAuthCommandHelper();
+                            authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
+
+                            if (await authHelper.ClickAsync(
+                                Common.enumCertificationType.Function,
+                                Common.enumAccessType.Create,
+                                string.Format("포장공정반제품분할"),
+                                string.Format("포장공정반제품분할"),
+                                false,
+                                "OM_ProductionOrder_SUI",
+                                "", null, null) == false)
                             {
-                                // 전자서명
-                                var authHelper = new iPharmAuthCommandHelper();
-                                authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "MM_MaterialLot_SplitMerge");
-                                if (await authHelper.ClickAsync(
-                                    Common.enumCertificationType.Role,
-                                    Common.enumAccessType.Create,
-                                    "반제품 분할",
-                                    "반제품 분할",
-                                    false,
-                                    "MM_MaterialLot_SplitMerge",
-                                    "",
-                                    null, null) == false)
-                                {
-                                    throw new Exception(string.Format("서명이 완료되지 않았습니다."));
-                                }
-
-                                // 반제품 분할
-                                _BR_BRS_REG_MaterialSubLot_INV_Split.INDATAs.Clear();
-                                _BR_BRS_REG_MaterialSubLot_INV_Split.INDATA_POs.Clear();
-
-                                _BR_BRS_REG_MaterialSubLot_INV_Split.INDATA_POs.Add(new BR_BRS_REG_MaterialSubLot_INV_Split.INDATA_PO
-                                {
-                                    POID = _selectedSourceWIP.POID,
-                                    OPSGGUID = _selectedSourceWIP.OPSGGUID,
-                                    OUTPUTGUID = _selectedSourceWIP.OUTPUTGUID,
-                                    USERID = AuthRepositoryViewModel.GetUserIDByFunctionCode("MM_MaterialLot_SplitMerge")
-                                });
-                                // Source WIP
-                                _BR_BRS_REG_MaterialSubLot_INV_Split.INDATAs.Add(new BR_BRS_REG_MaterialSubLot_INV_Split.INDATA
-                                {
-                                    MSUBLOTID = _SourceWIP.MSUBLOTID,
-                                    VESSELID = _SourceWIP.VESSELID,
-                                    MSUBLOTQTY = _SourceWIP.MSUBLOTQTY,
-                                    TAREWEIGHT = _SourceWIP.TAREWEIGHT
-                                });
-                                // Split WIP
-                                _BR_BRS_REG_MaterialSubLot_INV_Split.INDATAs.Add(new BR_BRS_REG_MaterialSubLot_INV_Split.INDATA
-                                {
-                                    MSUBLOTID = _SplitWIP.MSUBLOTID,
-                                    VESSELID = _SplitWIP.VESSELID,
-                                    MSUBLOTQTY = _SplitWIP.MSUBLOTQTY,
-                                    TAREWEIGHT = _SplitWIP.TAREWEIGHT
-                                });
-
-                                //await _BR_BRS_REG_MaterialSubLot_INV_Split.Execute();
+                                throw new Exception(string.Format("서명이 완료되지 않았습니다."));
                             }
-                            else
-                                OnMessage("해당 기능을 수행하기 위한 권한이 없습니다.");
+
+                            // 반제품 분할
+                            _BR_BRS_REG_MaterialSubLot_INV_Split.INDATAs.Clear();
+                            _BR_BRS_REG_MaterialSubLot_INV_Split.INDATA_POs.Clear();
+
+                            _BR_BRS_REG_MaterialSubLot_INV_Split.INDATA_POs.Add(new BR_BRS_REG_MaterialSubLot_INV_Split.INDATA_PO
+                            {
+                                POID = _SourceMaterialSubLot.POID,
+                                OPSGGUID = _SourceMaterialSubLot.OPSGGUID,
+                                OUTPUTGUID = _SourceMaterialSubLot.OUTPUTGUID,
+                                USERID = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_SUI")
+                            });
+                            // Source WIP
+                            _BR_BRS_REG_MaterialSubLot_INV_Split.INDATAs.Add(new BR_BRS_REG_MaterialSubLot_INV_Split.INDATA
+                            {
+                                MSUBLOTID = _SplitMaterialSubLot_A.MSUBLOTID,
+                                VESSELID = _SRC_VesselID,
+                                MSUBLOTQTY = _SplitMaterialSubLot_A.GROSS.Value,
+                                TAREWEIGHT = _SplitMaterialSubLot_A.TARE.Value
+                            });
+                            // Split WIP
+                            _BR_BRS_REG_MaterialSubLot_INV_Split.INDATAs.Add(new BR_BRS_REG_MaterialSubLot_INV_Split.INDATA
+                            {
+                                MSUBLOTID = _SplitMaterialSubLot_B.MSUBLOTID,
+                                VESSELID = _EMPTY_VesselID,
+                                MSUBLOTQTY = _SplitMaterialSubLot_B.GROSS.Value,
+                                TAREWEIGHT = _SplitMaterialSubLot_B.TARE.Value
+                            });
+
+                            if(await _BR_BRS_REG_MaterialSubLot_INV_Split.Execute())
+                            {
+                                GetavailableWIPList();
+                                SourceMaterialSubLot = new BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATA();
+                                SplitMaterialSubLot_A = new BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATA();
+                                SplitMaterialSubLot_B = new BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATA();
+                                SRC_VesselID = "";
+                                EMPTY_VesselID = "";
+                            }
+                                
 
                             ///
 
@@ -357,30 +506,30 @@ namespace 보령
                             ///
                             IsBusy = true;
 
-                            if (!string.IsNullOrWhiteSpace(_selectedPrint.PRINTERNAME))
+                            if (!string.IsNullOrWhiteSpace(curPrintName) && !curPrintName.Equals("N/A"))
                             {
-
-                                _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Clear();
-                                _BR_PHR_SEL_PRINT_LabelImage.OUTDATAs.Clear();
-                                _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Add(new BR_PHR_SEL_PRINT_LabelImage.INDATA
+                                foreach (var item in _BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATAs)
                                 {
-                                    ReportPath = "/Reports/Label/LABEL_RELEASE",
-                                    PrintName = _selectedPrint.PRINTERNAME,
-                                    USERID = AuthRepositoryViewModel.Instance.LoginedUserID
-                                });
+                                    if (item.ISSELECTED)
+                                    {
+                                        _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Clear();
+                                        _BR_PHR_SEL_PRINT_LabelImage.OUTDATAs.Clear();
+                                        _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Add(new BR_PHR_SEL_PRINT_LabelImage.INDATA
+                                        {
+                                            ReportPath = "/Reports/Label/LABEL_INPROCESS_WIP",
+                                            PrintName = _selectedPrint.PRINTERNAME,
+                                            USERID = AuthRepositoryViewModel.Instance.LoginedUserID
+                                        });
 
-                                _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
-                                {
-                                    ParamName = "MSUBLOTBCD",
-                                    ParamValue = ""
-                                });
-                                _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
-                                {
-                                    ParamName = "OPERATOR",
-                                    ParamValue = AuthRepositoryViewModel.Instance.LoginedUserID
-                                });
+                                        _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
+                                        {
+                                            ParamName = "VESSELID",
+                                            ParamValue = item.VESSELID ?? ""
+                                        });                                        
 
-                                //await _BR_PHR_SEL_PRINT_LabelImage.Execute();
+                                        await _BR_PHR_SEL_PRINT_LabelImage.Execute();
+                                    }
+                                }
                             }
                             else
                                 throw new Exception("출력할 프린터정보가 없습니다.");
@@ -424,6 +573,16 @@ namespace 보령
                             CommandCanExecutes["SaveCommand"] = false;
 
                             ///
+                            // 기록할 내용이 있는지 확인
+                            int cnt = 0;
+                            foreach (var item in _BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATAs)
+                            {
+                                if (item.ISSELECTED)
+                                    cnt++;
+                            }
+                            if (cnt == 0)
+                                throw new Exception("기록할 내용이 없습니다.");
+
                             // 전자서명 요청
                             var authHelper = new iPharmAuthCommandHelper();
                             if (_mainWnd.CurrentInstruction.Raw.INSERTEDYN.Equals("Y") && _mainWnd.Phase.CurrentPhase.STATE.Equals("COMP")) // 값 수정
@@ -468,14 +627,17 @@ namespace 보령
                             dt.Columns.Add(new DataColumn("용기무게"));
                             dt.Columns.Add(new DataColumn("총무게"));
 
-                            foreach (var item in SplitRslt)
+                            foreach (var item in _BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATAs)
                             {
-                                DataRow row = dt.NewRow();
-                                row["용기번호"] = item.VESSELID ?? "N/A";
-                                row["내용물무게"] = item.MSUBLOTQTY.HasValue ? item.MSUBLOTQTY.Value.ToString("N0") : "N/A";
-                                row["용기무게"] = item.TAREWEIGHT.HasValue ? item.TAREWEIGHT.Value.ToString("N0") : "N/A";
-                                row["총무게"] = (item.MSUBLOTQTY.Value + item.TAREWEIGHT.Value).ToString("N0") ?? "N/A";
-                                dt.Rows.Add(row);
+                                if(item.ISSELECTED)
+                                {
+                                    DataRow row = dt.NewRow();
+                                    row["용기번호"] = item.VESSELID ?? "N/A";
+                                    row["내용물무게"] = item.GROSS.WeightUOMString ?? "N/A";
+                                    row["용기무게"] = item.TARE.WeightUOMString ?? "N/A";
+                                    row["총무게"] = item.TOTAL.WeightUOMString ?? "N/A";
+                                    dt.Rows.Add(row);
+                                }
                             }
 
                             var xml = BizActorRuleBase.CreateXMLStream(ds);
@@ -566,6 +728,7 @@ namespace 보령
 
                             // 지시문 결과 입력
                             _mainWnd.CurrentInstruction.Raw.ACTVAL = "반제품 분할 없음";
+                            _mainWnd.CurrentInstruction.Raw.NOTE = null;
                             var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction);
 
                             if (result != enumInstructionRegistErrorType.Ok)
@@ -599,35 +762,72 @@ namespace 보령
         }
         #endregion
         #region 3.Function
-        public void setSourceRemained()
-        {         
-            _srcGross = selectedSourceWIP.MSUBLOTQTY.Value - _splitGross;            
-            OnPropertyChanged("srcGross");
-            OnPropertyChanged("srcTotal");
-            OnPropertyChanged("splitGross");
-        }
-        private async void BR_BRS_REG_MaterialSubLot_INV_Split_OnExecuteCompleted(string ruleName)
+        private async void GetavailableWIPList()
         {
-            if(_BR_BRS_REG_MaterialSubLot_INV_Split.OUTDATAs.Count > 0)
+            try
             {
-                if(await OnMessageAsync("라벨을 출력하시겠습니까?"))
+                _BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.INDATAs.Clear();
+                _BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATAs.Clear();
+                _BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.INDATAs.Add(new BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.INDATA
                 {
+                    POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                    OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID
+                });
 
+                if(await BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.Execute())
+                {
+                    int precision = 3;
+                    decimal gross, tare;
+
+                    foreach (var item in _BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATAs)
+                    {
+                        precision = item.PRECISION.HasValue ? item.PRECISION.Value : 3;
+                        tare = item.TAREWEIGHT.HasValue ? item.TAREWEIGHT.Value : -99999m;
+                        gross = item.MSUBLOTQTY.HasValue ? item.MSUBLOTQTY.Value : -99999m;
+
+                        item.TARE.SetWeight(tare, item.UOM, precision);
+                        item.GROSS.SetWeight(gross, item.UOM, precision);
+                        item.TOTAL.SetWeight(tare + gross, item.UOM, precision);
+                    }
+
+                    PRECISION_FORMAT = "F" + precision.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }        
+        private void setSplitMaterialSubLot()
+        {
+            try
+            {
+                decimal grosschk = _SourceMaterialSubLot.GROSS.Value - _EMPTY_GROSS;
+                if (grosschk > 0)
+                {
+                    // B 내용 수정
+                    _SplitMaterialSubLot_B.GROSS.Value = _EMPTY_GROSS;
+                    _SplitMaterialSubLot_B.TARE.Value = _EMPTY_TARE;
+                    _SplitMaterialSubLot_B.TOTAL.Value = _EMPTY_GROSS + _EMPTY_TARE;
+                    
+                    // A 내용 수정
+                    _SplitMaterialSubLot_A.GROSS.Value = grosschk;
+                    _SplitMaterialSubLot_A.TOTAL.Value = grosschk + _SplitMaterialSubLot_A.TARE.Value;
+
+                    CanSplitHLAB = true;
+                }
+                else
+                {
+                    CanSplitHLAB = false;
+                    throw new Exception("분할된 무게는 분할 전 수량 보다 많거나 같을 수 없습니다.");
                 }
 
-                // 수행 결과 GRID로 이동
-                foreach (var item in _BR_BRS_REG_MaterialSubLot_INV_Split.OUTDATAs)
-                {
-                    SplitRslt.Add(new BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATA
-                    {
-                        MSUBLOTID = item.MSUBLOTID,
-                        MSUBLOTQTY = item.MSUBLOTQTY,
-                        TAREWEIGHT = item.TAREWEIGHT,
-                        VESSELID = item.VESSELID,
-                        MSUBLOTBCD = item.MSUBLOTBCD
-
-                    });
-                } 
+                OnPropertyChanged("SplitMaterialSubLot_A");
+                OnPropertyChanged("SplitMaterialSubLot_B");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
         #endregion
