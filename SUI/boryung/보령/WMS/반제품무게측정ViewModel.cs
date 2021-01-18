@@ -142,7 +142,15 @@ namespace 보령
                         if (await _BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo.Execute())
                         {
                             if (_BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo.OUTDATAs.Count > 0)
-                                _SelectedScale = _BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo.OUTDATAs[0].EQPTID;
+                            {
+                                //_SelectedScale = _BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo.OUTDATAs[0].EQPTID;
+                                //바닥저울을 찾도록 로직 변경. 2021.01.18 phd
+                                for (int idx = 0; idx < _BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo.OUTDATAs.Count; idx++)
+                                {
+                                    if (_BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo.OUTDATAs[idx].MODEL.Contains("IFS4"))
+                                        _SelectedScale = _BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo.OUTDATAs[idx].EQPTID;
+                                }
+                            }
                         }
                         _mainWnd.btnRecord.IsEnabled = false;
                         _mainWnd.txtVesselId.Focus();
