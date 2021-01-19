@@ -1,0 +1,19 @@
+﻿OBJECTID,OBJECTNAME
+CUICurrentPrintName,프린트 : 
+CUIBatchNo,배치번호
+CUIOrderNo,오더번호
+CUIProcessName,공정명
+CUIWorkRoom,작업
+CUIVesselId,용기번호
+CUIGrossWeight,내용물무게
+CUITareWeight,용기무게
+CUITotalWeight,총 무게
+CUISplitHLABButtonText,반제품분할
+CUIPrintLabelButtonText,라벨발행
+CUIDataWriteToEBRButtonText,기록
+CUISelectedDataWriteToEBRButtonText,선택된값기록
+CUIDefaultDataWriteToEBRButtonText,기록(기록없음)
+CUICloseButtonText,종료
+FERTDisassembleOrderSelectionYieldFormula,선별 수율 계산식
+FERTDisassembleOrderSelectionYieldFormulaNumerator,T (선별 정제 양품수량)
+FERTDisassembleOrderSelectionYieldFormulaDenominator,T (완제품할당량 X 포장단위)
