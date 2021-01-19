@@ -57,7 +57,7 @@
                        CanUserAddRows="False" CanUserEditRows="False" CanUserRemoveRows="False" CanUserResizeColumns="False" CanUserResizeRows="False"
                        HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
             <c1:C1DataGrid.Columns>
-                <c1:DataGridTextColumn Header="용기 번호1" Binding="{Binding VesselId}"/>
+                <c1:DataGridTextColumn Header="용기 번호" Binding="{Binding VesselId}"/>
                 <c1:DataGridTextColumn Header="저울 ID" Binding="{Binding ScaleId}"/>
                 <c1:DataGridTextColumn Header="용기 중량" Binding="{Binding TareWeight}"/>
             </c1:C1DataGrid.Columns>
