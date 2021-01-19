@@ -126,11 +126,9 @@ namespace 보령
             {
                 return new AsyncCommandBase(async arg =>
                 {
+                    //test
                     try
                     {
-                        //test
-                        //1111
-                        //2222
                         CommandCanExecutes["LoadedCommandAsync"] = false;
                         CommandResults["LoadedCommandAsync"] = false;
 
