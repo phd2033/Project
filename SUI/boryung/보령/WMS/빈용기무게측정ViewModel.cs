@@ -128,6 +128,7 @@ namespace 보령
                 {
                     try
                     {
+                        //22222
                         CommandCanExecutes["LoadedCommandAsync"] = false;
                         CommandResults["LoadedCommandAsync"] = false;
 
