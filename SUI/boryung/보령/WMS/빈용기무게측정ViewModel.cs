@@ -130,6 +130,7 @@ namespace 보령
                     {
                         //test
                         //1111
+                        //2222
                         CommandCanExecutes["LoadedCommandAsync"] = false;
                         CommandResults["LoadedCommandAsync"] = false;
 
