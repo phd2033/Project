@@ -105,7 +105,6 @@ namespace 보령
                     {
                         try
                         {
-                            //TEST4
                             CommandCanExecutes["LoadedCommandAsync"] = false;
                             CommandResults["LoadedCommandAsync"] = false;
 
