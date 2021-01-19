@@ -128,6 +128,7 @@ namespace 보령
                 {
                     try
                     {
+                        // 테스트 두번째
                         // 테스트
                         CommandCanExecutes["LoadedCommandAsync"] = false;
                         CommandResults["LoadedCommandAsync"] = false;
