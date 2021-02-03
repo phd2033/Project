@@ -14,7 +14,6 @@ using System.Windows.Shapes;
 
 namespace 보령
 {
-    [ShopFloorCustomHidden]
     [Description("포장 공정에서 반제품 투입 전 분할 작업")]
     public partial class 포장공정반제품분할 : ShopFloorCustomWindow
     {
