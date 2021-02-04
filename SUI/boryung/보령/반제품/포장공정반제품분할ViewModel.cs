@@ -354,6 +354,7 @@ namespace 보령
                                 {
                                     EMPTY_TARE = _BR_BRS_SEL_VESSEL_Info.OUTDATAs[0].TAREWEIGHT.GetValueOrDefault();
                                     EMPTY_VesselID = ibcno;
+                                    _SplitMaterialSubLot_B.MSUBLOTID = _BR_BRS_SEL_VESSEL_Info.OUTDATAs[0].MSUBLOTID;
                                 }
                                 else
                                 {
