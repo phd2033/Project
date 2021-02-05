@@ -29,7 +29,7 @@
                 <RowDefinition Height="35"/>
             </Grid.RowDefinitions>
             <StackPanel x:Name="RoomInfo" Grid.Row="0" HorizontalAlignment="Right" Orientation="Horizontal">
-                <TextBlock FontSize="12" HorizontalAlignment="Center" Text="{Binding W[CUIRoom], Source={StaticResource R}, FallbackValue=작업장}" VerticalAlignment="Center" Margin="10, 5, 0, 0"/>
+                <TextBlock FontSize="12" HorizontalAlignment="Center" Text="{Binding W[CUIWorkRoom], Source={StaticResource R}, FallbackValue=작업장}" VerticalAlignment="Center" Margin="10, 5, 0, 0"/>
                 <ctrl:iPharmCodeName Height="30" Width="300" FontSize="12"
                                  VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10,5,5,0"
                                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
