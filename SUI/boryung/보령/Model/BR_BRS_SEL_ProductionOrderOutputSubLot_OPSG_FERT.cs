@@ -36,6 +36,16 @@ namespace 보령
                     OnPropertyChanged("TARE");
                 }
             }
+            private ScaleWeight _NET = new ScaleWeight();
+            public ScaleWeight NET
+            {
+                get { return _NET; }
+                set
+                {
+                    _NET = value;
+                    OnPropertyChanged("NET");
+                }
+            }
             private ScaleWeight _GROSS = new ScaleWeight();
             public ScaleWeight GROSS
             {
@@ -44,16 +54,6 @@ namespace 보령
                 {
                     _GROSS = value;
                     OnPropertyChanged("GROSS");
-                }
-            }
-            private ScaleWeight _TOTAL = new ScaleWeight();
-            public ScaleWeight TOTAL
-            {
-                get { return _TOTAL; }
-                set
-                {
-                    _TOTAL = value;
-                    OnPropertyChanged("TOTAL");
                 }
             }
         }

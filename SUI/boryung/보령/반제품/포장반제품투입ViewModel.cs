@@ -257,7 +257,7 @@ namespace 보령
                             CommandCanExecutes["KeyDownCommand"] = false;
 
                             ///
-                            await IsMatchedComponent(Barcode);
+                            IsMatchedComponent(Barcode);
 
                             Barcode = string.Empty;
 
@@ -441,12 +441,11 @@ namespace 보령
             }
         }
 
-        async Task<bool> IsMatchedComponent(string Barcode)
+        private bool IsMatchedComponent(string Barcode)
         {
-
             if (OutputSubLotInfo.Count > 0)
             {
-                var item = OutputSubLotInfo.Where(o => o.VESSELID == Barcode).FirstOrDefault();
+                var item = OutputSubLotInfo.Where(o => o.VESSELID == Barcode || o.MSUBLOTBCD == Barcode).FirstOrDefault();
 
                 if (item == null)
                 {
