@@ -550,7 +550,7 @@ namespace 보령
                                 INSUSER = string.IsNullOrWhiteSpace(AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_Charging")) ? AuthRepositoryViewModel.Instance.LoginedUserID : AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_Charging"),
                                 LANGID = AuthRepositoryViewModel.Instance.LangID,
                                 MSUBLOTBCD = lastWeighingInfo.MSUBLOTBCD,
-                                MSUBLOTQTY = _TotalWeight.Value,
+                                MSUBLOTQTY = lastWeighingInfo.TOTALQTY,
                                 POID = _mainWnd.CurrentOrder.ProductionOrderID,
                                 OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
                                 // IS_NEED_CHKWEIGHT = "Y",
