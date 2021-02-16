@@ -35,9 +35,5 @@ namespace 보령
         {
             DialogResult = false;
         }
-        private void Main_Closed(object sender, EventArgs e)
-        {
-
-        }
     }
 }

@@ -218,83 +218,93 @@ namespace 보령
                             CommandCanExecutes["LoadedCommand"] = false;
 
                             ///
-                            if (arg != null) _mainWnd = arg as 정제수확인및투입;
-
-                            string bomid = _mainWnd.CurrentInstruction.Raw.BOMID;
-                            string chgseq = _mainWnd.CurrentInstruction.Raw.EXPRESSION;
-                            ScaleId = _mainWnd.CurrentInstruction.Raw.EQPTID;
-
-                            if (string.IsNullOrWhiteSpace(bomid))
-                                throw new Exception(string.Format("해당 Instruction에 BOM ID가 설정되지 않았습니다."));
-
-                            // 저울 설정
-                            if (!string.IsNullOrWhiteSpace(ScaleId))
+                            if (arg != null && arg is 정제수확인및투입)
                             {
-                                _BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.INDATAs.Clear();
-                                _BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.OUTDATAs.Clear();
-                                _BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.INDATAs.Add(new BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.INDATA
+                                _mainWnd = arg as 정제수확인및투입;
+                                _mainWnd.Closed += (s, e) =>
                                 {
-                                    LANGID = AuthRepositoryViewModel.Instance.LangID,
-                                    EQPTID = ScaleId
-                                });
+                                    if (_DispatcherTimer != null)
+                                        _DispatcherTimer.Stop();
 
-                                if (await _BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.Execute() && _BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.OUTDATAs.Count > 0)
+                                    _DispatcherTimer = null;
+                                };
+
+                                string bomid = _mainWnd.CurrentInstruction.Raw.BOMID;
+                                string chgseq = _mainWnd.CurrentInstruction.Raw.EXPRESSION;
+                                ScaleId = _mainWnd.CurrentInstruction.Raw.EQPTID;
+
+                                if (string.IsNullOrWhiteSpace(bomid))
+                                    throw new Exception(string.Format("해당 Instruction에 BOM ID가 설정되지 않았습니다."));
+
+                                // 저울 설정
+                                if (!string.IsNullOrWhiteSpace(ScaleId))
                                 {
-                                    _ScaleInfo = _BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.OUTDATAs[0];
-                                    scalePrecision = _BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.OUTDATAs[0].PRECISION.HasValue ? Convert.ToInt32(_BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.OUTDATAs[0].PRECISION.Value) : 3;
-                                    _DispatcherTimer.Start();
-                                }
-                            }
-                            else
-                                ScaleId = "미설정";
+                                    _BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.INDATAs.Clear();
+                                    _BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.OUTDATAs.Clear();
+                                    _BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.INDATAs.Add(new BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.INDATA
+                                    {
+                                        LANGID = AuthRepositoryViewModel.Instance.LangID,
+                                        EQPTID = ScaleId
+                                    });
 
-                            //BOM 기준정보
-                            _BR_BRS_SEL_Charging_Solvent.INDATAs.Add(new BR_BRS_SEL_Charging_Solvent.INDATA()
-                            {
-                                POID = _mainWnd.CurrentOrder.ProductionOrderID,
-                                OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
-                                CHGSEQ = chgseq,
-                                ROOMNO = AuthRepositoryViewModel.Instance.RoomID,
-                                MTRLID = bomid
-                            });
-
-                            if (await _BR_BRS_SEL_Charging_Solvent.Execute() && _BR_BRS_SEL_Charging_Solvent.OUTDATA_BOMs.Count > 0)
-                            {
-                                var item = _BR_BRS_SEL_Charging_Solvent.OUTDATA_BOMs.Where(o => o.MTRLID == bomid && o.CHGSEQ == chgseq).FirstOrDefault();
-
-                                MtrlId = item.MTRLID;
-                                MtrlName = item.MTRLNAME;
-                                StdQty = item.STDQTY + item.NOTATION;
-                            }
-
-                            if (_BR_BRS_SEL_Charging_Solvent.OUTDATAs.Count > 0)
-                            {
-                                foreach (var outdata in _BR_BRS_SEL_Charging_Solvent.OUTDATAs.Where(o => o.MTRLID == bomid && o.CHGSEQ == chgseq).ToList())
-                                {
-                                    outdata.CHECK = "투입대기";
-                                    filteredComponents.Add(outdata);
-                                }
-
-                                if (_filteredComponents[0].UPPERQTY.HasValue && _filteredComponents[0].LOWERQTY.HasValue)
-                                {
-                                    _UpperWeight.SetWeight(_filteredComponents[0].UPPERQTY.Value, _filteredComponents[0].UOMNAME, _scalePrecision);
-                                    _LowerWeight.SetWeight(_filteredComponents[0].LOWERQTY.Value, _filteredComponents[0].UOMNAME, _scalePrecision);
-                                    OnPropertyChanged("UpperWeight"); OnPropertyChanged("LowerWeight");
+                                    if (await _BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.Execute() && _BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.OUTDATAs.Count > 0)
+                                    {
+                                        _ScaleInfo = _BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.OUTDATAs[0];
+                                        scalePrecision = _BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.OUTDATAs[0].PRECISION.HasValue ? Convert.ToInt32(_BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.OUTDATAs[0].PRECISION.Value) : 3;
+                                        _DispatcherTimer.Start();
+                                    }
                                 }
                                 else
-                                    throw new Exception("칭량 범위가 설정되지 않았습니다.");
-                            }
-                            else
-                                throw new Exception(string.Format("조회된 결과가 없습니다."));
+                                    ScaleId = "미설정";
 
-                            // 칭량 준비
-                            if (filteredComponents.Count > 0)
-                                selectedComponent = _filteredComponents[0];
+                                //BOM 기준정보
+                                _BR_BRS_SEL_Charging_Solvent.INDATAs.Add(new BR_BRS_SEL_Charging_Solvent.INDATA()
+                                {
+                                    POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                    OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
+                                    CHGSEQ = chgseq,
+                                    ROOMNO = AuthRepositoryViewModel.Instance.RoomID,
+                                    MTRLID = bomid
+                                });
 
-                            // 버튼 설정
-                            IsCharging = false;
-                            IsEnabled = false;
+                                if (await _BR_BRS_SEL_Charging_Solvent.Execute() && _BR_BRS_SEL_Charging_Solvent.OUTDATA_BOMs.Count > 0)
+                                {
+                                    var item = _BR_BRS_SEL_Charging_Solvent.OUTDATA_BOMs.Where(o => o.MTRLID == bomid && o.CHGSEQ == chgseq).FirstOrDefault();
 
+                                    MtrlId = item.MTRLID;
+                                    MtrlName = item.MTRLNAME;
+                                    StdQty = item.STDQTY + item.NOTATION;
+                                }
+
+                                if (_BR_BRS_SEL_Charging_Solvent.OUTDATAs.Count > 0)
+                                {
+                                    foreach (var outdata in _BR_BRS_SEL_Charging_Solvent.OUTDATAs.Where(o => o.MTRLID == bomid && o.CHGSEQ == chgseq).ToList())
+                                    {
+                                        outdata.CHECK = "투입대기";
+                                        filteredComponents.Add(outdata);
+                                    }
+
+                                    if (_filteredComponents[0].UPPERQTY.HasValue && _filteredComponents[0].LOWERQTY.HasValue)
+                                    {
+                                        _UpperWeight.SetWeight(_filteredComponents[0].UPPERQTY.Value, _filteredComponents[0].UOMNAME, _scalePrecision);
+                                        _LowerWeight.SetWeight(_filteredComponents[0].LOWERQTY.Value, _filteredComponents[0].UOMNAME, _scalePrecision);
+                                        OnPropertyChanged("UpperWeight"); OnPropertyChanged("LowerWeight");
+                                    }
+                                    else
+                                        throw new Exception("칭량 범위가 설정되지 않았습니다.");
+                                }
+                                else
+                                    throw new Exception(string.Format("조회된 결과가 없습니다."));
+
+                                // 칭량 준비
+                                if (filteredComponents.Count > 0)
+                                    selectedComponent = _filteredComponents[0];
+
+                                // 버튼 설정
+                                IsCharging = false;
+                                IsEnabled = false;
+                            }                        
+                            ///
                             CommandResults["LoadedCommand"] = true;
                         }
                         catch (Exception ex)
@@ -625,7 +635,7 @@ namespace 보령
             try
             {
                 _DispatcherTimer.Stop();
-
+                
                 if(_ScaleInfo != null && _selectedComponent != null)
                 {
                     bool success = false;
