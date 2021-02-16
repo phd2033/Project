@@ -281,40 +281,50 @@ namespace 보령
                             CommandCanExecutes["LoadedCommand"] = false;
 
                             ///
-                            if (arg != null) _mainWnd = arg as 저울반제품투입;
-
-                            var instruction = _mainWnd.CurrentInstruction;
-                            var phase = _mainWnd.Phase;
-
-                            this.OrderNo = _mainWnd.CurrentOrder.OrderID;
-                            this.BatchNo = _mainWnd.CurrentOrder.BatchNo;
-                            this.ProcessSegmentID = _mainWnd.CurrentOrder.OrderProcessSegmentID;
-
-                            BR_BRS_SEL_Scale_ProductionOrderOutput.INDATAs.Add(new LGCNS.iPharmMES.Common.BR_BRS_SEL_Scale_ProductionOrderOutput.INDATA()
+                            if (arg != null && arg is 저울반제품투입)
                             {
-                                LANGID = LogInInfo.LangID,
-                                POID = _mainWnd.CurrentOrder.ProductionOrderID,
-                                OUTPUTTYPE = "WIP",
-                                OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID
-                            });
-
-                            if (await BR_BRS_SEL_Scale_ProductionOrderOutput.Execute() == false) return;
-
-
-                            if (BR_BRS_SEL_Scale_ProductionOrderOutput.OUTDATAs.Count > 0)
-                            {
-
-                                if (ScaleId == null || ScaleId.ToString() == string.Empty)
+                                _mainWnd = arg as 저울반제품투입;
+                                _mainWnd.Closed += (s, e) =>
                                 {
-                                    ScanScaleCommandAsync.Execute(this);
-                                }
+                                    if (_DispatcherTimer != null)
+                                        _DispatcherTimer.Stop();
 
-                                ScanBinCommandAsync.Execute(this);
-                            }
-                            else
-                            {
-                                throw new Exception(string.Format("투입된 원료가 없습니다."));
-                            }
+                                    _DispatcherTimer = null;
+                                };
+
+                                var instruction = _mainWnd.CurrentInstruction;
+                                var phase = _mainWnd.Phase;
+
+                                this.OrderNo = _mainWnd.CurrentOrder.OrderID;
+                                this.BatchNo = _mainWnd.CurrentOrder.BatchNo;
+                                this.ProcessSegmentID = _mainWnd.CurrentOrder.OrderProcessSegmentID;
+
+                                BR_BRS_SEL_Scale_ProductionOrderOutput.INDATAs.Add(new LGCNS.iPharmMES.Common.BR_BRS_SEL_Scale_ProductionOrderOutput.INDATA()
+                                {
+                                    LANGID = LogInInfo.LangID,
+                                    POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                    OUTPUTTYPE = "WIP",
+                                    OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID
+                                });
+
+                                if (await BR_BRS_SEL_Scale_ProductionOrderOutput.Execute() == false) return;
+
+
+                                if (BR_BRS_SEL_Scale_ProductionOrderOutput.OUTDATAs.Count > 0)
+                                {
+
+                                    if (ScaleId == null || ScaleId.ToString() == string.Empty)
+                                    {
+                                        ScanScaleCommandAsync.Execute(this);
+                                    }
+
+                                    ScanBinCommandAsync.Execute(this);
+                                }
+                                else
+                                {
+                                    throw new Exception(string.Format("투입된 원료가 없습니다."));
+                                }
+                            }                           
 
                             CommandResults["LoadedCommand"] = true;
                         }

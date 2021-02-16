@@ -186,33 +186,42 @@ namespace 보령
                         ///
 
                         if (arg != null && arg is 현장칭량실적확인WMS전송)
-                            _mainWnd = arg as 현장칭량실적확인WMS전송;
-
-                        POID = _mainWnd.CurrentOrder.OrderID;
-                        BatchNo = _mainWnd.CurrentOrder.BatchNo;
-
-                        _BR_BRS_SEL_ProductionOrderWeighingResult.INDATAs.Clear();
-                        _BR_BRS_SEL_ProductionOrderWeighingResult.OUTDATAs.Clear();
-
-                        if (!string.IsNullOrWhiteSpace(_BatchNo) && !string.IsNullOrWhiteSpace(_POID))
                         {
-                            _BR_BRS_SEL_ProductionOrderWeighingResult.INDATAs.Add(new BR_BRS_SEL_ProductionOrderWeighingResult.INDATA
+                            _mainWnd = arg as 현장칭량실적확인WMS전송;
+                            _mainWnd.Closed += (s, e) =>
                             {
-                                POID = _POID,
-                                WEIGHINGMETHOD = "WH009"
+                                if (_DispatcherTimer != null)
+                                    _DispatcherTimer.Stop();
+
+                                _DispatcherTimer = null;
+                            };
+
+                            POID = _mainWnd.CurrentOrder.OrderID;
+                            BatchNo = _mainWnd.CurrentOrder.BatchNo;
+
+                            _BR_BRS_SEL_ProductionOrderWeighingResult.INDATAs.Clear();
+                            _BR_BRS_SEL_ProductionOrderWeighingResult.OUTDATAs.Clear();
+
+                            if (!string.IsNullOrWhiteSpace(_BatchNo) && !string.IsNullOrWhiteSpace(_POID))
+                            {
+                                _BR_BRS_SEL_ProductionOrderWeighingResult.INDATAs.Add(new BR_BRS_SEL_ProductionOrderWeighingResult.INDATA
+                                {
+                                    POID = _POID,
+                                    WEIGHINGMETHOD = "WH009"
+                                });
+
+                                _BR_BRS_SEL_ProductionOrderWeighingResult.Execute();
+                            }
+
+                            _BR_PHR_SEL_System_Printer.INDATAs.Clear();
+                            _BR_PHR_SEL_System_Printer.INDATAs.Add(new BR_PHR_SEL_System_Printer.INDATA
+                            {
+                                LANGID = AuthRepositoryViewModel.Instance.LangID,
+                                ROOMID = AuthRepositoryViewModel.Instance.RoomID
                             });
 
-                            _BR_BRS_SEL_ProductionOrderWeighingResult.Execute();
-                        }
-
-                        _BR_PHR_SEL_System_Printer.INDATAs.Clear();
-                        _BR_PHR_SEL_System_Printer.INDATAs.Add(new BR_PHR_SEL_System_Printer.INDATA
-                        {
-                            LANGID = AuthRepositoryViewModel.Instance.LangID,
-                            ROOMID = AuthRepositoryViewModel.Instance.RoomID
-                        });
-
-                        _BR_PHR_SEL_System_Printer.Execute();
+                            _BR_PHR_SEL_System_Printer.Execute();
+                        }                        
                         ///
 
                         CommandResults["LoadedCommand"] = true;

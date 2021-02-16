@@ -293,70 +293,81 @@ namespace 보령
                             CommandCanExecutes["LoadedCommand"] = false;
 
                             ///
-                            if (arg != null && arg is 용매확인및투입) _mainWnd = arg as 용매확인및투입;
-
-                            var instruction = _mainWnd.CurrentInstruction;
-                            var phase = _mainWnd.Phase;
-
-                            this.OrderNo = _mainWnd.CurrentOrder.OrderID;
-                            this.BatchNo = _mainWnd.CurrentOrder.BatchNo;
-                            this.ProcessSegmentID = _mainWnd.CurrentOrder.OrderProcessSegmentID;
-                            this.BomID = _mainWnd.CurrentInstruction.Raw.BOMID;
-                            this.ScaleId = _mainWnd.CurrentInstruction.Raw.EQPTID;
-                            this.ChgSeq = _mainWnd.CurrentInstruction.Raw.EXPRESSION;
-
-                            //// 테스트
-                            //if (string.IsNullOrWhiteSpace(BomID))
-                            //    throw new Exception(string.Format("해당 Instruction에 BOM ID가 설정되지 않았습니다."));
-
-                            if (!string.IsNullOrWhiteSpace(ScaleId))
-                                _DispatcherTimer.Start();
-
-                            CANRECORDFLAG = false;
-                            CANCHARGEFLAG = false;
-
-                            _BR_BRS_SEL_Charging_Solvent.INDATAs.Add(new BR_BRS_SEL_Charging_Solvent.INDATA()
+                            if (arg != null && arg is 용매확인및투입)
                             {
-                                POID = _mainWnd.CurrentOrder.ProductionOrderID,
-                                OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
-                                CHGSEQ = ChgSeq,
-                                ROOMNO = AuthRepositoryViewModel.Instance.RoomID,
-                                MTRLID = BomID
-                            });
-
-                            if (await _BR_BRS_SEL_Charging_Solvent.Execute() == true)
-                            {
-                                //BOM 기준정보
-                                if (_BR_BRS_SEL_Charging_Solvent.OUTDATA_BOMs.Count > 0)
+                                _mainWnd = arg as 용매확인및투입;
+                                _mainWnd.Closed += (s, e) =>
                                 {
-                                    var item = _BR_BRS_SEL_Charging_Solvent.OUTDATA_BOMs.Where(o => o.MTRLID == BomID && o.CHGSEQ == ChgSeq).FirstOrDefault();
+                                    if (_DispatcherTimer != null)
+                                        _DispatcherTimer.Stop();
 
-                                    MtrlId = item.MTRLID;
-                                    MtrlName = item.MTRLNAME;
-                                    StdQty = item.STDQTY + item.NOTATION;
-                                }
-                                // 자재목록
-                                if (_BR_BRS_SEL_Charging_Solvent.OUTDATAs.Count > 0)
+                                    _DispatcherTimer = null;
+                                };
+
+                                var instruction = _mainWnd.CurrentInstruction;
+                                var phase = _mainWnd.Phase;
+
+                                this.OrderNo = _mainWnd.CurrentOrder.OrderID;
+                                this.BatchNo = _mainWnd.CurrentOrder.BatchNo;
+                                this.ProcessSegmentID = _mainWnd.CurrentOrder.OrderProcessSegmentID;
+                                this.BomID = _mainWnd.CurrentInstruction.Raw.BOMID;
+                                this.ScaleId = _mainWnd.CurrentInstruction.Raw.EQPTID;
+                                this.ChgSeq = _mainWnd.CurrentInstruction.Raw.EXPRESSION;
+
+                                //// 테스트
+                                //if (string.IsNullOrWhiteSpace(BomID))
+                                //    throw new Exception(string.Format("해당 Instruction에 BOM ID가 설정되지 않았습니다."));
+
+                                if (!string.IsNullOrWhiteSpace(ScaleId))
+                                    _DispatcherTimer.Start();
+
+                                CANRECORDFLAG = false;
+                                CANCHARGEFLAG = false;
+
+                                _BR_BRS_SEL_Charging_Solvent.INDATAs.Add(new BR_BRS_SEL_Charging_Solvent.INDATA()
                                 {
-                                    foreach (var outdata in _BR_BRS_SEL_Charging_Solvent.OUTDATAs.Where(o => o.MTRLID == BomID && o.CHGSEQ == ChgSeq).ToList())
+                                    POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                    OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
+                                    CHGSEQ = ChgSeq,
+                                    ROOMNO = AuthRepositoryViewModel.Instance.RoomID,
+                                    MTRLID = BomID
+                                });
+
+                                if (await _BR_BRS_SEL_Charging_Solvent.Execute() == true)
+                                {
+                                    //BOM 기준정보
+                                    if (_BR_BRS_SEL_Charging_Solvent.OUTDATA_BOMs.Count > 0)
                                     {
-                                        outdata.CHECK = "투입대기";
-                                        _filteredComponents.Add(outdata);
+                                        var item = _BR_BRS_SEL_Charging_Solvent.OUTDATA_BOMs.Where(o => o.MTRLID == BomID && o.CHGSEQ == ChgSeq).FirstOrDefault();
+
+                                        MtrlId = item.MTRLID;
+                                        MtrlName = item.MTRLNAME;
+                                        StdQty = item.STDQTY + item.NOTATION;
                                     }
-                                }
-                                else
-                                    throw new Exception(string.Format("조회된 결과가 없습니다."));
+                                    // 자재목록
+                                    if (_BR_BRS_SEL_Charging_Solvent.OUTDATAs.Count > 0)
+                                    {
+                                        foreach (var outdata in _BR_BRS_SEL_Charging_Solvent.OUTDATAs.Where(o => o.MTRLID == BomID && o.CHGSEQ == ChgSeq).ToList())
+                                        {
+                                            outdata.CHECK = "투입대기";
+                                            _filteredComponents.Add(outdata);
+                                        }
+                                    }
+                                    else
+                                        throw new Exception(string.Format("조회된 결과가 없습니다."));
 
-                                if (_filteredComponents.Count > 0)
-                                {
-                                    UpperWeight = string.Format("{0}{1}", _filteredComponents[0].UPPERQTY, _filteredComponents[0].UOMNAME);
-                                    LowerWeight = string.Format("{0}{1}", _filteredComponents[0].LOWERQTY, _filteredComponents[0].UOMNAME);
+                                    if (_filteredComponents.Count > 0)
+                                    {
+                                        UpperWeight = string.Format("{0}{1}", _filteredComponents[0].UPPERQTY, _filteredComponents[0].UOMNAME);
+                                        LowerWeight = string.Format("{0}{1}", _filteredComponents[0].LOWERQTY, _filteredComponents[0].UOMNAME);
 
-                                    if (_filteredComponents.Where(o => o.ISBCDSCAN == "Y").ToList().Count > 0)
-                                        ScanMtrlCommandAsync.Execute(null);
+                                        if (_filteredComponents.Where(o => o.ISBCDSCAN == "Y").ToList().Count > 0)
+                                            ScanMtrlCommandAsync.Execute(null);
+                                    }
+                                    else
+                                        throw new Exception(string.Format("대상 원료가 존재하지 않습니다."));
                                 }
-                                else
-                                    throw new Exception(string.Format("대상 원료가 존재하지 않습니다."));
+
                             }
 
                             IsBusy = false;

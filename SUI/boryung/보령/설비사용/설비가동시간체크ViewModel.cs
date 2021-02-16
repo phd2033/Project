@@ -85,11 +85,18 @@ namespace 보령
                             CommandResults["LoadedCommand"] = false;
                             CommandCanExecutes["LoadedCommand"] = false;
 
+                            IsBusy = true;
                             ///
                             if (arg != null && arg is 설비가동시간체크)
                             {
-                                IsBusy = true;
                                 _mainWnd = arg as 설비가동시간체크;
+                                _mainWnd.Closed += (s, e) =>
+                                {
+                                    if (_DispatcherTimer != null)
+                                        _DispatcherTimer.Stop();
+
+                                    _DispatcherTimer = null;
+                                };
 
                                 var inputValues = InstructionModel.GetParameterSender(_mainWnd.CurrentInstruction, _mainWnd.Instructions);
                                 curInst = _mainWnd.CurrentInstruction;

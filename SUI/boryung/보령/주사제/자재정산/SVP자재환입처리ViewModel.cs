@@ -253,68 +253,77 @@ namespace 보령
                         IsBusy = true;
 
                         if (arg != null && arg is SVP자재환입처리)
+                        {
                             _mainWnd = arg as SVP자재환입처리;
-
-                        var inputValues = InstructionModel.GetParameterSender(_mainWnd.CurrentInstruction, _mainWnd.Instructions);
-
-                        // 현재 작업장의 프린터 정보 조회
-                        _BR_PHR_SEL_System_Printer.INDATAs.Clear();
-                        _BR_PHR_SEL_System_Printer.OUTDATAs.Clear();
-
-                        _BR_PHR_SEL_System_Printer.INDATAs.Add(new BR_PHR_SEL_System_Printer.INDATA
-                        {
-                            LANGID = AuthRepositoryViewModel.Instance.LangID,
-                            ROOMID = AuthRepositoryViewModel.Instance.RoomID
-                        });
-
-                        if (await _BR_PHR_SEL_System_Printer.Execute() && _BR_PHR_SEL_System_Printer.OUTDATAs.Count > 0)
-                            PrintName = _BR_PHR_SEL_System_Printer.OUTDATAs[0].PRINTERNAME;
-                        else
-                            PrintName = "";
-
-                        // 피킹된 자재목록 조회
-                        _BR_BRS_GET_UDT_ProductionOrderPickingInfo.INDATAs.Clear();
-                        _BR_BRS_GET_UDT_ProductionOrderPickingInfo.OUTDATAs.Clear();
-
-                        // CurrentInstruction
-                        if (!(string.IsNullOrWhiteSpace(_mainWnd.CurrentInstruction.Raw.EXPRESSION) || string.IsNullOrWhiteSpace(_mainWnd.CurrentInstruction.Raw.BOMID)))
-                        {
-                            _BR_BRS_GET_UDT_ProductionOrderPickingInfo.INDATAs.Add(new BR_BRS_GET_UDT_ProductionOrderPickingInfo.INDATA
+                            _mainWnd.Closed += (s, e) =>
                             {
-                                POID = _mainWnd.CurrentOrder.OrderID,
-                                OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
-                                CHGSEQ = Convert.ToInt32(_mainWnd.CurrentInstruction.Raw.EXPRESSION),
-                                MTRLID = _mainWnd.CurrentInstruction.Raw.BOMID
+                                if (_DispatcherTimer != null)
+                                    _DispatcherTimer.Stop();
+
+                                _DispatcherTimer = null;
+                            };
+
+                            var inputValues = InstructionModel.GetParameterSender(_mainWnd.CurrentInstruction, _mainWnd.Instructions);
+
+                            // 현재 작업장의 프린터 정보 조회
+                            _BR_PHR_SEL_System_Printer.INDATAs.Clear();
+                            _BR_PHR_SEL_System_Printer.OUTDATAs.Clear();
+
+                            _BR_PHR_SEL_System_Printer.INDATAs.Add(new BR_PHR_SEL_System_Printer.INDATA
+                            {
+                                LANGID = AuthRepositoryViewModel.Instance.LangID,
+                                ROOMID = AuthRepositoryViewModel.Instance.RoomID
                             });
-                        }
-                        // RefInstruction
-                        foreach (var item in inputValues)
-                        {
-                            _BR_BRS_GET_UDT_ProductionOrderPickingInfo.INDATAs.Add(new BR_BRS_GET_UDT_ProductionOrderPickingInfo.INDATA
-                            {
-                                POID = _mainWnd.CurrentOrder.OrderID,
-                                OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
-                                CHGSEQ = Convert.ToInt32(item.Raw.EXPRESSION),
-                                MTRLID = item.Raw.BOMID
-                            });
-                        }
 
-                        if(await _BR_BRS_GET_UDT_ProductionOrderPickingInfo.Execute() == true && _BR_BRS_GET_UDT_ProductionOrderPickingInfo.OUTDATAs.Count > 0)
-                        {
-                            foreach (var item in _BR_BRS_GET_UDT_ProductionOrderPickingInfo.OUTDATAs)
+                            if (await _BR_PHR_SEL_System_Printer.Execute() && _BR_PHR_SEL_System_Printer.OUTDATAs.Count > 0)
+                                PrintName = _BR_PHR_SEL_System_Printer.OUTDATAs[0].PRINTERNAME;
+                            else
+                                PrintName = "";
+
+                            // 피킹된 자재목록 조회
+                            _BR_BRS_GET_UDT_ProductionOrderPickingInfo.INDATAs.Clear();
+                            _BR_BRS_GET_UDT_ProductionOrderPickingInfo.OUTDATAs.Clear();
+
+                            // CurrentInstruction
+                            if (!(string.IsNullOrWhiteSpace(_mainWnd.CurrentInstruction.Raw.EXPRESSION) || string.IsNullOrWhiteSpace(_mainWnd.CurrentInstruction.Raw.BOMID)))
                             {
-                                PackingMTRLList.Add(new PackingMTRL
+                                _BR_BRS_GET_UDT_ProductionOrderPickingInfo.INDATAs.Add(new BR_BRS_GET_UDT_ProductionOrderPickingInfo.INDATA
                                 {
-                                    MTRLID = item.MTRLID,
-                                    MTRLNAME = item.MTRLNAME,
-                                    MSUBLOTBCD = item.MSUBLOTBCD,
-                                    RESULT = PackingMTRL.enumStatusType.대기
+                                    POID = _mainWnd.CurrentOrder.OrderID,
+                                    OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
+                                    CHGSEQ = Convert.ToInt32(_mainWnd.CurrentInstruction.Raw.EXPRESSION),
+                                    MTRLID = _mainWnd.CurrentInstruction.Raw.BOMID
                                 });
                             }
-                        }                      
-                        
-                        _mainWnd.MTRLGrid.ItemsSource = PackingMTRLList;
-                        _mainWnd.btnReturn.IsEnabled = false;
+                            // RefInstruction
+                            foreach (var item in inputValues)
+                            {
+                                _BR_BRS_GET_UDT_ProductionOrderPickingInfo.INDATAs.Add(new BR_BRS_GET_UDT_ProductionOrderPickingInfo.INDATA
+                                {
+                                    POID = _mainWnd.CurrentOrder.OrderID,
+                                    OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
+                                    CHGSEQ = Convert.ToInt32(item.Raw.EXPRESSION),
+                                    MTRLID = item.Raw.BOMID
+                                });
+                            }
+
+                            if (await _BR_BRS_GET_UDT_ProductionOrderPickingInfo.Execute() == true && _BR_BRS_GET_UDT_ProductionOrderPickingInfo.OUTDATAs.Count > 0)
+                            {
+                                foreach (var item in _BR_BRS_GET_UDT_ProductionOrderPickingInfo.OUTDATAs)
+                                {
+                                    PackingMTRLList.Add(new PackingMTRL
+                                    {
+                                        MTRLID = item.MTRLID,
+                                        MTRLNAME = item.MTRLNAME,
+                                        MSUBLOTBCD = item.MSUBLOTBCD,
+                                        RESULT = PackingMTRL.enumStatusType.대기
+                                    });
+                                }
+                            }
+
+                            _mainWnd.MTRLGrid.ItemsSource = PackingMTRLList;
+                            _mainWnd.btnReturn.IsEnabled = false;
+                        }
                         ///
 
                         CommandResults["LoadedCommandAsync"] = true;

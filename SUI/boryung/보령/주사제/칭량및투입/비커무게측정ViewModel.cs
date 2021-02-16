@@ -111,8 +111,17 @@ namespace 보령
 
                             ///
                             if (arg != null && arg is 비커무게측정)
+                            {
                                 _mainWnd = arg as 비커무게측정;
+                                _mainWnd.Closed += (s, e) =>
+                                {
+                                    if (_DispatcherTimer != null)
+                                        _DispatcherTimer.Stop();
 
+                                    _DispatcherTimer = null;
+                                };
+                            }
+                                
                             ///
 
                             CommandResults["LoadedCommand"] = true;

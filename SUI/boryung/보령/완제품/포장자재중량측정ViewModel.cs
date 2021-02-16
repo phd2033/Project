@@ -117,19 +117,28 @@ namespace 보령
                         ///
 
                         if (arg != null || arg is 포장자재중량측정)
-                            _mainWnd = arg as 포장자재중량측정;
-
-                        _mainWnd.btnRecord.IsEnabled = false;
-
-                        _BR_BRS_SEL_ProductionOrderPickingInfo_4Weight.INDATAs.Clear();
-                        _BR_BRS_SEL_ProductionOrderPickingInfo_4Weight.OUTDATAs.Clear();
-
-                        _BR_BRS_SEL_ProductionOrderPickingInfo_4Weight.INDATAs.Add(new BR_BRS_SEL_ProductionOrderPickingInfo_4Weight.INDATA
                         {
-                            POID = _mainWnd.CurrentOrder.ProductionOrderID
-                        });
+                            _mainWnd = arg as 포장자재중량측정;
+                            _mainWnd.Closed += (s, e) =>
+                            {
+                                if (_DispatcherTimer != null)
+                                    _DispatcherTimer.Stop();
 
-                        await _BR_BRS_SEL_ProductionOrderPickingInfo_4Weight.Execute();
+                                _DispatcherTimer = null;
+                            };                          
+
+                            _mainWnd.btnRecord.IsEnabled = false;
+
+                            _BR_BRS_SEL_ProductionOrderPickingInfo_4Weight.INDATAs.Clear();
+                            _BR_BRS_SEL_ProductionOrderPickingInfo_4Weight.OUTDATAs.Clear();
+
+                            _BR_BRS_SEL_ProductionOrderPickingInfo_4Weight.INDATAs.Add(new BR_BRS_SEL_ProductionOrderPickingInfo_4Weight.INDATA
+                            {
+                                POID = _mainWnd.CurrentOrder.ProductionOrderID
+                            });
+
+                            await _BR_BRS_SEL_ProductionOrderPickingInfo_4Weight.Execute();
+                        }                           
 
                         ///
                         CommandResults["LoadedCommandAsync"] = true;

@@ -69,6 +69,14 @@ namespace 보령
             _repeater.Interval = new TimeSpan(0, 0, 0, 0, _repeaterInterval);
             _repeater.Tick += _repeater_Tick;
 
+            this.Closed += (s, e1) =>
+            {
+                if (_repeater != null)
+                    _repeater.Stop();
+
+                _repeater = null;
+            };
+
             _BR_BRS_GET_VESSEL_INFO_DETAIL.INDATAs.Clear();
             _BR_BRS_GET_VESSEL_INFO_DETAIL.OUTDATAs.Clear();
             _BR_BRS_GET_VESSEL_INFO_DETAIL.OUTDATA_WIPs.Clear();

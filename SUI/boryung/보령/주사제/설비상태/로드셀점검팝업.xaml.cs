@@ -32,17 +32,19 @@ namespace 보령
             _DispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, interval);
             _DispatcherTimer.Tick += _DispatcherTimer_Tick;
             _DispatcherTimer.Start();
+
+            this.Closed += (s, e) =>
+            {
+                if (_DispatcherTimer != null)
+                    _DispatcherTimer.Stop();
+
+                _DispatcherTimer = null;
+            };
         }
 
         DispatcherTimer _DispatcherTimer = new DispatcherTimer();
         public string TAGID;
         public string EQTPID;
-
-        public void DispatcherTimer_Stop()
-        {
-            _DispatcherTimer.Stop();
-            _DispatcherTimer = null;
-        }
         async void _DispatcherTimer_Tick(object sender, EventArgs e)
         {
             try

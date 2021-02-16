@@ -240,20 +240,26 @@ namespace 보령
 
                             ///
 
-                            if (arg == null || !(arg is 평균질량측정_2))
-                                return;
+                            if (arg != null && arg is 평균질량측정_2)
+                            {
+                                _mainWnd = arg as 평균질량측정_2;
+                                _mainWnd.Closed += (s, e) =>
+                                {
+                                    if (_repeater != null)
+                                        _repeater.Stop();
 
-                            isSaveEnable = false;
-                            isEqptReadonly = false;
-                            inx = 1;
+                                    _repeater = null;
+                                };
 
-                            isNumericEnable = true;
+                                isSaveEnable = false;
+                                isEqptReadonly = false;
+                                inx = 1;
 
-                            _mainWnd = arg as 평균질량측정_2;
+                                isNumericEnable = true;
 
-                            _startTime = await AuthRepositoryViewModel.GetDBDateTimeNow();
-                            _mainWnd.txtEQPTID.Focus();
-
+                                _startTime = await AuthRepositoryViewModel.GetDBDateTimeNow();
+                                _mainWnd.txtEQPTID.Focus();
+                            }
                             ///
 
                             CommandResults["LoadedCommand"] = true;

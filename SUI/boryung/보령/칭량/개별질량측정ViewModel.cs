@@ -258,22 +258,29 @@ namespace 보령
 
                             ///
 
-                            if (arg == null || !(arg is 개별질량측정))
-                                return;
+                            if (arg != null && arg is 개별질량측정)
+                            {
+                                _mainWnd = arg as 개별질량측정;
+                                _mainWnd.Closed += (s, e) =>
+                                {
+                                    if (_repeater != null)
+                                        _repeater.Stop();
 
-                            isSaveEnable = false;
-                            isEqptReadonly = false;
+                                    _repeater = null;
+                                };
 
-                            _mainWnd = arg as 개별질량측정;
-                            inx = 1;
+                                isSaveEnable = false;
+                                isEqptReadonly = false;
 
-                            MAXValue = "";
-                            MINValue = "";
-                            AVGValue = "";
+                                inx = 1;
 
-                            _startTime = await AuthRepositoryViewModel.GetDBDateTimeNow();
-                            _mainWnd.txtEQPTID.Focus();
+                                MAXValue = "";
+                                MINValue = "";
+                                AVGValue = "";
 
+                                _startTime = await AuthRepositoryViewModel.GetDBDateTimeNow();
+                                _mainWnd.txtEQPTID.Focus();
+                            }
                             ///
 
                             CommandResults["LoadedCommand"] = true;

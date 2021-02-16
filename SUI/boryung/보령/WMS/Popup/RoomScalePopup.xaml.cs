@@ -50,6 +50,14 @@ namespace 보령
             _repeater.Tick += _repeater_Tick;
 
             _repeater.Start();
+
+            this.Closed += (s, e1) =>
+            {
+                if (_repeater != null)
+                    _repeater.Stop();
+
+                _repeater = null;
+            };
         }
 
         private void btnConfirm_Click(object sender, RoutedEventArgs e)

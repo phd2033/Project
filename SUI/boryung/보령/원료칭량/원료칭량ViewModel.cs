@@ -734,6 +734,14 @@ namespace 보령
             try
             {
                 _mainControl = (원료칭량)param;
+                _mainControl.Closed += (s, e) =>
+                {
+                    if (_repeater != null)
+                        _repeater.Stop();
+
+                    _repeater = null;
+                };
+                
 
                 BATCHNO = _mainControl.CurrentOrder.BatchNo;
 

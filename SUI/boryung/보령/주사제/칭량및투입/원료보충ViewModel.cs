@@ -198,7 +198,14 @@ namespace 보령
                             ///
                             if (arg != null && arg is 원료보충)
                             {
-                                _mainWnd = arg as 원료보충;                                
+                                _mainWnd = arg as 원료보충;
+                                _mainWnd.Closed += (s, e) =>
+                                {
+                                    if (_DispatcherTimer != null)
+                                        _DispatcherTimer.Stop();
+
+                                    _DispatcherTimer = null;
+                                };
 
                                 btnPrevIsEnable = false;
                                 btnNextIsEnable = false;

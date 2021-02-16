@@ -152,6 +152,14 @@ namespace 보령
                             if (arg != null && arg is 용액냉각및보충)
                             {
                                 _mainWnd = arg as 용액냉각및보충;
+                                _mainWnd.Closed += (s, e) =>
+                                {
+                                    if (_DispatcherTimer != null)
+                                        _DispatcherTimer.Stop();
+
+                                    _DispatcherTimer = null;
+                                };
+
                                 _curstate = state.initial;
                                 btnNextIsEnable = true;
                                 btnPrevIsEnable = false;

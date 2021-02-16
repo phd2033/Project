@@ -197,19 +197,29 @@ namespace 보령
 
                             ///
                             if (arg != null && arg is 반제품분할)
+                            {
                                 _mainWnd = arg as 반제품분할;
+                                _mainWnd.Closed += (s, e) =>
+                                {
+                                    if (_DispatcherTimer != null)
+                                        _DispatcherTimer.Stop();
 
-                            FromVesselID = "";
-                            ToVesselID = "";
-                            Tare = "";
-                            TareWeight = "";
-                            TareUOM = "";
-                            ScaleID = "";
-                            Scale = "";
-                            ScaleWeight = "";
-                            ScaleUOM = "";
-                            OrderNo = _mainWnd.CurrentOrder.OrderID;
-                            ProcessSegmentID = _mainWnd.CurrentOrder.OrderProcessSegmentID;
+                                    _DispatcherTimer = null;
+                                };
+
+                                FromVesselID = "";
+                                ToVesselID = "";
+                                Tare = "";
+                                TareWeight = "";
+                                TareUOM = "";
+                                ScaleID = "";
+                                Scale = "";
+                                ScaleWeight = "";
+                                ScaleUOM = "";
+                                OrderNo = _mainWnd.CurrentOrder.OrderID;
+                                ProcessSegmentID = _mainWnd.CurrentOrder.OrderProcessSegmentID;
+                            }
+                           
                             ///
 
                             CommandResults["LoadedCommand"] = true;

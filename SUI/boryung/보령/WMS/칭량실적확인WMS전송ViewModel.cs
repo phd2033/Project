@@ -163,23 +163,32 @@ namespace 보령
 
                         ///
                         if (arg != null && arg is 칭량실적확인WMS전송)
-                            _mainWnd = arg as 칭량실적확인WMS전송;
-
-                        POID = _mainWnd.CurrentOrder.OrderID;
-                        BatchNo = _mainWnd.CurrentOrder.BatchNo;
-
-                        _BR_BRS_SEL_ProductionOrderWeighingResult.INDATAs.Clear();
-                        _BR_BRS_SEL_ProductionOrderWeighingResult.OUTDATAs.Clear();
-
-                        if (!string.IsNullOrWhiteSpace(_BatchNo) && !string.IsNullOrWhiteSpace(_POID))
                         {
-                            _BR_BRS_SEL_ProductionOrderWeighingResult.INDATAs.Add(new BR_BRS_SEL_ProductionOrderWeighingResult.INDATA
+                            _mainWnd = arg as 칭량실적확인WMS전송;
+                            _mainWnd.Closed += (s, e) =>
                             {
-                                POID = _POID,
-                                WEIGHINGMETHOD = "WH001"
-                            });
+                                if (_DispatcherTimer != null)
+                                    _DispatcherTimer.Stop();
 
-                            _BR_BRS_SEL_ProductionOrderWeighingResult.Execute();
+                                _DispatcherTimer = null;
+                            };
+
+                            POID = _mainWnd.CurrentOrder.OrderID;
+                            BatchNo = _mainWnd.CurrentOrder.BatchNo;
+
+                            _BR_BRS_SEL_ProductionOrderWeighingResult.INDATAs.Clear();
+                            _BR_BRS_SEL_ProductionOrderWeighingResult.OUTDATAs.Clear();
+
+                            if (!string.IsNullOrWhiteSpace(_BatchNo) && !string.IsNullOrWhiteSpace(_POID))
+                            {
+                                _BR_BRS_SEL_ProductionOrderWeighingResult.INDATAs.Add(new BR_BRS_SEL_ProductionOrderWeighingResult.INDATA
+                                {
+                                    POID = _POID,
+                                    WEIGHINGMETHOD = "WH001"
+                                });
+
+                                _BR_BRS_SEL_ProductionOrderWeighingResult.Execute();
+                            }
                         }
                         ///
 

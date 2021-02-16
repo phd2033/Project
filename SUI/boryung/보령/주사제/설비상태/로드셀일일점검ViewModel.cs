@@ -224,14 +224,12 @@ namespace 보령
                                     curLoadCell.DAILYCHKSTATUS = "적합";
 
                                     _mainWnd.gdDailyCheck.Refresh();
-                                    popup.DispatcherTimer_Stop();
                                     popup.Close();
                                 };
 
                                 popup.btnCancel.Click += (s, e) =>
                                 {
                                     _mainWnd.gdDailyCheck.Refresh();
-                                    popup.DispatcherTimer_Stop();
                                     popup.Close();
                                 };
 
