@@ -313,6 +313,10 @@
     <Compile Include="UserControls\ScaleControlDW.xaml.cs">
       <DependentUpon>ScaleControlDW.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\SelectPrinterPopup.xaml.cs">
+      <DependentUpon>SelectPrinterPopup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\SelectPrinterPopupViewModel.cs" />
     <Compile Include="WMS\Popup\WMS칭량자재투입팝업.xaml.cs">
       <DependentUpon>WMS칭량자재투입팝업.xaml</DependentUpon>
     </Compile>
@@ -384,6 +388,10 @@
       <DependentUpon>불출라벨발행.xaml</DependentUpon>
     </Compile>
     <Compile Include="라벨발행\불출라벨발행ViewModel.cs" />
+    <Compile Include="수율계산\타정손실수율.xaml.cs">
+      <DependentUpon>타정손실수율.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="수율계산\타정손실수율ViewModel.cs" />
     <Compile Include="완제품\샘플수량수동입력.xaml.cs">
       <DependentUpon>샘플수량수동입력.xaml</DependentUpon>
     </Compile>
@@ -833,6 +841,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="UserControls\SelectPrinterPopup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="WMS\Popup\WMS칭량자재투입팝업.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -900,6 +912,10 @@
     <Page Include="라벨발행\불출라벨발행.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="수율계산\타정손실수율.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="완제품\샘플수량수동입력.xaml">
       <SubType>Designer</SubType>
