@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace 보령
 {
-    
+
     /// <summary>
     /// summary of BR_BRS_REG_Dispense_Charging_Solvent
     /// </summary>
@@ -22,7 +22,7 @@ namespace 보령
                 return this._INDATAs;
             }
         }
-        [BizActorInputSetDefineAttribute(Order="0")]
+        [BizActorInputSetDefineAttribute(Order = "0")]
         [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
         public partial class INDATA : BizActorDataSetBase
         {
@@ -1061,6 +1061,38 @@ namespace 보령
                     }
                 }
             }
+            private System.Nullable<int> _SCALEPRECISION;
+            [BizActorInputItemAttribute()]
+            public System.Nullable<int> SCALEPRECISION
+            {
+                get
+                {
+                    return this._SCALEPRECISION;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._SCALEPRECISION = value;
+                        this.CheckIsOriginal("SCALEPRECISION", value);
+                        this.OnPropertyChanged("SCALEPRECISION");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
         }
         public sealed partial class HISDATACollection : BufferedObservableCollection<HISDATA>
         {
@@ -1074,7 +1106,7 @@ namespace 보령
                 return this._HISDATAs;
             }
         }
-        [BizActorOutputSetDefineAttribute(Order="0")]
+        [BizActorOutputSetDefineAttribute(Order = "0")]
         [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
         public partial class HISDATA : BizActorDataSetBase
         {
@@ -1154,11 +1186,104 @@ namespace 보령
                 }
             }
         }
+        public sealed partial class OUTDATACollection : BufferedObservableCollection<OUTDATA>
+        {
+        }
+        private OUTDATACollection _OUTDATAs;
+        [BizActorOutputSetAttribute()]
+        public OUTDATACollection OUTDATAs
+        {
+            get
+            {
+                return this._OUTDATAs;
+            }
+        }
+        [BizActorOutputSetDefineAttribute(Order = "1")]
+        [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
+        public partial class OUTDATA : BizActorDataSetBase
+        {
+            public OUTDATA()
+            {
+                RowLoadedFlag = false;
+            }
+            private bool _RowLoadedFlag;
+            public bool RowLoadedFlag
+            {
+                get
+                {
+                    return this._RowLoadedFlag;
+                }
+                set
+                {
+                    this._RowLoadedFlag = value;
+                    this.OnPropertyChanged("_RowLoadedFlag");
+                }
+            }
+            private string _RowIndex;
+            public string RowIndex
+            {
+                get
+                {
+                    return this._RowIndex;
+                }
+                set
+                {
+                    this._RowIndex = value;
+                    this.OnPropertyChanged("RowIndex");
+                }
+            }
+            private string _RowEditSec;
+            public string RowEditSec
+            {
+                get
+                {
+                    return this._RowEditSec;
+                }
+                set
+                {
+                    this._RowEditSec = value;
+                    this.OnPropertyChanged("RowEditSec");
+                }
+            }
+            private string _DSPMSUBLOTID;
+            [BizActorOutputItemAttribute()]
+            public string DSPMSUBLOTID
+            {
+                get
+                {
+                    return this._DSPMSUBLOTID;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._DSPMSUBLOTID = value;
+                        this.CheckIsOriginal("DSPMSUBLOTID", value);
+                        this.OnPropertyChanged("DSPMSUBLOTID");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+        }
         public BR_BRS_REG_Dispense_Charging_Solvent()
         {
             RuleName = "BR_BRS_REG_Dispense_Charging_Solvent";
             _INDATAs = new INDATACollection();
             _HISDATAs = new HISDATACollection();
+            _OUTDATAs = new OUTDATACollection();
         }
     }
 }

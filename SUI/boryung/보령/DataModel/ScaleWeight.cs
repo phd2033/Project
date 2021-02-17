@@ -14,6 +14,27 @@ namespace 보령
 {
     public class ScaleWeight : ViewModelBase
     {
+        public enum CompareMethod
+        {
+            none,
+            /// <summary>
+            /// Greater
+            /// </summary>
+            greater,
+            /// <summary>
+            /// Less
+            /// </summary>
+            less,
+            /// <summary>
+            /// Greater or Equal
+            /// </summary>
+            greaterE,
+            /// <summary>
+            /// Less or Equal
+            /// </summary>
+            lessE
+            
+        };
         #region Property
         private decimal _Value = 0;
         public decimal Value
@@ -176,7 +197,7 @@ namespace 보령
         /// < param name="uomA">< /param>
         /// < param name="weightB">< /param>
         /// < param name="uomB">< /param>
-        /// < returns>< /returns>
+        /// < returns></returns>
         public static decimal Subtract(decimal weightA, string uomA, decimal weightB, string uomB)
         {
             decimal uA = GetConvertIndex(uomA);
@@ -185,6 +206,54 @@ namespace 보령
             if (uA == 0 || uB == 0) return weightA - weightB;
 
             return weightA - (weightB * (uA / uB));
+        }
+        /// <summary>
+        /// true : target 값 보다 큼
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public bool CompareWeight(ScaleWeight target, CompareMethod type)
+        {
+            try
+            {
+                decimal src = this.Value * GetConvertIndex(this.Uom);
+                decimal tar = target.Value * GetConvertIndex(target.Uom);
+
+                switch (type)
+                {
+                    case CompareMethod.none:
+                        return true;
+                    case CompareMethod.greater:
+                        if (src > tar)
+                            return true;
+                        else
+                            return false;                        
+                    case CompareMethod.less:
+                        if (src < tar)
+                            return true;
+                        else
+                            return false;
+                    case CompareMethod.greaterE:
+                        if (src >= tar)
+                            return true;
+                        else
+                            return false;
+                    case CompareMethod.lessE:
+                        if (src <= tar)
+                            return true;
+                        else
+                            return false;
+                    default:
+                        return false;                        
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+                     
         }
 
         static decimal GetConvertIndex(string uom)
