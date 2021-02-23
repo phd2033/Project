@@ -26,9 +26,7 @@ namespace 보령
 
             System.Text.StringBuilder empty = new System.Text.StringBuilder();
             LGCNS.iPharmMES.Common.UIObject.SetObjectLang(this, ref empty, LGCNS.EZMES.Common.LogInInfo.LangID);
-
-            _headerRowColumns = dgTabletingInfo.Columns.Take(3).ToArray();
-            _headerColumnRows = dgTabletingInfo.TopRows.Take(2).ToArray();
+            
         }
         public override string TableTypeName
         {
@@ -39,7 +37,7 @@ namespace 보령
         {
             this.DialogResult = true;
         }
-        private void gridTabletingInfo_AutoGeneratingColumn(object sender, C1.Silverlight.DataGrid.DataGridAutoGeneratingColumnEventArgs e)
+        private void dgTabletingInfo_AutoGeneratingColumn(object sender, C1.Silverlight.DataGrid.DataGridAutoGeneratingColumnEventArgs e)
         {
             switch (e.Column.Name)
             {
@@ -86,23 +84,37 @@ namespace 보령
         {
             try
             {
-                var nonHeadersViewportCols = dgTabletingInfo.Viewport.Columns.Where(c => !_headerRowColumns.Contains(c)).ToArray();
-                var nonHeadersViewportRows = dgTabletingInfo.Viewport.Rows.Where(r => !_headerColumnRows.Contains(r)).ToArray();
+                //_headerRowColumns = dgTabletingInfo.Columns.Take(0).ToArray();
+                //_headerColumnRows = dgTabletingInfo.TopRows.Take(2).ToArray();
+                //var nonHeadersViewportCols = dgTabletingInfo.Viewport.Columns.Where(c => !_headerRowColumns.Contains(c)).ToArray();
+                //var nonHeadersViewportRows = dgTabletingInfo.Viewport.Rows.Where(r => !_headerColumnRows.Contains(r)).ToArray();
+                
+                //// merge column & rows headers
+                //foreach (var range in MergingHelper.Merge(Orientation.Vertical, _headerColumnRows, nonHeadersViewportCols, true))
+                //{
+                //    e.Merge(range);
+                //}
 
-                // merge column & rows headers
-                foreach (var range in MergingHelper.Merge(Orientation.Vertical, _headerColumnRows, nonHeadersViewportCols, true))
-                {
-                    e.Merge(range);
-                }
-                foreach (var range in MergingHelper.Merge(Orientation.Horizontal, nonHeadersViewportRows, _headerRowColumns, true))
-                {
-                    e.Merge(range);
-                }
+                //_headerRowColumns = dgTabletingInfo.Columns.Take(0).ToArray();
+                //_headerColumnRows = dgTabletingInfo.TopRows.Take(2).ToArray();
+                //nonHeadersViewportCols = dgTabletingInfo.Viewport.Columns.Where(c => c.Index == 6).ToArray();
+                //nonHeadersViewportRows = dgTabletingInfo.Viewport.Rows.Where(r => !_headerColumnRows.Contains(r)).ToArray();
+
+                //foreach (var range in MergingHelper.Merge(Orientation.Horizontal, nonHeadersViewportRows, _headerRowColumns, true))
+                //{
+                //    e.Merge(range);
+                //}
+
+                //foreach (var range in MergingHelper.Merge(Orientation.Horizontal, nonHeadersViewportRows, _headerRowColumns, true))
+                //{
+                //    e.Merge(range);
+                //}
+
                 // merge header intersection as we want, in this case, horizontally
-                foreach (var range in MergingHelper.Merge(Orientation.Horizontal, _headerColumnRows, _headerRowColumns, true))
-                {
-                    e.Merge(range);
-                }
+                //foreach (var range in MergingHelper.Merge(Orientation.Horizontal, _headerColumnRows, _headerRowColumns, true))
+                //{
+                //    e.Merge(range);
+                //}
 
                 //var list = new List<C1.Silverlight.DataGrid.DataGridRow>();
                 //foreach (var row in nonHeadersViewportRows)
@@ -142,6 +154,10 @@ namespace 보령
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             DialogResult = true;
+        }
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = false;
         }
     }
 }
