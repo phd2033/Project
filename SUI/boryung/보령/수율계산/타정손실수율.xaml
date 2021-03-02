@@ -62,18 +62,18 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="40"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="110"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="2"/>
             </Grid.ColumnDefinitions>
 
-            <Border x:Name="PrintArea" Grid.Row="1" Grid.Column="0" Grid.RowSpan="1" Grid.ColumnSpan="8" BorderBrush="Black" BorderThickness="1"/>
-            <Border x:Name="PrintArea2" Grid.Row="2" Grid.Column="0" Grid.RowSpan="5" Grid.ColumnSpan="8" BorderBrush="Black" BorderThickness="1"/>
+            <Border x:Name="PrintArea" Grid.Row="1" Grid.Column="0" Grid.RowSpan="1" Grid.ColumnSpan="6" BorderBrush="Black" BorderThickness="1"/>
+            <Border x:Name="PrintArea2" Grid.Row="2" Grid.Column="0" Grid.RowSpan="5" Grid.ColumnSpan="6" BorderBrush="Black" BorderThickness="1"/>
             <Border x:Name="PrintArea3" Grid.Row="8" Grid.Column="0" Grid.RowSpan="1" Grid.ColumnSpan="8" BorderBrush="Black" BorderThickness="1"/>
-            <Border x:Name="PrintArea4" Grid.Row="9" Grid.Column="0" Grid.RowSpan="6" Grid.ColumnSpan="8" BorderBrush="Black" BorderThickness="1"/>
+            <Border x:Name="PrintArea4" Grid.Row="9" Grid.Column="0" Grid.RowSpan="5" Grid.ColumnSpan="8" BorderBrush="Black" BorderThickness="1"/>
 
             <sdk:Label Grid.Row="1" Grid.Column="0" Content="구분"  BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="20"/>
             <sdk:Label Grid.Row="1" Grid.Column="1" Content="하한" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="20"/>
@@ -84,18 +84,18 @@
 
             <sdk:Label Grid.Row="3" Grid.Column="0" Content="기준 공정 수율" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15"/>
             <sdk:Label Grid.Row="4" Grid.Column="0" Content="실 생산량(A)" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15"/>
-            <sdk:Label Grid.Row="5" Grid.Column="0" Content="인수량(B)" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15"/>
+            <sdk:Label Grid.Row="6" Grid.Column="0" Content="인수량(B)"  BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15" />
             <sdk:Label Grid.Row="3" Grid.Column="1" Content="{Binding UnderYield,Mode=TwoWay}" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
             <sdk:Label Grid.Row="3" Grid.Column="2" Content="{Binding OverYield,Mode=TwoWay}" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
             <sdk:Label Grid.Row="3" Grid.Column="3" Content="%" HorizontalContentAlignment="Center" BorderBrush="Black" BorderThickness="1" FontSize="10"/>
             <sdk:Label Grid.Row="3" Grid.Column="4" Content="{Binding TotalYield,Mode=TwoWay}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Black" BorderThickness="1" Grid.RowSpan="4"/>
-            <sdk:Label Grid.Row="3" Grid.Column="5" Content="{Binding Path=TotalLossSum, FallbackValue=100}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Black" BorderThickness="1" Grid.RowSpan="4"/>
+            <sdk:Label Grid.Row="3" Grid.Column="5" Content="{Binding TotalLossSum, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Black" BorderThickness="1" Grid.RowSpan="4"/>
 
             <sdk:Label Grid.Row="4" Grid.Column="1" Content="{Binding REALQTY_T,Mode=TwoWay}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Black" BorderThickness="1" Grid.ColumnSpan="2" />
             <sdk:Label Grid.Row="4" Grid.Column="3" Content="T" HorizontalContentAlignment="Center" BorderBrush="Black" BorderThickness="1" FontSize="10"/>
             <sdk:Label Grid.Row="5" Grid.Column="1" Content="{Binding REALQTY_G,Mode=TwoWay}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Black" BorderThickness="1" Grid.ColumnSpan="2" />
             <sdk:Label Grid.Row="5" Grid.Column="3" Content="G" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  BorderBrush="Black" BorderThickness="1" FontSize="10"/>
-            <sdk:Label Grid.Row="6" Grid.Column="1" Content="{Binding ArgumentAmount,Mode=TwoWay}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Black" BorderThickness="1" Grid.ColumnSpan="2" />
+            <sdk:Label Grid.Row="6" Grid.Column="1" Content="{Binding ArgumentQty_T,Mode=TwoWay}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderBrush="Black" BorderThickness="1" Grid.ColumnSpan="2" />
             <sdk:Label Grid.Row="6" Grid.Column="3" Content="T" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  BorderBrush="Black" BorderThickness="1" FontSize="10"/>
 
             <sdk:Label Grid.Row="8" Grid.Column="0" Content="구분"  BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15"/>
@@ -109,31 +109,31 @@
             <sdk:Label Grid.Row="11" Grid.Column="0" Content="Layer 2 (FMS 층)" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15"/>
             <sdk:Label Grid.Row="12" Grid.Column="0" Content="합 계" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15"/>
 
-            <ShopFloorUI:NumericKeyPadType Grid.Row="10" Grid.Column="1" Value="{Binding Path=InitSettingLoss1, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F3"/>
-            <ShopFloorUI:NumericKeyPadType Grid.Row="10" Grid.Column="2" Value="{Binding Path=inspectionLoss1, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F3"/>
-            <ShopFloorUI:NumericKeyPadType Grid.Row="10" Grid.Column="3" Grid.ColumnSpan="2"  Value="{Binding Path=RemainingAmountLoss1, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F3"/>
-            <ShopFloorUI:NumericKeyPadType Grid.Row="10" Grid.Column="5" Value="{Binding Path=BadTabletsLoss1, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F3"/>
-            <ShopFloorUI:NumericKeyPadType Grid.Row="10" Grid.Column="6" Value="{Binding Path=UnknownCauseLoss1, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F3" />
-            <ShopFloorUI:NumericKeyPadType Grid.Row="10" Grid.Column="7" Value="{Binding Path=CurrentCollectorLoss1, Mode=TwoWay}" Grid.RowSpan="2" Maximum="999999" Minimum="0" Format="F3" />
+            <ShopFloorUI:NumericKeyPadType Grid.Row="10" Grid.Column="1" Value="{Binding Path=InitSettingLoss1, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F0"/>
+            <ShopFloorUI:NumericKeyPadType Grid.Row="10" Grid.Column="2" Value="{Binding Path=inspectionLoss1, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F0"/>
+            <ShopFloorUI:NumericKeyPadType Grid.Row="10" Grid.Column="3" Grid.ColumnSpan="2"  Value="{Binding Path=RemainingAmountLoss1, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F0"/>
+            <ShopFloorUI:NumericKeyPadType Grid.Row="10" Grid.Column="5" Value="{Binding Path=BadTabletsLoss1, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F0"/>
+            <ShopFloorUI:NumericKeyPadType Grid.Row="10" Grid.Column="6" Value="{Binding Path=UnknownCauseLoss1, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F0" />
+            <ShopFloorUI:NumericKeyPadType Grid.Row="10" Grid.Column="7" Value="{Binding Path=CurrentCollectorLoss1, Mode=TwoWay}" Grid.RowSpan="2" Maximum="999999" Minimum="0" Format="F0" />
 
-            <ShopFloorUI:NumericKeyPadType Grid.Row="11" Grid.Column="1" Value="{Binding Path=InitSettingLoss2, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F3"/>
-            <ShopFloorUI:NumericKeyPadType Grid.Row="11" Grid.Column="2" Value="{Binding Path=inspectionLoss2, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F3"/>
-            <ShopFloorUI:NumericKeyPadType Grid.Row="11" Grid.Column="3" Grid.ColumnSpan="2" Value="{Binding Path=RemainingAmountLoss2, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F3"/>
-            <ShopFloorUI:NumericKeyPadType Grid.Row="11" Grid.Column="5" Value="{Binding Path=BadTabletsLoss2, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F3"/>
-            <ShopFloorUI:NumericKeyPadType Grid.Row="11" Grid.Column="6" Value="{Binding Path=UnknownCauseLoss2, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F3" />
+            <ShopFloorUI:NumericKeyPadType Grid.Row="11" Grid.Column="1" Value="{Binding Path=InitSettingLoss2, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F0"/>
+            <ShopFloorUI:NumericKeyPadType Grid.Row="11" Grid.Column="2" Value="{Binding Path=inspectionLoss2, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F0"/>
+            <ShopFloorUI:NumericKeyPadType Grid.Row="11" Grid.Column="3" Grid.ColumnSpan="2" Value="{Binding Path=RemainingAmountLoss2, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F0"/>
+            <ShopFloorUI:NumericKeyPadType Grid.Row="11" Grid.Column="5" Value="{Binding Path=BadTabletsLoss2, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F0"/>
+            <ShopFloorUI:NumericKeyPadType Grid.Row="11" Grid.Column="6" Value="{Binding Path=UnknownCauseLoss2, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F0" />
 
-            <ShopFloorUI:NumericKeyPadType Grid.Row="12" Grid.Column="1" Value="{Binding Path=InitSettingLossSum, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F3" IsReadOnly="True" IsEnabled="False"/>
-            <ShopFloorUI:NumericKeyPadType Grid.Row="12" Grid.Column="2" Value="{Binding Path=inspectionLossSum, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F3" IsReadOnly="True" IsEnabled="False"/>
-            <ShopFloorUI:NumericKeyPadType Grid.Row="12" Grid.Column="3" Grid.ColumnSpan="2" Value="{Binding Path=RemainingAmountLossSum, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F3" IsReadOnly="True" IsEnabled="False"/>
-            <ShopFloorUI:NumericKeyPadType Grid.Row="12" Grid.Column="5" Value="{Binding Path=BadTabletsLossSum, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F3" IsReadOnly="True" IsEnabled="False"/>
-            <ShopFloorUI:NumericKeyPadType Grid.Row="12" Grid.Column="6" Value="{Binding Path=UnknownCauseLossSum, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F3" IsReadOnly="True" IsEnabled="False"/>
-            <ShopFloorUI:NumericKeyPadType Grid.Row="12" Grid.Column="7" Value="{Binding Path=CurrentCollectorLossSum, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F3" IsReadOnly="True" IsEnabled="False"/>
+            <ShopFloorUI:NumericKeyPadType Grid.Row="12" Grid.Column="1" Value="{Binding Path=InitSettingLossSum, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F0" IsReadOnly="True" IsEnabled="False"/>
+            <ShopFloorUI:NumericKeyPadType Grid.Row="12" Grid.Column="2" Value="{Binding Path=inspectionLossSum, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F0" IsReadOnly="True" IsEnabled="False"/>
+            <ShopFloorUI:NumericKeyPadType Grid.Row="12" Grid.Column="3" Grid.ColumnSpan="2" Value="{Binding Path=RemainingAmountLossSum, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F0" IsReadOnly="True" IsEnabled="False"/>
+            <ShopFloorUI:NumericKeyPadType Grid.Row="12" Grid.Column="5" Value="{Binding Path=BadTabletsLossSum, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F0" IsReadOnly="True" IsEnabled="False"/>
+            <ShopFloorUI:NumericKeyPadType Grid.Row="12" Grid.Column="6" Value="{Binding Path=UnknownCauseLossSum, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F0" IsReadOnly="True" IsEnabled="False"/>
+            <ShopFloorUI:NumericKeyPadType Grid.Row="12" Grid.Column="7" Value="{Binding Path=CurrentCollectorLossSum, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F0" IsReadOnly="True" IsEnabled="False"/>
 
             <Button x:Name="OKButton" Content="기록" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                Grid.Row="15" Grid.Column="2" FontSize="20" Command="{Binding Path=ConfirmCommandAsync}" IsEnabled="{Binding Path=isEbConfirm}"/>
+                Grid.Row="15" Grid.Column="2" Grid.ColumnSpan="2" FontSize="20" Command="{Binding Path=ConfirmCommandAsync}" Margin="40,0,0,0"/>
 
             <Button x:Name="CancelButton" Content="닫기" Click="CancelButton_Click" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" HorizontalContentAlignment="Center" 
-                VerticalContentAlignment="Center" Grid.Row="15" Grid.Column="4" FontSize="20" />
+                VerticalContentAlignment="Center" Grid.Row="15" Grid.Column="5" FontSize="20" />
 
         </Grid>
     </toolkit:BusyIndicator>
