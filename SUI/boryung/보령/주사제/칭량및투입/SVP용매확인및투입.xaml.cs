@@ -10,7 +10,7 @@ using System.ComponentModel;
 namespace 보령
 {
     [Description("주사제 제조 현장에서 용매에 대해 칭량 및 투입을 한다.")]
-    public partial class SVP용매확인및투입: ShopFloorCustomWindow
+    public partial class SVP용매확인및투입 : ShopFloorCustomWindow
     {
         C1.Silverlight.DataGrid.DataGridColumn[] _headerRowColumns;
         C1.Silverlight.DataGrid.DataGridRow[] _headerColumnRows;
@@ -23,6 +23,9 @@ namespace 보령
         public SVP용매확인및투입()
         {
             InitializeComponent();
+
+            System.Text.StringBuilder empty = new System.Text.StringBuilder();
+            LGCNS.iPharmMES.Common.UIObject.SetObjectLang(this, ref empty, LGCNS.EZMES.Common.LogInInfo.LangID);
 
             _headerRowColumns = dgProductionOutput.Columns.Take(1).ToArray();
             _headerColumnRows = dgProductionOutput.TopRows.Take(1).ToArray();
@@ -52,8 +55,31 @@ namespace 보령
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);                
-            }           
-        }          
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        private void txtScaleValue_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                (this.LayoutRoot.DataContext as SVP용매확인및투입ViewModel).ScaleTextValidation(sender as TextBox);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+        private void btnCharging_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                (this.LayoutRoot.DataContext as SVP용매확인및투입ViewModel).ChargingMTRL();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
     }
 }
