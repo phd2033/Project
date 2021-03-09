@@ -101,12 +101,12 @@
             <sdk:Label Grid.Row="8" Grid.Column="0" Content="구분"  BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15"/>
             <sdk:Label Grid.Row="8" Grid.Column="1" Content="초기세팅손실(g)" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15"/>
             <sdk:Label Grid.Row="8" Grid.Column="2" Content="공정 검사(g)" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15"/>
-            <sdk:Label Grid.Row="8" Grid.Column="3" Grid.ColumnSpan="2" Content="타정 후 진량(g)" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15"/>
+            <sdk:Label Grid.Row="8" Grid.Column="3" Grid.ColumnSpan="2" Content="타정 후 잔량(g)" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15"/>
             <sdk:Label Grid.Row="8" Grid.Column="5" Content="불량 정제(g)" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15"/>
             <sdk:Label Grid.Row="8" Grid.Column="6" Content="원인불명손실(g)" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15"/>
-            <sdk:Label Grid.Row="8" Grid.Column="7" Content="집전장치손실(g)" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15"/>
-            <sdk:Label Grid.Row="10" Grid.Column="0" Content="Layer 1 (ATV 층)" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15"/>
-            <sdk:Label Grid.Row="11" Grid.Column="0" Content="Layer 2 (FMS 층)" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15"/>
+            <sdk:Label Grid.Row="8" Grid.Column="7" Content="집진장치손실(g)" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15"/>
+            <sdk:Label Grid.Row="10" Grid.Column="0" Content="Layer 1" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15"/>
+            <sdk:Label Grid.Row="11" Grid.Column="0" Content="Layer 2" BorderBrush="Black" BorderThickness="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="15"/>
             <sdk:Label Grid.Row="12" Grid.Column="0" Content="합 계" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15"/>
 
             <ShopFloorUI:NumericKeyPadType Grid.Row="10" Grid.Column="1" Value="{Binding Path=InitSettingLoss1, Mode=TwoWay}" Maximum="999999" Minimum="0" Format="F0"/>
