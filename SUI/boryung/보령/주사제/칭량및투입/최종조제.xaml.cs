@@ -27,41 +27,7 @@ namespace 보령
         }
         private void btnCansel_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                (BusyIn.DataContext as 최종조제ViewModel).StopTimer();
-                this.DialogResult = true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-                
-        }
-        private void txtScaleId_KeyDown(object sender, KeyEventArgs e)
-        {
-            try
-            {
-                if (e.Key == Key.Enter && BusyIn.DataContext is 최종조제ViewModel)
-                    (BusyIn.DataContext as 최종조제ViewModel).ConnectScaleCommand.Execute(txtScaleId.Text);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        }
-
-        private void txtBeakerId_KeyDown(object sender, KeyEventArgs e)
-        {
-            try
-            {
-                if (e.Key == Key.Enter && BusyIn.DataContext is 최종조제ViewModel)
-                    (BusyIn.DataContext as 최종조제ViewModel).SetBeakerTareCommand.Execute(txtBeakerId.Text);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            this.DialogResult = false;
         }
     }
 }

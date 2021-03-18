@@ -1120,10 +1120,7 @@ namespace 보령
                 return false;
             }
         }
-        public void StopTimer()
-        {
-            _DispatcherTimer.Stop();
-        }
+
         #endregion        
     }
 }
