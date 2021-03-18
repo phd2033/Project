@@ -163,6 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataModel\ScaleWeight.cs" />
+    <Compile Include="DataModel\Weight.cs" />
     <Compile Include="LIMS\LIMS샘플링확인.xaml.cs">
       <DependentUpon>LIMS샘플링확인.xaml</DependentUpon>
     </Compile>
@@ -248,6 +249,7 @@
     <Compile Include="Model.Access\칭량\BR_UDB_REG_PMS_FILLED_BIN_IN.Access.cs" />
     <Compile Include="Model.Access\혼합기\BR_BRS_REG_Blender_Recipe_To_Eqpt.Access.cs" />
     <Compile Include="Model\BR_BRS_GET_UDT_ProductionOrderPickingInfo_Solution.cs" />
+    <Compile Include="Model\BR_BRS_REG_ProductionOrderOutput_Conditional.cs" />
     <Compile Include="Model\BR_BRS_SEL_Charging_Solvent_to_Dispense.cs" />
     <Compile Include="Model\BR_BRS_SEL_EquipmentStatus_PROC_OPSG.cs" />
     <Compile Include="Model\BR_BRS_SEL_Charging_Solvent.cs" />
