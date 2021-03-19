@@ -162,7 +162,6 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataModel\ScaleWeight.cs" />
     <Compile Include="DataModel\Weight.cs" />
     <Compile Include="LIMS\LIMS샘플링확인.xaml.cs">
       <DependentUpon>LIMS샘플링확인.xaml</DependentUpon>
