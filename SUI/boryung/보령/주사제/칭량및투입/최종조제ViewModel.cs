@@ -285,6 +285,8 @@ namespace 보령
                                 {
                                     _StandardWeight.Value = chk;
                                     _StandardWeight.Uom = string.IsNullOrWhiteSpace(curinst.UOMNOTATION) ? "g" : curinst.UOMNOTATION;
+                                    if(_StandardWeight.Uom.ToUpper() == "KG")
+                                        _StandardWeight.Uom = "g";
                                 }
                                 else
                                     throw new Exception("최종조제기준량이 설정되지 않았습니다.");                              
@@ -320,7 +322,10 @@ namespace 보령
                                     ROOMID = AuthRepositoryViewModel.Instance.RoomID
                                 });
                                 if (await _BR_PHR_SEL_System_Printer.Execute() && _BR_PHR_SEL_System_Printer.OUTDATAs.Count > 0)
+                                {
                                     _selectedPrint = _BR_PHR_SEL_System_Printer.OUTDATAs[0];
+                                    OnPropertyChanged("curPrintName");
+                                }
                                 else
                                    OnMessage("연결된 프린트가 없습니다.");
 
