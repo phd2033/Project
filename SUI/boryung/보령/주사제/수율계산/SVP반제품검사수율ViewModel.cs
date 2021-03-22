@@ -93,7 +93,7 @@ namespace 보령
 
                                 // 현재 공정 생산량
                                 var inputvalue = InstructionModel.GetParameterSender(_mainWnd.CurrentInstruction, _mainWnd.Instructions);
-                                if (inputvalue.Count < 1 && string.IsNullOrWhiteSpace(inputvalue[0].Raw.ACTVAL))
+                                if (inputvalue.Count < 1 || (inputvalue.Count > 0 && string.IsNullOrWhiteSpace(inputvalue[0].Raw.ACTVAL)))
                                     throw new Exception("검사량이 입력되지 않았습니다.");
                                 else
                                     Result_OUT = inputvalue[0].Raw.ACTVAL;
