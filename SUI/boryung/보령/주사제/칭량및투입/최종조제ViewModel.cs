@@ -553,6 +553,7 @@ namespace 보령
                                 {
                                     // 현재 저울값을 비커용기무게로 저장
                                     _BeakerTare = _ScaleWeight.Copy();
+                                    _BeakerTare.Value = 0m;
                                     OnPropertyChanged("BeakerTare");
                                     _curstate = state.initial;
                                     btnNextEnable = true;
