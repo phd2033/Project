@@ -16,83 +16,96 @@
     x:Name="Main"
     mc:Ignorable="d"
     Title="원료확인 및 투입"
-    Height="450" Width="800">
+    Height="450" Width="1000">
     <ShopFloorUI:ShopFloorCustomWindow.Resources>
         <my:SVP용매확인및투입ViewModel x:Key="viewModel"/>
         <Style x:Key="HeaderStyle" TargetType="c1:DataGridColumnHeaderPresenter">
             <Setter Property="HorizontalContentAlignment" Value="Center" />
         </Style>
     </ShopFloorUI:ShopFloorCustomWindow.Resources>
-    <Grid x:Name="LayoutRoot" Background="White" DataContext="{Binding Source={StaticResource viewModel}}">
+    <toolkit:BusyIndicator IsBusy="{Binding IsBusy}" DataContext="{Binding Source={StaticResource viewModel}}">
         <i:Interaction.Triggers>
             <i:EventTrigger EventName="Loaded">
                 <i:InvokeCommandAction Command="{Binding LoadedCommand}" CommandParameter="{Binding ElementName=Main}"/>
             </i:EventTrigger>
-        </i:Interaction.Triggers>
-        <toolkit:BusyIndicator IsBusy="{Binding IsBusy}">
-            <Grid>
+        </i:Interaction.Triggers>   
+        <Grid x:Name="LayoutRoot" Background="White">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <Grid x:Name="Material" Grid.Row="0" Grid.Column="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.3*"/>
-                    <ColumnDefinition Width="0.25*"/>
-                    <ColumnDefinition Width="0.8*"/>
-                    <ColumnDefinition Width="0.1*"/>
-                    <ColumnDefinition Width="10"/>
-                    <ColumnDefinition Width="0.3*"/>
-                    <ColumnDefinition Width="0.5*"/>
-                    <ColumnDefinition Width="0.5*"/>
-                    <ColumnDefinition Width="0.03*"/>
+                    <ColumnDefinition Width="90"/>
+                    <ColumnDefinition Width="90"/>
+                    <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
-                    <RowDefinition Height="10"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="50"/>
+                    <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Button Grid.Column="0" Grid.RowSpan="3" Content="자재스캔" x:Name="btnMTRLScan"  HorizontalAlignment="Stretch" Margin="10,10,5,0"  >
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="Click">
-                            <i:InvokeCommandAction Command="{Binding ScanMtrlCommandAsync}" CommandParameter="{Binding ElementName=Main}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </Button>
-                <sdk:Label Grid.Column="1" Grid.Row="0"  Content="자재ID"  HorizontalAlignment="Right" Margin="0,0,10,0"/>
+                <Button Grid.Column="0" Grid.RowSpan="3" Content="{Binding W[CUISourceContainerScanButtonText], Source={StaticResource R}, FallbackValue=자재스캔}" x:Name="btnMTRLScan"  HorizontalAlignment="Stretch" Margin="5" Command="{Binding ScanMtrlCommandAsync}"/>
+                <sdk:Label Grid.Column="1" Grid.Row="0"  Content="{Binding W[CUIMaterialID], Source={StaticResource R}, FallbackValue=자재ID}"  HorizontalAlignment="Right" Margin="0,0,10,0"/>
                 <TextBox Grid.Column="2" Grid.Row="0"  VerticalAlignment="Center"  Text="{Binding Path=MtrlId}" IsReadOnly="True"/>
-                <sdk:Label Grid.Column="1"  Grid.Row="1"  Content="자재명"   HorizontalAlignment="Right"  Margin="0,0,10,0"/>
+                <sdk:Label Grid.Column="1"  Grid.Row="1"  Content="{Binding W[CUIMaterialName], Source={StaticResource R}, FallbackValue=자재명}"   HorizontalAlignment="Right"  Margin="0,0,10,0"/>
                 <TextBox Grid.Column="2"  Grid.Row="1"  VerticalAlignment="Center"  Text="{Binding Path=MtrlName}" IsReadOnly="True"/>
-                <sdk:Label Grid.Column="1"  Grid.Row="2"  Content="기준량"   HorizontalAlignment="Right"  Margin="0,0,10,0"/>
+                <sdk:Label Grid.Column="1"  Grid.Row="2"  Content="{Binding W[CUIStandardQuantity], Source={StaticResource R}, FallbackValue=기준량}"   HorizontalAlignment="Right"  Margin="0,0,10,0"/>
                 <TextBox x:Name="tstStdQty" Grid.Column="2"  Grid.Row="2"  VerticalAlignment="Center"  Text="{Binding Path=StdQty}" IsReadOnly="True"/>
-                <Button  Grid.Column="5"  Grid.RowSpan="3" Content="저울스캔" HorizontalAlignment="Stretch"  Margin="10,10,5,0" >
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="Click">
-                            <i:InvokeCommandAction Command="{Binding ScanScaleCommandAsync}" CommandParameter="{Binding ElementName=Main}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </Button>
-                <Grid Grid.Column="6" Grid.ColumnSpan="3" Grid.Row="0" Grid.RowSpan="3">
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
+                <Rectangle Grid.Row="4" Grid.ColumnSpan="4" Canvas.ZIndex="1" Fill="Transparent" Margin="0,0,0,20"/>
+                <c1:C1DataGrid Grid.Row="4" Grid.ColumnSpan="4"
+                       Canvas.ZIndex="0"
+                       x:Name="dgProductionOutput" 
+                       SelectionMode="SingleRow"
+                       AutoGenerateColumns="False" 
+                       Margin="5,0,0,0"
+                       CanUserAddRows="False"
+                       RowHeaderWidth="0"
+                       RowHeight="35"
+                       GridLinesVisibility="All"   
+                       AlternatingRowBackground="White"
+                       RowBackground="White"
+                       SelectedItem="{Binding curSeletedItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                       ItemsSource="{Binding FilteredComponents, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <c1:C1DataGrid.Columns>
+                        <c1:DataGridTextColumn  Header="{Binding W[CUIMaterialLotID], Source={StaticResource R}, FallbackValue=시험번호}" Width="100" Binding="{Binding Path=MLOTID}" HeaderStyle="{StaticResource HeaderStyle}"/>
+                        <c1:DataGridTextColumn  Header="{Binding W[CUIMaterialSubLotID], Source={StaticResource R}, FallbackValue=원료배치번호}" Width="150" Binding="{Binding Path=MSUBLOTID}" IsReadOnly="True" HorizontalAlignment="Center" HeaderStyle="{StaticResource HeaderStyle}"/>
+                        <c1:DataGridTextColumn  Header="{Binding W[CUISourceContainerQuantity], Source={StaticResource R}, FallbackValue=출고량}"  Width="80"  Binding="{Binding Path=INVQTY.WeightUOMString}" IsReadOnly="True" HorizontalAlignment="Right" HeaderStyle="{StaticResource HeaderStyle}"/>
+                        <c1:DataGridTextColumn  Header="{Binding W[CUIChargingQuantity], Source={StaticResource R}, FallbackValue=실제투입량}"  Width="80"  Binding="{Binding Path=CHGQTY.WeightUOMString}" IsReadOnly="True" HorizontalAlignment="Right" HeaderStyle="{StaticResource HeaderStyle}"/>
+                        <c1:DataGridTextColumn  Header="{Binding W[CUIStatus], Source={StaticResource R}, FallbackValue=상태}"  Width="55" Binding="{Binding Path=CHECK}" IsReadOnly="True" HorizontalAlignment="Center" HeaderStyle="{StaticResource HeaderStyle}"/>
+                    </c1:C1DataGrid.Columns>
+                </c1:C1DataGrid>
+            </Grid>
+            <Grid x:Name="Scale" Grid.Row="0" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="90"/>
+                    <ColumnDefinition Width="90"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button  Grid.Column="0" Grid.RowSpan="3" Content="{Binding W[CUIScaleScanButtonText], Source={StaticResource R}, FallbackValue=저울스캔}" HorizontalAlignment="Stretch" Margin="5" Command="{Binding ScanScaleCommandAsync}"/>
+                <sdk:Label Grid.Column="1" Grid.Row="0" Content="{Binding W[CUIScaleID], Source={StaticResource R}, FallbackValue=저울ID}"  HorizontalAlignment="Right" Margin="0,0,10,0"/>
+                <TextBox Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2"  VerticalAlignment="Center"  Text="{Binding Path=ScaleId}" IsReadOnly="True"/>
+                <sdk:Label Grid.Column="1" Grid.Row="1" Content="{Binding W[CUITareWeight], Source={StaticResource R}, FallbackValue=용기무게}"   HorizontalAlignment="Right"  Margin="0,0,10,0"/>
+                <TextBox Grid.Column="2" Grid.Row="1" VerticalAlignment="Center"  Text="{Binding Path=TareWeight}" IsReadOnly="True"/>
+                <Grid Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.25*"/>
-                        <ColumnDefinition Width="0.5*"/>
-                        <ColumnDefinition Width="0.3*"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <sdk:Label Grid.Column="0" Grid.Row="0" Content="저울ID"  HorizontalAlignment="Right" Margin="0,0,10,0"/>
-                    <TextBox Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2"  VerticalAlignment="Center"  Text="{Binding Path=ScaleId}" IsReadOnly="True"/>
-                    <sdk:Label Grid.Column="0" Grid.Row="1" Content="용기무게"   HorizontalAlignment="Right"  Margin="0,0,10,0"/>
-                    <TextBox Grid.Column="1" Grid.Row="1" VerticalAlignment="Center"  Text="{Binding Path=TareWeight}" IsReadOnly="True"/>
-                    <Button  Grid.Column="2" Grid.Row="1" Content="TARE" HorizontalAlignment="Stretch"  Margin="10,10,5,0">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="Click">
-                                <i:InvokeCommandAction Command="{Binding SetBeakerTareCommand}" CommandParameter="{Binding ElementName=Main}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </Button>
+                    <Button Grid.Column="0" Margin="5,2" Content="{Binding W[CUIScaleTareButtonText], Source={StaticResource R}, FallbackValue=TARE}" HorizontalAlignment="Stretch" Command="{Binding SetBeakerTareCommand}"/>
                 </Grid>
-                <Grid Grid.Column="4" Grid.ColumnSpan="5"  Grid.Row="4" Margin="0,0,0,0">
+                <Grid Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4">
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition/>
@@ -100,49 +113,25 @@
                     </Grid.RowDefinitions>
                     <sdk:Label Grid.Row="0" Content="{Binding UpperWeight}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"/>
                     <sdk:Label  Grid.Row="0" Grid.RowSpan="3" BorderBrush="Gray" BorderThickness="1">
-                        <TextBox x:Name="txtScaleValue" Text="{Binding ScaleValue}" TextAlignment="Center" BorderThickness="0"  Grid.Row="0"
-                   FontSize="30" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"
-                     HorizontalAlignment="Stretch"  VerticalAlignment="Stretch"  
-                     TextChanged="txtScaleValue_TextChanged" Width="380"/>
+                        <TextBox x:Name="txtScaleValue" Text="{Binding ScaleWeight}" TextAlignment="Center" BorderThickness="0"  Grid.Row="0"
+                                 FontSize="30" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"
+                                 HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Background="{Binding ScaleBackground}" MinWidth="395"/>
                     </sdk:Label>
                     <sdk:Label Grid.Row="2" Content="{Binding LowerWeight}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"/>
                 </Grid>
-                <Rectangle Grid.Row="4" Grid.ColumnSpan="4" Canvas.ZIndex="1" Fill="Transparent" Margin="0,0,0,20"/>
-                <c1:C1DataGrid Grid.Row="4" Grid.ColumnSpan="4"
-                       Canvas.ZIndex="0"
-                       x:Name="dgProductionOutput" 
-                       SelectionMode="SingleRow"
-                       AutoGenerateColumns="False" 
-                       Margin="10,0,0,0"
-                       CanUserAddRows="False"
-                       RowHeaderWidth="0"
-                       RowHeight="35"
-                       GridLinesVisibility="All"   
-                       AlternatingRowBackground="White"
-                       RowBackground="White"
-                       ItemsSource="{Binding FilteredComponents, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                    <c1:C1DataGrid.Columns>
-                        <c1:DataGridTextColumn  Header="시험번호" Binding="{Binding Path=MLOTID}" HeaderStyle="{StaticResource HeaderStyle}"/>
-                        <c1:DataGridTextColumn  Header="원료배치번호" Width="150" Binding="{Binding Path=MSUBLOTID}" IsReadOnly="True" HorizontalAlignment="Center" HeaderStyle="{StaticResource HeaderStyle}"/>
-                        <c1:DataGridTextColumn  Header="단위"  Width="50"  Binding="{Binding Path=UOMNAME}" IsReadOnly="True" HorizontalAlignment="Center" HeaderStyle="{StaticResource HeaderStyle}"/>
-                        <c1:DataGridTextColumn  Header="출고량"  Width="80"  Binding="{Binding Path=MSUBLOTQTY, StringFormat='0.##0'}" IsReadOnly="True" HorizontalAlignment="Right" HeaderStyle="{StaticResource HeaderStyle}"/>
-                        <c1:DataGridTextColumn  Header="실제투입량"  Width="80"  Binding="{Binding Path=REALQTY, StringFormat='0.##0'}" IsReadOnly="True" HorizontalAlignment="Right" HeaderStyle="{StaticResource HeaderStyle}"/>
-                        <c1:DataGridTextColumn  Header="상태"  Width="55" Binding="{Binding Path=CHECK}" IsReadOnly="True" HorizontalAlignment="Center" HeaderStyle="{StaticResource HeaderStyle}"/>
-                    </c1:C1DataGrid.Columns>
-                </c1:C1DataGrid>
-                <Grid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="200"/>
-                        <ColumnDefinition Width="200"/>
-                        <ColumnDefinition Width="200"/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Button x:Name="btnCharging" Content="투입" Grid.Column="1" Margin="5" Click="btnCharging_Click" IsEnabled="{Binding CANCHARGEFLAG}"/>
-                    <Button x:Name="btnConfirm" Content="기록" Grid.Column="2" Margin="5" Command="{Binding ConfirmCommandAsync}" IsEnabled="{Binding CANRECORDFLAG}"/>
-                    <Button x:Name="btnClose" Content="닫기"  Grid.Column="3" Margin="5" Click="btnClose_Click"/>
-                </Grid>
             </Grid>
-        </toolkit:BusyIndicator>
-    </Grid>
+            <Grid x:Name="Footer" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                    <TextBlock Text="{Binding Path=W[CUICurrentPrintName], Source={StaticResource R}, FallbackValue=프린트명}" Margin="2,0"/>
+                    <TextBlock Text="{Binding curPrintName, FallbackValue=N/A}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Margin="5,0" x:Name="btnChangePrint" Width="100" Content="{Binding W[CUIChangePrintButtonText], Source={StaticResource R}, FallbackValue=프린터변경}" Command="{Binding ChangePrintCommand}"/>
+                    <Button Margin="5,0" x:Name="btnCharging" Width="100" Content="{Binding W[CUIChargingButtonText], Source={StaticResource R}, FallbackValue=투입}" IsEnabled="{Binding CANCHARGEFLAG}" Command="{Binding ChargingCommandAsync}"/>
+                    <Button Margin="5,0" x:Name="btnConfirm" Width="100" Content="{Binding W[CUIDataWriteToEBRButtonText], Source={StaticResource R}, FallbackValue=기록}" IsEnabled="{Binding CANRECORDFLAG}" Command="{Binding ConfirmCommandAsync}"/>
+                    <Button Margin="5,0" x:Name="btnClose" Width="100" Content="{Binding [CUICloseButtonText], Source={StaticResource R}, FallbackValue=종료}" Click="btnClose_Click"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </toolkit:BusyIndicator>
 </ShopFloorUI:ShopFloorCustomWindow>

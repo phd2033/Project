@@ -156,7 +156,7 @@ namespace 보령
 
                 WeightRefresh();
             }
-        }
+        }       
         /// <summary>
         /// 조제액(최종조제 전)
         /// </summary>
@@ -213,7 +213,7 @@ namespace 보령
         {
             get { return _AddWeight.WeightUOMString; }
         }
-
+        
         private bool _btnNextEnable;
         public bool btnNextEnable
         {
@@ -234,7 +234,7 @@ namespace 보령
                 OnPropertyChanged("btnPrevEnable");
             }
         }
-
+        
         #endregion
         #region [BizRule]
         private BR_BRS_SEL_CurrentWeight _BR_BRS_SEL_CurrentWeight;
@@ -285,9 +285,11 @@ namespace 보령
                                 {
                                     _StandardWeight.Value = chk;
                                     _StandardWeight.Uom = string.IsNullOrWhiteSpace(curinst.UOMNOTATION) ? "g" : curinst.UOMNOTATION;
+                                    if(_StandardWeight.Uom.ToUpper() == "KG")
+                                        _StandardWeight.Uom = "g";
                                 }
                                 else
-                                    throw new Exception("최종조제기준량이 설정되지 않았습니다.");
+                                    throw new Exception("최종조제기준량이 설정되지 않았습니다.");                              
 
                                 // 보충원료 정보 조회
                                 _BR_BRS_SEL_Charging_Solvent.INDATAs.Add(new BR_BRS_SEL_Charging_Solvent.INDATA
@@ -299,8 +301,8 @@ namespace 보령
                                     MTRLID = _mainWnd.CurrentInstruction.Raw.BOMID
                                 });
 
-                                if (!(await _BR_BRS_SEL_Charging_Solvent.Execute() && _BR_BRS_SEL_Charging_Solvent.OUTDATAs.Count > 0 && _BR_BRS_SEL_Charging_Solvent.OUTDATA_BOMs.Count > 0))
-                                    throw new Exception("보충 원료 정보를 조회하지 못했습니다.");
+                                if(!(await _BR_BRS_SEL_Charging_Solvent.Execute() && _BR_BRS_SEL_Charging_Solvent.OUTDATAs.Count > 0 && _BR_BRS_SEL_Charging_Solvent.OUTDATA_BOMs.Count > 0))
+                                     throw new Exception("보충 원료 정보를 조회하지 못했습니다.");
 
                                 // 공정중제품 정보 조회
                                 _BR_PHR_SEL_ProductionOrderOutput_Define.INDATAs.Add(new BR_PHR_SEL_ProductionOrderOutput_Define.INDATA
@@ -320,15 +322,18 @@ namespace 보령
                                     ROOMID = AuthRepositoryViewModel.Instance.RoomID
                                 });
                                 if (await _BR_PHR_SEL_System_Printer.Execute() && _BR_PHR_SEL_System_Printer.OUTDATAs.Count > 0)
+                                {
                                     _selectedPrint = _BR_PHR_SEL_System_Printer.OUTDATAs[0];
+                                    OnPropertyChanged("curPrintName");
+                                }
                                 else
-                                    OnMessage("연결된 프린트가 없습니다.");
+                                   OnMessage("연결된 프린트가 없습니다.");
 
                                 IsBusy = true;
                             }
 
                             WeightRefresh();
-                            IsBusy = false;
+                            IsBusy = false;                            
                             ///
 
                             CommandResults["LoadedCommand"] = true;
@@ -336,7 +341,7 @@ namespace 보령
                         catch (Exception ex)
                         {
                             IsBusy = false;
-                            _curstate = state.exception;
+                            _curstate = state.exception;                            
                             CommandResults["LoadedCommand"] = false;
                             OnException(ex.Message, ex);
                         }
@@ -452,13 +457,13 @@ namespace 보령
                             popup.tbMsg.Text = "비커코드를 입력하세요.";
                             popup.Closed += (sender, e) =>
                             {
-                                if (popup.DialogResult.GetValueOrDefault() && !string.IsNullOrWhiteSpace(popup.tbText.Text))
+                                if (popup.DialogResult.GetValueOrDefault() && !string.IsNullOrWhiteSpace(popup.tbText.Text))                                                                    
                                     BeakerId = popup.tbText.Text.ToUpper();
 
                                 _DispatcherTimer.Start();
                             };
 
-                            popup.Show();
+                            popup.Show();                           
                             IsBusy = false;
                             ///
 
@@ -505,7 +510,7 @@ namespace 보령
 
                             if (_ScaleInfo != null && !string.IsNullOrWhiteSpace(_ScaleId))
                             {
-                                if (_ScaleInfo.TARE_MANDATORY == "Y")
+                                if(_ScaleInfo.TARE_MANDATORY == "Y")
                                 {
                                     if (_ScaleWeight.Value > 0)
                                     {
@@ -544,7 +549,7 @@ namespace 보령
                                             _BeakerTare.Value = 0;
                                     }
                                 }
-                                else if (_ScaleInfo.TARE_MANDATORY == "N")
+                                else if(_ScaleInfo.TARE_MANDATORY == "N")
                                 {
                                     // 현재 저울값을 비커용기무게로 저장
                                     _BeakerTare = _ScaleWeight.Copy();
@@ -598,12 +603,12 @@ namespace 보령
                             CommandCanExecutes["NextPhaseCommand"] = false;
 
                             ///
-                            _DispatcherTimer.Stop();
+                            _DispatcherTimer.Stop();          
 
                             switch (_curstate)
                             {
                                 case state.initial:
-                                    if (_ScaleWeight.Subtract(_StandardWeight).Value > 0)
+                                    if(_ScaleWeight.Subtract(_StandardWeight).Value > 0)
                                     {
                                         OnMessage("최종조제액 기준량 보다 클 수 없습니다.");
                                         _DispatcherTimer.Start();
@@ -621,16 +626,16 @@ namespace 보령
                                     _MaxWeight = _TargetWeight.Copy();
                                     _MinWeight.Value = _MinWeight.Value * 0.999m;
                                     _MaxWeight.Value = _MaxWeight.Value * 1.001m;
-
+                                    
                                     _curstate = state.add;
                                     _DispatcherTimer.Start();
-                                    break;
+                                    break;                               
                                 case state.add:
                                     if (curPrintName == "N/A")
                                     {
                                         OnMessage("지정된 프린트가 없습니다. 프린트를 지정 후 다시 다음 단계로 진행해주세요");
                                         break;
-                                    }
+                                    }                                   
 
                                     var curAddweight = _ScaleWeight.Subtract(_InitialWeight);
                                     _FinalWeight = _ScaleWeight.Copy();
@@ -664,7 +669,7 @@ namespace 보령
                                     else
                                         OnMessage("보충량이 기준값을 벗어났습니다.");
 
-                                    if (_curstate != state.end)
+                                    if(_curstate != state.end)
                                         _DispatcherTimer.Start();
                                     break;
                                 default:
@@ -714,7 +719,7 @@ namespace 보령
 
                             ///
                             _DispatcherTimer.Stop();
-
+   
                             switch (_curstate)
                             {
                                 case state.initial: // 현재 저울값이 0이하면 Tare측정단계로 이동
@@ -725,7 +730,7 @@ namespace 보령
                                     }
                                     else
                                         OnMessage("현재 저울값이 0보다 크면 Tare측정단계로 돌아갈 수 없습니다.");
-
+                                     
                                     _DispatcherTimer.Start();
                                     break;
                                 case state.add: // 보충전 조제액 무게보다 현재값이 작아야 이전단계로 변경 가능 
@@ -792,9 +797,9 @@ namespace 보령
                             CommandResults["ConfirmCommandAsync"] = false;
                             CommandCanExecutes["ConfirmCommandAsync"] = false;
 
-                            if (_curstate != state.end)
+                            if (_curstate != state.end)                            
                                 throw new Exception("칭량이 완료되지 않았습니다.");
-
+                            
                             var authHelper = new iPharmAuthCommandHelper();
                             if (_mainWnd.CurrentInstruction.Raw.INSERTEDYN.Equals("Y") && _mainWnd.CurrentInstruction.PhaseState.Equals("COMP"))
                             {
@@ -875,7 +880,7 @@ namespace 보령
                                     COMPONENTGUID = _BR_BRS_SEL_Charging_Solvent.OUTDATA_BOMs[0].COMPONENTGUID
                                 });
 
-                                await _BR_RHR_REG_MaterialSubLot_Dispense_Charging_NEW.Execute(exceptionHandle: Common.enumBizRuleXceptionHandleType.FailEvent);
+                                await _BR_RHR_REG_MaterialSubLot_Dispense_Charging_NEW.Execute(exceptionHandle:Common.enumBizRuleXceptionHandleType.FailEvent);
 
                                 _BR_BRS_SEND_WMS_WEIGHINGRESULT.INDATAs.Add(new BR_BRS_SEND_WMS_WEIGHINGRESULT.INDATA
                                 {
@@ -895,7 +900,7 @@ namespace 보령
 
                                 if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
                                 else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
-                            }
+                            }                            
 
                             CommandResults["ConfirmCommandAsync"] = true;
                         }
@@ -991,7 +996,7 @@ namespace 보령
                 _DispatcherTimer.Stop();
 
                 if (_ScaleInfo != null && !string.IsNullOrWhiteSpace(_ScaleId))
-                {
+                {                    
                     // 저울에 Tare 명령어 전달
                     bool success = false;
                     string curWeight = string.Empty;
@@ -1016,7 +1021,7 @@ namespace 보령
                             }
                             else
                                 ScalePrecision = 0;
-                        }
+                        }                        
                     }
                     else
                     {
@@ -1033,20 +1038,20 @@ namespace 보령
                             success = true;
                             curWeight = string.Format(("{0:N" + _ScaleWeight.Precision + "}"), _BR_BRS_SEL_CurrentWeight.OUTDATAs[0].Weight);
                             ScaleUom = _BR_BRS_SEL_CurrentWeight.OUTDATAs[0].UOM;
-                        }
-
-                    }
+                        }                       
+                            
+                    }                    
 
                     if (success)
-                        _ScaleWeight.SetWeight(curWeight, _ScaleWeight.Uom);
+                        _ScaleWeight.SetWeight(curWeight, _ScaleWeight.Uom);                     
                     else
                         _ScaleWeight.Value = 0;
 
                     WeightRefresh();
                     _DispatcherTimer.Start();
-                }
+                }                      
 
-
+                    
             }
             catch (Exception ex)
             {
@@ -1057,7 +1062,7 @@ namespace 보령
         private async Task<bool> setLabelData()
         {
             try
-            {
+            {                
                 DateTime weighingdttm = await AuthRepositoryViewModel.GetDBDateTimeNow();
                 Weight gross = _BeakerTare.Add(_FinalWeight);
 
@@ -1118,9 +1123,8 @@ namespace 보령
             {
                 OnException(ex.Message, ex);
                 return false;
-            }
+            }            
         }
-
         #endregion        
     }
 }

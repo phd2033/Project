@@ -128,12 +128,12 @@ namespace 보령
                 OnPropertyChanged("ScaleId");
             }
         }
-        private ScaleWeight _ScaleValue = new ScaleWeight();
+        private Weight _ScaleValue = new Weight();
         public string ScaleValue
         {
             get { return _ScaleValue.WeightUOMString; }
         }
-        private ScaleWeight _TotalWeight = new ScaleWeight();
+        private Weight _TotalWeight = new Weight();
         public string TotalWeight
         {
             get
@@ -154,12 +154,12 @@ namespace 보령
                 OnPropertyChanged("ScaleBackground");
             }
         }
-        private ScaleWeight _UpperWeight = new ScaleWeight();
+        private Weight _UpperWeight = new Weight();
         public string UpperWeight
         {
             get { return _UpperWeight.WeightUOMString; }
         }
-        private ScaleWeight _LowerWeight = new ScaleWeight();
+        private Weight _LowerWeight = new Weight();
         public string LowerWeight
         {
             get { return _LowerWeight.WeightUOMString; }

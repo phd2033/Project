@@ -8,20 +8,27 @@ namespace 보령
     {
         public partial class OUTDATA
         {
-            private decimal _REALQTY = 0m;
-            public decimal REALQTY
+            private Weight _INVQTY = new Weight();
+            public Weight INVQTY
             {
-                get { return _REALQTY; }
-                set { _REALQTY = value; }
-
+                get { return _INVQTY; }
+                set
+                {
+                    _INVQTY = value;
+                    OnPropertyChanged("INVQTY");
+                }
+            }
+            private Weight _CHGQTY = new Weight();
+            public Weight CHGQTY
+            {
+                get { return _CHGQTY; }   
+                set
+                {
+                    _CHGQTY = value;
+                    OnPropertyChanged("CHGQTY");
+                }                           
             }
 
-            private decimal _TOTALQTY = 0m;
-            public decimal TOTALQTY
-            {
-                get { return _TOTALQTY; }
-                set { _TOTALQTY = value; }
-            }
         }
     }
 }
