@@ -82,6 +82,10 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="5" />
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="5" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="5" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="5" />
@@ -98,11 +102,13 @@
                     </StackPanel>
                     <sdk:Label Grid.Column="7" Content="제품코드" Style="{StaticResource lblStyle}"/>
                     <TextBox Grid.Column="9"  Text="{Binding PRODID, Mode=TwoWay}" Style="{StaticResource txtStyle}"/>
-                    <sdk:Label Grid.Column="11" Content="배치번호" Style="{StaticResource lblStyle}"/>
-                    <TextBox Grid.Column="13" Text="{Binding BATCHNO, Mode=TwoWay}" Style="{StaticResource txtStyle}"/>
-                    <sdk:Label Grid.Column="15" Content="오더번호" Style="{StaticResource lblStyle}"/>
-                    <TextBox Grid.Column="17" Text="{Binding POID, Mode=TwoWay}" Style="{StaticResource txtStyle}"/>
-                    <Button Grid.Column="19" Content="검색" Width="80" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+                    <sdk:Label Grid.Column="11" Content="제품명" Style="{StaticResource lblStyle}"/>
+                    <TextBox Grid.Column="13" Text="{Binding ODNAME, Mode=TwoWay}" Style="{StaticResource txtStyle}"/>
+                    <sdk:Label Grid.Column="15" Content="배치번호" Style="{StaticResource lblStyle}"/>
+                    <TextBox Grid.Column="17" Text="{Binding BATCHNO, Mode=TwoWay}" Style="{StaticResource txtStyle}"/>
+                    <sdk:Label Grid.Column="19" Content="오더번호" Style="{StaticResource lblStyle}"/>
+                    <TextBox Grid.Column="21" Text="{Binding POID, Mode=TwoWay}" Style="{StaticResource txtStyle}"/>
+                    <Button Grid.Column="23" Content="검색" Width="80" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Click">
                                 <i:InvokeCommandAction Command="{Binding Path=BtnSearchCommand}"/>

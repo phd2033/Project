@@ -75,6 +75,17 @@ namespace Board
             }
         }
 
+        private string _ODNAME;
+        public string ODNAME
+        {
+            get { return _ODNAME; }
+            set
+            {
+                _ODNAME = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         private string _BATCHNO;
         public string BATCHNO
         {
@@ -226,8 +237,9 @@ namespace Board
                                 ISHALB      = ISHALB ? "Y" : null,
                                 FROMDATE    = PeriodSTDTTM.ToString("yyyy-MM-dd"),
                                 TODATE      = PeriodEDDTTM.ToString("yyyy-MM-dd"),
-                                PRODID      = PRODID,
-                                BATCHNO     = BATCHNO,
+                                PRODID      = string.IsNullOrWhiteSpace(PRODID) ? null : PRODID,
+                                ODNAME      = string.IsNullOrWhiteSpace(ODNAME) ? null : ODNAME,
+                                BATCHNO     = string.IsNullOrWhiteSpace(BATCHNO) ? null : BATCHNO,
                                 POID        = POID
                             });
 

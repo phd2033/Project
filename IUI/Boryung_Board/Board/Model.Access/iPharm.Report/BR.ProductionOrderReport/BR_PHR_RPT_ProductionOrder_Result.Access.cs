@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LGCNS.iPharmMES.Common
 {
-    
+
     /// <summary>
     /// summary of BR_PHR_RPT_ProductionOrder_Result
     /// </summary>
@@ -22,7 +22,7 @@ namespace LGCNS.iPharmMES.Common
                 return this._INDATAs;
             }
         }
-        [BizActorInputSetDefineAttribute(Order="0")]
+        [BizActorInputSetDefineAttribute(Order = "0")]
         [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
         public partial class INDATA : BizActorDataSetBase
         {
@@ -229,6 +229,38 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
+            private string _ODNAME;
+            [BizActorInputItemAttribute()]
+            public string ODNAME
+            {
+                get
+                {
+                    return this._ODNAME;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._ODNAME = value;
+                        this.CheckIsOriginal("ODNAME", value);
+                        this.OnPropertyChanged("ODNAME");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
             private string _BATCHNO;
             [BizActorInputItemAttribute()]
             public string BATCHNO
@@ -306,7 +338,7 @@ namespace LGCNS.iPharmMES.Common
                 return this._OUTDATAs;
             }
         }
-        [BizActorOutputSetDefineAttribute(Order="0")]
+        [BizActorOutputSetDefineAttribute(Order = "0")]
         [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
         public partial class OUTDATA : BizActorDataSetBase
         {
@@ -805,6 +837,7 @@ namespace LGCNS.iPharmMES.Common
         public BR_PHR_RPT_ProductionOrder_Result()
         {
             RuleName = "BR_PHR_RPT_ProductionOrder_Result";
+            BizName = "BR_PHR_RPT_ProductionOrder_Result";
             _INDATAs = new INDATACollection();
             _OUTDATAs = new OUTDATACollection();
         }
