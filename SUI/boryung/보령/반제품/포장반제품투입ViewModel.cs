@@ -353,8 +353,9 @@ namespace 보령
                             var chargingItem = _outputSubLotInfo.Where(o => o.STATUS == "투입대기").ToList();
 
                             var bizRule = new BR_BRS_REG_MaterialSubLot_Dispense_Charging_FERT();
+                            DateTime chargingdttm = await AuthRepositoryViewModel.GetDBDateTimeNow();
 
-                            chargingItem.ForEach(async o =>
+                            chargingItem.ForEach(o =>
                             {
 
                                 bizRule.INDATAs.Add(new BR_BRS_REG_MaterialSubLot_Dispense_Charging_FERT.INDATA()
@@ -385,22 +386,13 @@ namespace 보령
                                 row["OUTPUTID"] = o.OUTPUTID != null ? o.OUTPUTID.ToString() : "";
                                 row["현재수량"] = o.MSUBLOTQTY != null ? o.MSUBLOTQTY.ToString() : "";
                                 row["IBC관리번호"] = o.VESSELID != null ? o.VESSELID.ToString() : "";
-                                row["투입일자"] = (await AuthRepositoryViewModel.GetDBDateTimeNow()).ToString();
+                                row["투입일자"] = chargingdttm.ToString();
                                 row["작업자"] = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_Charging");
 
                                 dt.Rows.Add(row);
                             });
 
                             if (await bizRule.Execute() == false) return;
-
-                            //OutputSubLotInfo.Where(o => o.STATUS == "투입대기" || o.STATUS == "투입완료").ToList().ForEach(x =>
-                            //{
-                            //    var row = dt.NewRow();
-                            //    row["OUTPUTID"] = x.OUTPUTID;
-                            //    row["수량"] = x.STATUS != "투입완료" ? (x.MSUBLOTQTY != null ? decimal.Parse(x.MSUBLOTQTY.ToString()).ToString("0.##0") : "")
-                            //                                         : (x.OLDMSUBLOTQTY != null ? decimal.Parse(x.OLDMSUBLOTQTY.ToString()).ToString("0.##0") : "");
-                            //    dt.Rows.Add(row);
-                            //});
 
                             var xml = BizActorRuleBase.CreateXMLStream(ds);
                             var bytesArray = System.Text.Encoding.UTF8.GetBytes(xml);
