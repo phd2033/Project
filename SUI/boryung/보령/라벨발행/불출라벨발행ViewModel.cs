@@ -230,6 +230,11 @@ namespace 보령
                                         ParamName = "OPERATOR",
                                         ParamValue = AuthRepositoryViewModel.Instance.LoginedUserID
                                     });
+                                    _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
+                                    {
+                                        ParamName = "POID",
+                                        ParamValue = _MainWnd.CurrentOrder.OrderID
+                                    });
 
                                     await _BR_PHR_SEL_PRINT_LabelImage.Execute();
                                 }
