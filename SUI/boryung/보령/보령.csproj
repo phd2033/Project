@@ -206,6 +206,7 @@
     <Compile Include="Model.Access\반제품\BR_BRS_REG_Dispense_Charging_Solvent.Access.cs" />
     <Compile Include="Model.Access\반제품\BR_BRS_REG_MaterialSubLot_Dispense_Charging_EQAC.Access.cs" />
     <Compile Include="Model.Access\반제품\BR_BRS_REG_MaterialSubLot_INV_Split.Access.cs" />
+    <Compile Include="Model.Access\반제품\BR_BRS_REG_ProductionOrderOutput_LastSoluction.Access.cs" />
     <Compile Include="Model.Access\반제품\BR_BRS_REG_ProductionOrderOutput_Vessel_STRT.Access.cs" />
     <Compile Include="Model.Access\반제품\BR_BRS_SEL_ProductionOrderDispenseOutput.Access.cs" />
     <Compile Include="Model.Access\반제품\BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_MULTI.Access.cs" />
@@ -241,6 +242,7 @@
     <Compile Include="Model.Access\정제체크마스터\BR_BRS_REG_IPC_CHECKMASTER_MULTI.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_BRS_GET_DispenseSubLot_VESSID_ISNULL.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_BRS_ProductionOrderDispense_VesselInfo.Access.cs" />
+    <Compile Include="Model.Access\칭량\BR_BRS_REG_Dispense_Charging_Solvent_Add.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_BRS_SEL_ProductionOrderDispense_Result.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_PHR_GET_MaterialSubLot_VESSID_ISNULL.Access.cs" />
@@ -249,6 +251,7 @@
     <Compile Include="Model.Access\혼합기\BR_BRS_REG_Blender_Recipe_To_Eqpt.Access.cs" />
     <Compile Include="Model\BR_BRS_GET_UDT_ProductionOrderPickingInfo_Solution.cs" />
     <Compile Include="Model\BR_BRS_REG_ProductionOrderOutput_Conditional.cs" />
+    <Compile Include="Model\BR_BRS_REG_ProductionOrderOutput_LastSoluction.cs" />
     <Compile Include="Model\BR_BRS_SEL_Charging_Solvent_to_Dispense.cs" />
     <Compile Include="Model\BR_BRS_SEL_EquipmentStatus_PROC_OPSG.cs" />
     <Compile Include="Model\BR_BRS_SEL_Charging_Solvent.cs" />
