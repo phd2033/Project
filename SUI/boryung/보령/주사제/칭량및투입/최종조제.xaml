@@ -13,6 +13,12 @@
            Title="최종조제">
     <ShopFloorUI:ShopFloorCustomWindow.Resources>
         <local:최종조제ViewModel x:Key="viewModel"/>
+        <Style TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
     </ShopFloorUI:ShopFloorCustomWindow.Resources>
     <toolkit:BusyIndicator x:Name="BusyIn" IsBusy="{Binding IsBusy, Mode=TwoWay}" DataContext="{Binding Source={StaticResource viewModel}}">
         <i:Interaction.Triggers>
@@ -36,7 +42,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Text="1. 저울연결 및 비커용기무게 측정"/>
+                <TextBlock Grid.Row="0" Text="1. 저울연결 및 비커용기무게 측정" HorizontalAlignment="Left" FontSize="10"/>
                 <Grid Grid.Row="1">
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -50,14 +56,22 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <!--저울-->
-                    <Button Grid.Column="0" Grid.Row="0" Margin="5" Content="저울연결" x:Name="btnScaleScan" Command="{Binding ConnectScaleCommand}" FontSize="15"/>
-                    <TextBox Grid.Column="1" Grid.Row="0" Margin="5" x:Name="txtScaleId" Text="{Binding ScaleId}" IsReadOnly="True" FontSize="15"/>
-                    <TextBox Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" Margin="5" x:Name="txtScaleWeight" Text="{Binding ScaleWeight}" FontSize="15" IsReadOnly="True"/>
+                    <Button Grid.Column="0" Grid.Row="0" Margin="5" Content="저울연결" x:Name="btnScaleScan" Command="{Binding ConnectScaleCommand}"/>
+                    <Border Grid.Column="1" Grid.Row="0" Margin="5" Background="LightGray" BorderBrush="Black" BorderThickness="1">
+                        <TextBlock Margin="5" x:Name="txtScaleId" Text="{Binding ScaleId}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    </Border>
+                    <Border Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" Margin="5" Background="LightGray" BorderBrush="Black" BorderThickness="1">
+                        <TextBlock Margin="5" x:Name="txtScaleWeight" Text="{Binding ScaleWeight}"/>
+                    </Border>
                     <!--비커-->
-                    <Button Grid.Column="0" Grid.Row="1" Margin="5" Content="용기설정" x:Name="btnBeakerScan" Command="{Binding ScanBeakerCommand}" FontSize="15"/>
-                    <TextBox Grid.Column="1" Grid.Row="1" Margin="5" x:Name="txtBeakerId" Text="{Binding BeakerId}" IsReadOnly="True" FontSize="15"/>
-                    <TextBox Grid.Column="2" Grid.Row="1" Margin="5" x:Name="txtBeakerTare" Text="{Binding BeakerTare}" IsReadOnly="True" FontSize="15"/>
-                    <Button Grid.Column="3" Grid.Row="1" Margin="5" x:Name="btnBeakerTare" Command="{Binding SetBeakerTareCommand}" Content="TARE" FontSize="15"/>
+                    <Button Grid.Column="0" Grid.Row="1" Margin="5" Content="용기설정" x:Name="btnBeakerScan" Command="{Binding ScanBeakerCommand}"/>
+                    <Border Grid.Column="1" Grid.Row="1" Margin="5" Background="LightGray" BorderBrush="Black" BorderThickness="1">
+                        <TextBlock x:Name="txtBeakerId" Text="{Binding BeakerId}" HorizontalAlignment="Left"/>
+                    </Border>
+                    <Border Grid.Column="2" Grid.Row="1" Margin="5" Background="LightGray" BorderBrush="Black" BorderThickness="1">
+                        <TextBlock x:Name="txtBeakerTare" Text="{Binding BeakerTare}"/>
+                    </Border>
+                    <Button Grid.Column="3" Grid.Row="1" Margin="5" x:Name="btnBeakerTare" Command="{Binding SetBeakerTareCommand}" Content="TARE"/>
                     <!--진행단계-->
                     <Border Grid.Column="4" Grid.Row="0" Grid.RowSpan="2" BorderBrush="Black" BorderThickness="1">
                         <Grid>
@@ -70,7 +84,7 @@
                         </Grid>
                     </Border>
                 </Grid>
-                <TextBlock Grid.Row="2" Text="2. 최종 조제"/>
+                <TextBlock Grid.Row="2" Text="2. 최종 조제" HorizontalAlignment="Left" FontSize="10"/>
                 <Grid Grid.Row="3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -83,10 +97,14 @@
                         <RowDefinition/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <TextBox Grid.Column="0" Grid.Row="0" x:Name="txtInitial" Text="{Binding InitialWeight}" TextWrapping="Wrap" TextAlignment="Center" IsReadOnly="True" FontSize="20" Margin="5"/>
-                    <TextBlock Grid.Column="0" Grid.Row="1" Text="조제액 무게" HorizontalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Grid.Row="0" x:Name="txtStandard" Text="{Binding StandardWeight}" TextWrapping="Wrap" TextAlignment="Center" IsReadOnly="True" FontSize="20" Margin="5"/>
-                    <TextBlock Grid.Column="1" Grid.Row="1" Text="최종조제액 기준량" HorizontalAlignment="Center"/>
+                    <Border Grid.Column="0" Grid.Row="0" Margin="5" Background="LightGray" BorderBrush="Black" BorderThickness="1">
+                        <TextBlock x:Name="txtInitial" Text="{Binding InitialWeight}" FontSize="20"/>
+                    </Border>
+                    <TextBlock Grid.Column="0" Grid.Row="1" Text="조제액 무게" HorizontalAlignment="Center" FontSize="10"/>
+                    <Border Grid.Column="1" Grid.Row="0" Margin="5" Background="LightGray" BorderBrush="Black" BorderThickness="1">
+                        <TextBlock x:Name="txtStandard" Text="{Binding StandardWeight}" FontSize="20"/>
+                    </Border>
+                    <TextBlock Grid.Column="1" Grid.Row="1" Text="최종조제액 기준량" HorizontalAlignment="Center" FontSize="10"/>
                     <Border Grid.Column="2" Grid.Row="0" Margin="5" Background="LightGray" BorderBrush="Black" BorderThickness="1">
                         <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
                             <Grid.RowDefinitions>
@@ -99,9 +117,11 @@
                             <TextBlock Grid.Row="2" x:Name="txtMin" HorizontalAlignment="Center" Margin="0,2" Text="{Binding MinWeight}" FontSize="15"/>
                         </Grid>
                     </Border>
-                    <TextBlock Grid.Column="2" Grid.Row="1" Text="보충량 기준" HorizontalAlignment="Center"/>
-                    <TextBox Grid.Column="3" Grid.Row="0" x:Name="txtAdd" Text="{Binding AddWeight}" TextWrapping="Wrap" TextAlignment="Center" IsReadOnly="True" FontSize="20" Margin="5"/>
-                    <TextBlock Grid.Column="3" Grid.Row="1" Text="현재 보충량" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="2" Grid.Row="1" Text="보충량 기준" HorizontalAlignment="Center" FontSize="10"/>
+                    <Border Grid.Column="3" Grid.Row="0" Margin="5" Background="LightGray" BorderBrush="Black" BorderThickness="1">
+                        <TextBlock x:Name="txtAdd" Text="{Binding AddWeight}" FontSize="20"/>
+                    </Border>
+                    <TextBlock Grid.Column="3" Grid.Row="1" Text="현재 보충량" HorizontalAlignment="Center" FontSize="10"/>
                     <!--버튼-->
                     <Grid Grid.Column="4" Grid.Row="0" Grid.RowSpan="2">
                         <Grid.RowDefinitions>
