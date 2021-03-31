@@ -51,11 +51,11 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Button Grid.Column="0" Grid.RowSpan="3" Content="{Binding W[CUISourceContainerScanButtonText], Source={StaticResource R}, FallbackValue=자재스캔}" x:Name="btnMTRLScan"  HorizontalAlignment="Stretch" Margin="5" Command="{Binding ScanMtrlCommandAsync}"/>
-                <sdk:Label Grid.Column="1" Grid.Row="0"  Content="{Binding W[CUIMaterialID], Source={StaticResource R}, FallbackValue=자재ID}"  HorizontalAlignment="Right" Margin="0,0,10,0"/>
+                <TextBlock Grid.Column="1" Grid.Row="0"  Text="{Binding W[CUIMaterialID], Source={StaticResource R}, FallbackValue=자재ID}"  VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0"/>
                 <TextBox Grid.Column="2" Grid.Row="0"  VerticalAlignment="Center"  Text="{Binding Path=MtrlId}" IsReadOnly="True"/>
-                <sdk:Label Grid.Column="1"  Grid.Row="1"  Content="{Binding W[CUIMaterialName], Source={StaticResource R}, FallbackValue=자재명}"   HorizontalAlignment="Right"  Margin="0,0,10,0"/>
+                <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding W[CUIMaterialName], Source={StaticResource R}, FallbackValue=자재명}" VerticalAlignment="Center" HorizontalAlignment="Right"  Margin="0,0,10,0"/>
                 <TextBox Grid.Column="2"  Grid.Row="1"  VerticalAlignment="Center"  Text="{Binding Path=MtrlName}" IsReadOnly="True"/>
-                <sdk:Label Grid.Column="1"  Grid.Row="2"  Content="{Binding W[CUIStandardQuantity], Source={StaticResource R}, FallbackValue=기준량}"   HorizontalAlignment="Right"  Margin="0,0,10,0"/>
+                <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding W[CUIStandardQuantity], Source={StaticResource R}, FallbackValue=기준량}" VerticalAlignment="Center" HorizontalAlignment="Right"  Margin="0,0,10,0"/>
                 <TextBox x:Name="tstStdQty" Grid.Column="2"  Grid.Row="2"  VerticalAlignment="Center"  Text="{Binding Path=StdQty}" IsReadOnly="True"/>
                 <Rectangle Grid.Row="4" Grid.ColumnSpan="4" Canvas.ZIndex="1" Fill="Transparent" Margin="0,0,0,20"/>
                 <c1:C1DataGrid Grid.Row="4" Grid.ColumnSpan="4"
@@ -94,9 +94,9 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Button  Grid.Column="0" Grid.RowSpan="3" Content="{Binding W[CUIScaleScanButtonText], Source={StaticResource R}, FallbackValue=저울스캔}" HorizontalAlignment="Stretch" Margin="5" Command="{Binding ScanScaleCommandAsync}"/>
-                <sdk:Label Grid.Column="1" Grid.Row="0" Content="{Binding W[CUIScaleID], Source={StaticResource R}, FallbackValue=저울ID}"  HorizontalAlignment="Right" Margin="0,0,10,0"/>
+                <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding W[CUIScaleID], Source={StaticResource R}, FallbackValue=저울ID}" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0"/>
                 <TextBox Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2"  VerticalAlignment="Center"  Text="{Binding Path=ScaleId}" IsReadOnly="True"/>
-                <sdk:Label Grid.Column="1" Grid.Row="1" Content="{Binding W[CUITareWeight], Source={StaticResource R}, FallbackValue=용기무게}"   HorizontalAlignment="Right"  Margin="0,0,10,0"/>
+                <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding W[CUITareWeight], Source={StaticResource R}, FallbackValue=용기무게}"  VerticalAlignment="Center" HorizontalAlignment="Right"  Margin="0,0,10,0"/>
                 <TextBox Grid.Column="2" Grid.Row="1" VerticalAlignment="Center"  Text="{Binding Path=TareWeight}" IsReadOnly="True"/>
                 <Grid Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="2">
                     <Grid.ColumnDefinitions>
@@ -111,13 +111,11 @@
                         <RowDefinition/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <sdk:Label Grid.Row="0" Content="{Binding UpperWeight}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"/>
-                    <sdk:Label  Grid.Row="0" Grid.RowSpan="3" BorderBrush="Gray" BorderThickness="1">
-                        <TextBox x:Name="txtScaleValue" Text="{Binding ScaleWeight}" TextAlignment="Center" BorderThickness="0"  Grid.Row="0"
-                                 FontSize="30" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" IsReadOnly="True"
-                                 HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Background="{Binding ScaleBackground}" MinWidth="395"/>
-                    </sdk:Label>
-                    <sdk:Label Grid.Row="2" Content="{Binding LowerWeight}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"/>
+                    <TextBlock Grid.Row="0" Text="{Binding UpperWeight}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"/>
+                    <Border Grid.Row="1" Background="{Binding ScaleBackground}">
+                        <TextBlock x:Name="txtScaleValue" Text="{Binding ScaleWeight}" FontSize="30" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <TextBlock Grid.Row="2" Text="{Binding LowerWeight}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold"/>
                 </Grid>
             </Grid>
             <Grid x:Name="Footer" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
