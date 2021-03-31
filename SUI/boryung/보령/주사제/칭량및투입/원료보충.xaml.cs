@@ -27,34 +27,9 @@ namespace 보령
         {
             get { return "TABLE,원료보충"; }
         }
-        private void Main_Closed(object sender, EventArgs e)
-        {
-            (BusyIn.DataContext as 원료보충ViewModel).StopTimer();
-        }
         private void btnCansel_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                (BusyIn.DataContext as 원료보충ViewModel).StopTimer();
-                this.DialogResult = true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        }
-
-        private void txtScaleId_KeyDown(object sender, KeyEventArgs e)
-        {
-            try
-            {
-                if(e.Key == Key.Enter && BusyIn.DataContext is 원료보충ViewModel)
-                    (BusyIn.DataContext as 원료보충ViewModel).ConnectScaleCommand.Execute(txtScaleId.Text);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            this.DialogResult = true;
         }
     }
 }

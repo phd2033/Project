@@ -12,11 +12,12 @@
     xmlns:icommon="clr-namespace:LGCNS.iPharmMES.Common;assembly=LGCNS.iPharmMES.Common"    
     xmlns:icontrol="clr-namespace:LGCNS.iPharmMES.Controls;assembly=LGCNS.iPharmMES.Controls"
     xmlns:ShopFloorUI="clr-namespace:ShopFloorUI;assembly=ShopFloorUI.Common"
+    xmlns:UserCtrl="clr-namespace:보령.UserControls"
     xmlns:local="clr-namespace:보령"
     x:Name="Main"
     mc:Ignorable="d"
     Title="원료보충"
-    Height="250" Width="900" Closed="Main_Closed">
+    Height="400" Width="900">
     <ShopFloorUI:ShopFloorCustomWindow.Resources>
         <local:원료보충ViewModel x:Key="viewModel"/>
         <Style x:Key="HeaderStyle" TargetType="c1:DataGridColumnHeaderPresenter">
@@ -25,6 +26,12 @@
         <Style TargetType="c1:C1DropDown">
             <Setter Property="Background" Value="{x:Null}"/>
         </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>               
     </ShopFloorUI:ShopFloorCustomWindow.Resources>
     <toolkit:BusyIndicator x:Name="BusyIn" IsBusy="{Binding IsBusy, Mode=TwoWay}" DataContext="{Binding Source={StaticResource viewModel}}">
         <i:Interaction.Triggers>
@@ -34,33 +41,59 @@
         </i:Interaction.Triggers>
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition/>
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
-            <Grid x:Name="MainSection">
+            <Grid x:Name="Header" Grid.Row="0">
+                <UserCtrl:CustomUIHeader CurrentOrder="{Binding ElementName=Main, Path=CurrentOrder}"/>
+            </Grid>
+            <Grid x:Name="MainSection" Grid.Row="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
-                <Grid Grid.Row="0">
+                <TextBlock Grid.Row="0" Text="1. 저울연결" HorizontalAlignment="Left" FontSize="10"/>
+                <Grid Grid.Row="1">
                     <Grid.RowDefinitions>
+                        <RowDefinition/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="50"/>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
-                        <ColumnDefinition Width="110"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <!--저울-->
-                    <sdk:Label Grid.Column="0" Grid.Row="0" Content="저울스캔" HorizontalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" x:Name="txtScaleId" Text="{Binding ScaleId, UpdateSourceTrigger=PropertyChanged}" Margin="5"
-                             InputMethod.PreferredImeState="On" InputMethod.PreferredImeConversionMode="Alphanumeric"
-                             KeyDown="txtScaleId_KeyDown"/>
-                    <Button Grid.Column="3" Grid.Row="0" x:Name="btnScaleScan" Command="{Binding ConnectScaleCommand}" CommandParameter="{Binding Text, ElementName=txtScaleId}" Margin="5" Content="연결" IsEnabled="True"/>
+                    <Button Grid.Column="0" Grid.Row="0" Margin="5" Content="저울연결" x:Name="btnScaleScan" Command="{Binding ConnectScaleCommand}"/>
+                    <Border Grid.Column="0" Grid.Row="1" Margin="5" Background="LightGray" BorderBrush="Black" BorderThickness="1">
+                        <TextBlock Margin="5" x:Name="txtScaleId" Text="{Binding ScaleId}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="15"/>
+                    </Border>
+                    <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Margin="5" BorderBrush="Black" BorderThickness="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Column="1" Grid.Row="0" Text="저울현재값" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="1" Grid.Row="1" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="txtScaleWeight" Text="{Binding ScaleWeight}" FontSize="20"/>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" Margin="5" BorderBrush="Black" BorderThickness="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="현재진행단계" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="1" Text="{Binding CurrentStateSTR}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" FontWeight="Bold"/>
+                        </Grid>
+                    </Border>
                 </Grid>
-                <Grid Grid.Row="1" Grid.RowSpan="2">
+                <TextBlock Grid.Row="2" Text="2. 원료보충" HorizontalAlignment="Left" FontSize="10"/>
+                <Grid Grid.Row="3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
@@ -72,12 +105,16 @@
                         <RowDefinition/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <!--중량측정-->                    
-                    <TextBox Grid.Column="0" Grid.Row="0" x:Name="txtfrozen" Text="{Binding FrozenWeight, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center" IsReadOnly="True" FontSize="20" Margin="5" Padding="0,30"/>
-                    <sdk:Label Grid.Column="0" Grid.Row="1" Content="{Binding HEADER1, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"/>
+                    <!--중량측정-->
+                    <Border Grid.Column="0" Grid.Row="0" Margin="5" Background="LightGray" BorderBrush="Black" BorderThickness="1">
+                        <TextBlock x:Name="txtfrozen" Text="{Binding FrozenWeight, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" Margin="5" TextWrapping="Wrap"/>
+                    </Border>
+                    <TextBlock Grid.Column="0" Grid.Row="1" Text="{Binding HEADER1, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="10"/>
                     <c1:C1DropDown Grid.Column="1" Grid.Row="0" Margin="5" AutoClose="True">
                         <c1:C1DropDown.Header>
-                            <TextBox x:Name="txtinitial" Text="{Binding InitialWeight, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center" IsReadOnly="True" FontSize="20" Padding="0,30"/>
+                            <Border Background="LightGray" BorderBrush="Black" BorderThickness="1">
+                                <TextBlock x:Name="txtinitial" Text="{Binding StandardWeight, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" TextWrapping="Wrap"/>
+                            </Border>
                         </c1:C1DropDown.Header>
                         <c1:C1DropDown.Content>
                             <Border Padding="2" Background="White">
@@ -93,7 +130,7 @@
                             </Border>
                         </c1:C1DropDown.Content>
                     </c1:C1DropDown>
-                    <sdk:Label Grid.Column="1" Grid.Row="1" Content="조제액 무게" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Grid.Row="1" Text="조제액 무게" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="10"/>
                     <Border Grid.Column="2" Grid.Row="0" Margin="5" Background="LightGray" BorderBrush="Black" BorderThickness="1">
                         <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
                             <Grid.RowDefinitions>
@@ -101,14 +138,16 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            <sdk:Label Grid.Row="0" x:Name="txtMax" HorizontalAlignment="Center" Margin="0,2" Content="{Binding MaxWeight, UpdateSourceTrigger=PropertyChanged}" FontSize="15"/>
-                            <sdk:Label Grid.Row="1" x:Name="txtLoss" Content="{Binding LossWeight, UpdateSourceTrigger=PropertyChanged}" FontSize="20"/>
-                            <sdk:Label Grid.Row="2" x:Name="txtMin" HorizontalAlignment="Center" Margin="0,2" Content="{Binding MinWeight, UpdateSourceTrigger=PropertyChanged}" FontSize="15"/>
+                            <TextBlock Grid.Row="0" x:Name="txtMax" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,2" Text="{Binding MaxWeight}" FontSize="15"/>
+                            <TextBlock Grid.Row="1" x:Name="txtLoss"  HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding LossWeight}" FontSize="20"/>
+                            <TextBlock Grid.Row="2" x:Name="txtMin" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,2" Text="{Binding MinWeight}" FontSize="15"/>
                         </Grid>
                     </Border>
-                    <sdk:Label Grid.Column="2" Grid.Row="1" Content="손실량" HorizontalAlignment="Center"/>
-                    <TextBox Grid.Column="3" Grid.Row="0" x:Name="txtadd" Text="{Binding AddWeight, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Center" IsReadOnly="True" FontSize="20" Margin="5" Padding="0,30"/>
-                    <sdk:Label Grid.Column="3" Grid.Row="1" Content="{Binding HEADER2, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="2" Grid.Row="1" Text="손실량" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="10"/>
+                    <Border Grid.Column="3" Grid.Row="0" Margin="5" Background="LightGray" BorderBrush="Black" BorderThickness="1">
+                        <TextBlock x:Name="txtadd" Text="{Binding AddWeight, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" Margin="5" TextWrapping="Wrap"/>
+                    </Border>
+                    <TextBlock Grid.Column="3" Grid.Row="1" Text="{Binding HEADER2, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="10"/>
                     <!--버튼-->
                     <Grid Grid.Column="4" Grid.Row="0" Grid.RowSpan="2">
                         <Grid.RowDefinitions>
@@ -120,15 +159,16 @@
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid x:Name="Footer" Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Button x:Name="btnConfirm" Grid.Column="1" Content="기록" Margin="5" Command="{Binding ConfirmCommandAsync}" IsEnabled="{Binding btnConfrimEnable, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button x:Name="btnCansel" Grid.Column="2" Content="취소" Margin="5"  Click="btnCansel_Click"/>
+            <Grid x:Name="Footer" Grid.Row="2">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                    <TextBlock Text="{Binding Path=W[CUICurrentPrintName], Source={StaticResource R}, FallbackValue=프린트명}" Margin="2,0"/>
+                    <TextBlock Text="{Binding curPrintName, FallbackValue=N/A}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Margin="5,0" x:Name="btnChangePrint" Width="100" Content="{Binding W[CUIChangePrintButtonText], Source={StaticResource R}, FallbackValue=프린터변경}" Command="{Binding ChangePrintCommand}"/>
+                    <Button Margin="5,0" x:Name="btnConfirm" Width="100" Content="{Binding W[CUIDataWriteToEBRButtonText], Source={StaticResource R}, FallbackValue=기록}" Command="{Binding ConfirmCommandAsync}"/>
+                    <Button Margin="5,0" x:Name="btnClose" Width="100" Content="{Binding [CUICloseButtonText], Source={StaticResource R}, FallbackValue=종료}" Click="btnCansel_Click"/>
+                </StackPanel>
             </Grid>
         </Grid>
     </toolkit:BusyIndicator>
