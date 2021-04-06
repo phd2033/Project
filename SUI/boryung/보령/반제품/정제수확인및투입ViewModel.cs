@@ -428,6 +428,7 @@ namespace 보령
                                     {
                                         IsEnabled = true;
                                         IsCharging = false;
+                                        _DispatcherTimer.Stop();
                                     }
                                     else
                                     {
@@ -585,7 +586,7 @@ namespace 보령
                                 row["자재명"] = lastWeighingInfo.MTRLNAME != null ? lastWeighingInfo.MTRLNAME : "";
                                 row["원료배치번호"] = lastWeighingInfo.MSUBLOTID != null ? lastWeighingInfo.MSUBLOTID : "";
                                 row["바코드"] = lastWeighingInfo.MSUBLOTBCD != null ? lastWeighingInfo.MSUBLOTBCD : "";
-                                row["무게"] = _TotalWeight.WeightString;
+                                row["무게"] = string.Format(("{0:N" + _scalePrecision + "}"), lastWeighingInfo.TOTALQTY);
                                 row["단위"] = _TotalWeight.Uom;
                                 dt.Rows.Add(row);
 
