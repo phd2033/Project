@@ -85,9 +85,9 @@
 
                 <Line Grid.Column="3" Grid.Row="6"  Grid.ColumnSpan="2"   Stroke="Black" Stretch="Fill" StrokeThickness="1" X1="0" Y1="0" X2="1" Y2="0" ></Line>
                 <TextBox   Grid.Column="3" Grid.Row="5" Text="{Binding Result_OUT, StringFormat='0.##0'}" TextAlignment="Center" Margin="20,0,10,0" IsReadOnly="True" />
-                <sdk:Label Grid.Column="4" Grid.Row="5" Content="(T)" Style="{Binding Source={StaticResource LabelStyle}}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <sdk:Label Grid.Column="4" Grid.Row="5" Content="(C)" Style="{Binding Source={StaticResource LabelStyle}}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 <TextBox   Grid.Column="3" Grid.Row="7" Text="{Binding Result_IN, StringFormat='0.##0'}" TextAlignment="Center" Margin="20,0,10,0" IsReadOnly="True" />
-                <sdk:Label  Grid.Column="4" Grid.Row="7" Content="(T)" Style="{Binding Source={StaticResource LabelStyle}}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <sdk:Label  Grid.Column="4" Grid.Row="7" Content="(C)" Style="{Binding Source={StaticResource LabelStyle}}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 <sdk:Label Grid.Column="1" Grid.Row="6" Content="=" Style="{Binding Source={StaticResource LabelStyle}}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 <sdk:Label  Grid.Column="5" Grid.Row="5" Grid.RowSpan="3"  Content="×" Style="{Binding Source={StaticResource LabelStyle}}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 <sdk:Label  Grid.Column="6" Grid.Row="5" Grid.RowSpan="3"  Content="100" Style="{Binding Source={StaticResource LabelStyle}}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
