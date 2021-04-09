@@ -18,6 +18,7 @@ using System.Windows.Media.Effects;
 using ImageTools;
 using ImageTools.IO.Png;
 using C1.Silverlight;
+using System.Collections.ObjectModel;
 
 namespace 보령
 {
@@ -53,6 +54,9 @@ namespace 보령
         }
 
         CaptureSource _captureSource;
+
+        private ReadOnlyCollection<VideoCaptureDevice> _AvailableDevices;
+        private int curCameraSeq = 0;
         #endregion
 
         #region[Bizlue]
@@ -197,11 +201,15 @@ namespace 보령
 
                                 if (CaptureDeviceConfiguration.AllowedDeviceAccess || CaptureDeviceConfiguration.RequestDeviceAccess())
                                 {
-                                    VideoCaptureDevice videoCaptureDevice = CaptureDeviceConfiguration.GetDefaultVideoCaptureDevice();
+                                    _AvailableDevices = CaptureDeviceConfiguration.GetAvailableVideoCaptureDevices();
 
-                                    if (null != videoCaptureDevice)
+                                    if (_AvailableDevices.Count > 0)
+                                        curCameraSeq = _AvailableDevices.Count - 1;
+
+                                    VideoCaptureDevice videoCaptureDevice = _AvailableDevices[curCameraSeq];
+
+                                    if (videoCaptureDevice != null)
                                     {
-                                        //_capture = new CaptureSource();
                                         _captureSource.VideoCaptureDevice = videoCaptureDevice;
                                         _captureSource.Start();
 
@@ -214,8 +222,7 @@ namespace 보령
                                         isEbConfirm = false;
 
                                     }
-                                    //else
-                                    //    MessageBox.Show("카메라 연결이 안되었습니다. 확인후 다시 하시기 바랍니다.");
+
                                 }
                             }
                             else
@@ -263,6 +270,67 @@ namespace 보령
                 {
                     return CommandCanExecutes.ContainsKey("TakePicutreCommand") ?
                         CommandCanExecutes["TakePicutreCommand"] : (CommandCanExecutes["TakePicutreCommand"] = true);
+                });
+            }
+        }
+
+        public ICommand ChangeCameraCommand
+        {
+            get
+            {
+                return new AsyncCommandBase(async arg =>
+                {
+                    using (await AwaitableLocks["ChangeCameraCommand"].EnterAsync())
+                    {
+                        try
+                        {
+                            IsBusy = true;
+                            CommandResults["ChangeCameraCommand"] = false;
+                            CommandCanExecutes["ChangeCameraCommand"] = false;
+
+                            ///
+                            if(_AvailableDevices != null && _AvailableDevices.Count > 0 && _captureSource != null && _captureSource.State == CaptureState.Started)
+                            {
+                                if (_AvailableDevices.Count - 1 == curCameraSeq)
+                                    curCameraSeq = 0;
+                                else
+                                    curCameraSeq++;
+
+                                VideoCaptureDevice videoCaptureDevice = _AvailableDevices[curCameraSeq];
+                                if (videoCaptureDevice != null)
+                                {
+                                    _captureSource.Stop();
+                                    _captureSource.VideoCaptureDevice = videoCaptureDevice;
+                                    _captureSource.Start();
+
+                                    VideoBrush videoBrush = new VideoBrush();
+                                    videoBrush.Stretch = Stretch.Uniform;
+                                    videoBrush.SetSource(_captureSource);
+                                    _MainWnd.rectWebCamView.Fill = videoBrush;
+     
+                                    isEbConfirm = false;
+
+                                }
+                            }
+                            ///
+                            
+                            CommandResults["ChangeCameraCommand"] = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            CommandCanExecutes["ChangeCameraCommand"] = true;
+                            OnException(ex.Message, ex);
+                        }
+                        finally
+                        {
+                            CommandCanExecutes["ChangeCameraCommand"] = true;
+                            IsBusy = false;
+                        }
+                    }
+                }, arg =>
+                {
+                    return CommandCanExecutes.ContainsKey("ChangeCameraCommand") ?
+                        CommandCanExecutes["ChangeCameraCommand"] : (CommandCanExecutes["ChangeCameraCommand"] = true);
                 });
             }
         }

@@ -70,11 +70,18 @@
                     <Rectangle Grid.Row="0" Fill="{Binding ViedoBrush}" Name="rectWebCamView" Visibility="Collapsed"/>
                     <Border Grid.Row="1" BorderBrush="Black" BorderThickness="0,1,0,0">
                         <Grid>
-                            <Button Margin="4,4,4,4" Content="카메라연결" FontSize="12" FontWeight="Bold" Width="80" Height="40" HorizontalAlignment="Left"
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Horizontal" Grid.Column="0">
+                                <Button Margin="4,4,4,4" Content="카메라연결" FontSize="12" FontWeight="Bold" Width="80" Height="40" HorizontalAlignment="Left"
                                 Command="{Binding Path=TakePictureCommand}" Name="btnConnetWebCam" />
-                            <Button Margin="4,4,0,4" Content="이미지 등록" FontSize="12" FontWeight="Bold" Width="120" Height="40" HorizontalAlignment="Right"
+                                <Button Margin="4,4,4,4" Content="카메라변경" FontSize="12" FontWeight="Bold" Width="80" Height="40" HorizontalAlignment="Left"
+                                Command="{Binding Path=ChangeCameraCommand}" Name="btnChangeWebCam" />
+                            </StackPanel>
+                            <Button Grid.Column="1" Margin="4,4,0,4" Content="이미지 등록" FontSize="12" FontWeight="Bold" Width="120" Height="40" HorizontalAlignment="Right"
                                 Command="{Binding Path=OpenFileCommand}" />
-
                         </Grid>
                     </Border>
                 </Grid>
