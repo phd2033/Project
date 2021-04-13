@@ -79,7 +79,7 @@
                 <sdk:Label  Grid.Column="5" Grid.Row="1" Grid.RowSpan="3" Content="×" Style="{Binding Source={StaticResource LabelStyle}}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 <sdk:Label  Grid.Column="6" Grid.Row="1" Grid.RowSpan="3" Content="100" Style="{Binding Source={StaticResource LabelStyle}}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                 <sdk:Label  Grid.Column="3" Grid.Row="1" Grid.ColumnSpan="2" Content="선별 양품 무게 (g) ÷ (평균질량(mg) x 1,000)" Style="{Binding Source={StaticResource LabelStyle}}" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
-                <sdk:Label  Grid.Column="3" Grid.Row="3" Grid.ColumnSpan="2" Content="평균질량 (C)" Style="{Binding Source={StaticResource LabelStyle}}" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                <sdk:Label  Grid.Column="3" Grid.Row="3" Grid.ColumnSpan="2" Content="인수량 (C)" Style="{Binding Source={StaticResource LabelStyle}}" HorizontalAlignment="Center" VerticalAlignment="Top"/>
 
 
 
