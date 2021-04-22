@@ -6,9 +6,9 @@ namespace 보령
 {
     
     /// <summary>
-    /// summary of BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul
+    /// summary of BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule
     /// </summary>
-    public partial class BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul : BizActorRuleBase
+    public partial class BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule : BizActorRuleBase
     {
         public sealed partial class INDATACollection : BufferedObservableCollection<INDATA>
         {
@@ -418,9 +418,9 @@ namespace 보령
                 }
             }
         }
-        public BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul()
+        public BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule()
         {
-            RuleName = "BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul";
+            RuleName = "BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule";
             BizName = "";
             _INDATAs = new INDATACollection();
             _OUTDATAs = new OUTDATACollection();

@@ -32,11 +32,11 @@ namespace 보령
             set { _mainWnd = value; }
         }
 
-        BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul;
-        public BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul
+        BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule;
+        public BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule
         {
-            get { return _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul; }
-            set { _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul = value; }
+            get { return _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule; }
+            set { _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule = value; }
         }
 
 
@@ -102,10 +102,10 @@ namespace 보령
 
                                 PRECISION = MainWnd.CurrentInstruction.Raw.PRECISION.HasValue ? MainWnd.CurrentInstruction.Raw.PRECISION.Value : 1;
 
-                                _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul.INDATAs.Clear();
-                                _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul.OUTDATAs.Clear();
+                                _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule.INDATAs.Clear();
+                                _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule.OUTDATAs.Clear();
 
-                                _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul.INDATAs.Add(new BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul.INDATA()
+                                _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule.INDATAs.Add(new BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule.INDATA()
                                 {
                                     STD_OPTIONITEM = "SYS_MTATID_COMPRESS_STDWEIGHT",
                                     AVG_OPTIONITEM = "SYS_IPCTEST_ITEMID",
@@ -115,17 +115,17 @@ namespace 보령
                                     INSUSER = LGCNS.EZMES.Common.LogInInfo.UserID
                                 });
 
-                                await _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul.Execute();
+                                await _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule.Execute();
 
 
                                 //outputLabel = "캡슐충전 반제품 (kg)  ÷  캡슐충전 평균질량  × 1,000,000 (T)";
                                 //inputLabel = "후혼합 반제품 (kg)  ÷  캡슐충전 기준질량  × 1,000,000 (T)";
                                 // 캡슐공정수율 = ( (캡슐충전 반제품 (kg)  ÷  캡슐충전 평균질량  × 1,000,000 (T))   / (후혼합 반제품 (kg)  ÷  캡슐충전 기준질량  × 1,000,000 (T)) ) * 100                         
-                                if (_BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul.OUTDATAs.Count > 0)
+                                if (_BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule.OUTDATAs.Count > 0)
                                 {
-                                    Result_IN = _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul.OUTDATAs[0].IN_VALUE;
-                                    Result_OUT = _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul.OUTDATAs[0].OUT_VALUE;
-                                    Result_SUM = _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul.OUTDATAs[0].SUM.HasValue ? MathExt.Round(_BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul.OUTDATAs[0].SUM.Value, PRECISION, MidpointRounding.AwayFromZero) : 0m;
+                                    Result_IN = _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule.OUTDATAs[0].IN_VALUE;
+                                    Result_OUT = _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule.OUTDATAs[0].OUT_VALUE;
+                                    Result_SUM = _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule.OUTDATAs[0].SUM.HasValue ? MathExt.Round(_BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule.OUTDATAs[0].SUM.Value, PRECISION, MidpointRounding.AwayFromZero) : 0m;
 
                                 }
                             }
@@ -293,7 +293,7 @@ namespace 보령
 
         public 캡슐공정수율ViewModel()
         {
-            _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul = new BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul();
+            _BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule = new BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule();
             //  Is_EnableOKBtn = false;
         }
 
