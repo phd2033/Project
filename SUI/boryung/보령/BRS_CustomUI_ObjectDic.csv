@@ -17,3 +17,5 @@ CUICloseButtonText,종료
 FERTDisassembleOrderSelectionYieldFormula,선별 수율 계산식
 FERTDisassembleOrderSelectionYieldFormulaNumerator,T (선별 정제 양품수량)
 FERTDisassembleOrderSelectionYieldFormulaDenominator,T (완제품할당량 X 포장단위)
+CUIChangePrintButtonText,프린터변경
+CUIChangeScaleButtonText,저울변경
