@@ -171,6 +171,7 @@
     <Compile Include="ViewModel\BoardSettingPopupViewModel.cs" />
     <Compile Include="ViewModel\DetailSearch\FacilitiesOperationStatusViewModel.cs" />
     <Compile Include="ViewModel\DetailSearch\IPCTestResultViewModel.cs" />
+    <Compile Include="ViewModel\DetailSearch\ManufacturingPerformanceIndividualViewModel.cs" />
     <Compile Include="ViewModel\DetailSearch\ManufacturingProcessStatusViewModel.cs" />
     <Compile Include="ViewModel\IPCCPPRsltViewViewModel.cs" />
     <Compile Include="ViewModel\Mockup_classes.cs" />
@@ -193,6 +194,9 @@
     </Compile>
     <Compile Include="View\DetailSearch\IPCTestResultView.xaml.cs">
       <DependentUpon>IPCTestResultView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\DetailSearch\ManufacturingPerformanceIndividualView.xaml.cs">
+      <DependentUpon>ManufacturingPerformanceIndividualView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\DetailSearch\ManufacturingPerformanceView.xaml.cs">
       <DependentUpon>ManufacturingPerformanceView.xaml</DependentUpon>
@@ -271,6 +275,10 @@
     <Page Include="View\DetailSearch\IPCTestResultView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\DetailSearch\ManufacturingPerformanceIndividualView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\DetailSearch\ManufacturingPerformanceView.xaml">
       <SubType>Designer</SubType>
