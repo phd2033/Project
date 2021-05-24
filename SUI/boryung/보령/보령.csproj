@@ -225,7 +225,7 @@
     <Compile Include="Model.Access\수율계산\BR_BRS_SEL_Yield_Calculation_Product_Yield.Access.cs" />
     <Compile Include="Model.Access\수율계산\BR_BRS_SEL_Yield_Calculation_Product_Yield_Capsule.Access.cs" />
     <Compile Include="Model.Access\수율계산\BR_BRS_SEL_Yield_Calculation_Weight_Capsule_Selection.Access.cs" />
-    <Compile Include="Model.Access\수율계산\BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsul.Access.cs" />
+    <Compile Include="Model.Access\수율계산\BR_BRS_SEL_Yield_Calculation_Weight_Compress_Capsule.Access.cs" />
     <Compile Include="Model.Access\수율계산\BR_BRS_SEL_Yield_Calculation_Weight_FERT_Selection.Access.cs" />
     <Compile Include="Model.Access\수율계산\BR_BRS_SEL_Yield_Calculation_Weight_Packing.Access.cs" />
     <Compile Include="Model.Access\수율계산\BR_BRS_SEL_Yield_Calculation_Weight_Packing_INPUT.Access.cs" />
