@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace 보령
 {
-    
+
     /// <summary>
     /// summary of BR_BRS_REG_WMS_PACK_PALLET_IN_MANUAL
     /// </summary>
@@ -22,7 +22,7 @@ namespace 보령
                 return this._INDATAs;
             }
         }
-        [BizActorInputSetDefineAttribute(Order="0")]
+        [BizActorInputSetDefineAttribute(Order = "0")]
         [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
         public partial class INDATA : BizActorDataSetBase
         {
@@ -294,6 +294,162 @@ namespace 보령
                 }
             }
         }
+        public sealed partial class INDATA_MSUBLOTCollection : BufferedObservableCollection<INDATA_MSUBLOT>
+        {
+        }
+        private INDATA_MSUBLOTCollection _INDATA_MSUBLOTs;
+        [BizActorInputSetAttribute()]
+        public INDATA_MSUBLOTCollection INDATA_MSUBLOTs
+        {
+            get
+            {
+                return this._INDATA_MSUBLOTs;
+            }
+        }
+        [BizActorInputSetDefineAttribute(Order = "1")]
+        [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
+        public partial class INDATA_MSUBLOT : BizActorDataSetBase
+        {
+            public INDATA_MSUBLOT()
+            {
+                RowLoadedFlag = false;
+            }
+            private bool _RowLoadedFlag;
+            public bool RowLoadedFlag
+            {
+                get
+                {
+                    return this._RowLoadedFlag;
+                }
+                set
+                {
+                    this._RowLoadedFlag = value;
+                    this.OnPropertyChanged("_RowLoadedFlag");
+                }
+            }
+            private string _RowIndex;
+            public string RowIndex
+            {
+                get
+                {
+                    return this._RowIndex;
+                }
+                set
+                {
+                    this._RowIndex = value;
+                    this.OnPropertyChanged("RowIndex");
+                }
+            }
+            private string _RowEditSec;
+            public string RowEditSec
+            {
+                get
+                {
+                    return this._RowEditSec;
+                }
+                set
+                {
+                    this._RowEditSec = value;
+                    this.OnPropertyChanged("RowEditSec");
+                }
+            }
+            private string _MSUBLOTID;
+            [BizActorInputItemAttribute()]
+            public string MSUBLOTID
+            {
+                get
+                {
+                    return this._MSUBLOTID;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._MSUBLOTID = value;
+                        this.CheckIsOriginal("MSUBLOTID", value);
+                        this.OnPropertyChanged("MSUBLOTID");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+            private string _MSUBLOTBCD;
+            [BizActorInputItemAttribute()]
+            public string MSUBLOTBCD
+            {
+                get
+                {
+                    return this._MSUBLOTBCD;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._MSUBLOTBCD = value;
+                        this.CheckIsOriginal("MSUBLOTBCD", value);
+                        this.OnPropertyChanged("MSUBLOTBCD");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+            private System.Nullable<decimal> _MSUBLOTQTY;
+            [BizActorInputItemAttribute()]
+            public System.Nullable<decimal> MSUBLOTQTY
+            {
+                get
+                {
+                    return this._MSUBLOTQTY;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._MSUBLOTQTY = value;
+                        this.CheckIsOriginal("MSUBLOTQTY", value);
+                        this.OnPropertyChanged("MSUBLOTQTY");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+        }
         public sealed partial class HISDATACollection : BufferedObservableCollection<HISDATA>
         {
         }
@@ -306,7 +462,7 @@ namespace 보령
                 return this._HISDATAs;
             }
         }
-        [BizActorOutputSetDefineAttribute(Order="0")]
+        [BizActorOutputSetDefineAttribute(Order = "0")]
         [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
         public partial class HISDATA : BizActorDataSetBase
         {
@@ -390,6 +546,7 @@ namespace 보령
         {
             RuleName = "BR_BRS_REG_WMS_PACK_PALLET_IN_MANUAL";
             _INDATAs = new INDATACollection();
+            _INDATA_MSUBLOTs = new INDATA_MSUBLOTCollection();
             _HISDATAs = new HISDATACollection();
         }
     }
