@@ -24,7 +24,7 @@ namespace 보령
 
         public override string TableTypeName
         {
-            get { return "TABLE,포장완제품입고2"; }
+            get { return "TABLE,포장완제품입고3"; }
         }
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
