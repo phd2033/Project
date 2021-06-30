@@ -83,6 +83,51 @@ namespace 보령
         /// 전달받은 저울값과 단위로 ScaleWeight 세팅
         /// True : 변환 성공, False : 변환 실패
         /// </summary>
+        /// <param name="weightuom"></param>
+        public bool SetWeight(string weightuom)
+        {
+            string weight;
+            string uom;
+            decimal result;
+
+            if (weightuom.Contains("G") || weightuom.Contains("g"))
+            {
+                weight = weightuom.ToUpper().Replace("G", "");
+                uom = weightuom.Replace(weight, "");
+            }
+            else if (weightuom.ToUpper().Contains("KG"))
+            {
+                weight = weightuom.ToUpper().Replace("KG", "");
+                uom = weightuom.Replace(weight, "");
+            }
+            else
+                return false;
+
+            if (decimal.TryParse(weight, out result))
+            {
+                Value = result;
+
+                int decimalPoint = weight.IndexOf(".");
+                if (decimalPoint == -1)
+                {
+                    this.Precision = 0;
+                }
+                else
+                {
+                    this.Precision = (weight.Length - decimalPoint - 1);
+                }
+
+                Uom = uom;
+
+                return true;
+            }
+
+            return false;
+        }
+        /// <summary>
+        /// 전달받은 저울값과 단위로 ScaleWeight 세팅
+        /// True : 변환 성공, False : 변환 실패
+        /// </summary>
         /// <param name="weight"></param>
         /// <param name="uom"></param>
         public bool SetWeight(string weight, string uom)

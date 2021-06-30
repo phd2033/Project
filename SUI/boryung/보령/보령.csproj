@@ -33,7 +33,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\Binaries\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;SILVERLIGHT</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -52,82 +52,85 @@
   <ItemGroup>
     <Reference Include="C1.Silverlight.5, Version=5.0.20122.268, Culture=neutral, PublicKeyToken=2aa4ec5576d6c3ce, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference Assemblies(br)\C1.Silverlight.5.dll</HintPath>
+      <HintPath>..\..\..\Reference Assemblies\C1forSilverLight5\C1.Silverlight.5.dll</HintPath>
     </Reference>
     <Reference Include="C1.Silverlight.Chart.5, Version=5.0.20122.268, Culture=neutral, PublicKeyToken=2aa4ec5576d6c3ce, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference Assemblies(br)\C1.Silverlight.Chart.5.dll</HintPath>
+      <HintPath>..\..\..\Reference Assemblies\C1forSilverLight5\C1.Silverlight.Chart.5.dll</HintPath>
     </Reference>
     <Reference Include="C1.Silverlight.Chart.Extended.5, Version=5.0.20122.268, Culture=neutral, PublicKeyToken=2aa4ec5576d6c3ce, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference Assemblies(br)\C1.Silverlight.Chart.Extended.5.dll</HintPath>
+      <HintPath>..\..\..\Reference Assemblies\C1forSilverLight5\C1.Silverlight.Chart.Extended.5.dll</HintPath>
     </Reference>
     <Reference Include="C1.Silverlight.Data.5, Version=5.0.20122.268, Culture=neutral, PublicKeyToken=2aa4ec5576d6c3ce, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference Assemblies(br)\C1.Silverlight.Data.5.dll</HintPath>
+      <HintPath>..\..\..\Reference Assemblies\C1forSilverLight5\C1.Silverlight.Data.5.dll</HintPath>
     </Reference>
     <Reference Include="C1.Silverlight.DataGrid.5, Version=5.0.20122.268, Culture=neutral, PublicKeyToken=2aa4ec5576d6c3ce, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference Assemblies(br)\C1.Silverlight.DataGrid.5.dll</HintPath>
+      <HintPath>..\..\..\Reference Assemblies\C1forSilverLight5\C1.Silverlight.DataGrid.5.dll</HintPath>
     </Reference>
     <Reference Include="C1.Silverlight.DateTimeEditors.5, Version=5.0.20122.268, Culture=neutral, PublicKeyToken=2aa4ec5576d6c3ce, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference Assemblies(br)\C1.Silverlight.DateTimeEditors.5.dll</HintPath>
+      <HintPath>..\..\..\Reference Assemblies\C1forSilverLight5\C1.Silverlight.DateTimeEditors.5.dll</HintPath>
     </Reference>
     <Reference Include="C1.Silverlight.FlexGrid.5, Version=5.0.20122.268, Culture=neutral, PublicKeyToken=2aa4ec5576d6c3ce, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference Assemblies(br)\C1.Silverlight.FlexGrid.5.dll</HintPath>
+      <HintPath>..\..\..\Reference Assemblies\C1forSilverLight5\C1.Silverlight.FlexGrid.5.dll</HintPath>
     </Reference>
     <Reference Include="C1.Silverlight.Imaging.5, Version=5.0.20122.268, Culture=neutral, PublicKeyToken=2aa4ec5576d6c3ce, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference Assemblies(br)\C1.Silverlight.Imaging.5.dll</HintPath>
+      <HintPath>..\..\..\Reference Assemblies\C1forSilverLight5\C1.Silverlight.Imaging.5.dll</HintPath>
     </Reference>
     <Reference Include="CheckScale, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference Assemblies(br)\CheckScale.dll</HintPath>
+      <HintPath>..\..\..\Reference Assemblies\CheckScale.dll</HintPath>
     </Reference>
-    <Reference Include="ImageTools">
-      <HintPath>..\Reference Assemblies(br)\ImageTools.dll</HintPath>
+    <Reference Include="ImageTools, Version=1.0.0.0, Culture=neutral, PublicKeyToken=fb8ec453a8e30e6c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Reference Assemblies\ImageTools\ImageTools.dll</HintPath>
     </Reference>
-    <Reference Include="ImageTools.IO.Png">
-      <HintPath>..\Reference Assemblies(br)\ImageTools.IO.Png.dll</HintPath>
+    <Reference Include="ImageTools.IO.Png, Version=1.0.0.0, Culture=neutral, PublicKeyToken=fb8ec453a8e30e6c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Reference Assemblies\ImageTools\ImageTools.IO.Png.dll</HintPath>
     </Reference>
-    <Reference Include="ImageTools.Utils">
-      <HintPath>..\Reference Assemblies(br)\ImageTools.Utils.dll</HintPath>
+    <Reference Include="ImageTools.Utils, Version=1.0.0.0, Culture=neutral, PublicKeyToken=fb8ec453a8e30e6c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Reference Assemblies\ImageTools\ImageTools.Utils.dll</HintPath>
     </Reference>
     <Reference Include="LGCNS.EZMES.Common, Version=3.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference Assemblies(br)\LGCNS.EZMES.Common.dll</HintPath>
+      <HintPath>..\..\..\Reference Assemblies\LGCNS.EZMES.Common.dll</HintPath>
     </Reference>
     <Reference Include="LGCNS.EZMES.ControlsLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference Assemblies(br)\LGCNS.EZMES.ControlsLib.dll</HintPath>
+      <HintPath>..\..\..\Reference Assemblies\LGCNS.EZMES.ControlsLib.dll</HintPath>
     </Reference>
     <Reference Include="LGCNS.EZMES.CorLib, Version=3.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference Assemblies(br)\LGCNS.EZMES.CorLib.dll</HintPath>
+      <HintPath>..\..\..\Reference Assemblies\LGCNS.EZMES.CorLib.dll</HintPath>
     </Reference>
     <Reference Include="LGCNS.iPharmMES.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference Assemblies(br)\LGCNS.iPharmMES.Common.dll</HintPath>
+      <HintPath>..\..\..\Reference Assemblies\LGCNS.iPharmMES.Common.dll</HintPath>
     </Reference>
     <Reference Include="LGCNS.iPharmMES.Controls, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference Assemblies(br)\LGCNS.iPharmMES.Controls.dll</HintPath>
+      <HintPath>..\..\..\Reference Assemblies\LGCNS.iPharmMES.Controls.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CompilerServices.AsyncTargetingPack.Silverlight5, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference Assemblies(br)\Microsoft.CompilerServices.AsyncTargetingPack.Silverlight5.dll</HintPath>
+      <HintPath>..\..\..\Reference Assemblies\Silverlight5AsyncTargetingPack\Microsoft.CompilerServices.AsyncTargetingPack.Silverlight5.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="mscorlib" />
     <Reference Include="ShopFloorUI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference Assemblies(br)\ShopFloorUI.dll</HintPath>
+      <HintPath>..\..\..\Reference Assemblies\ShopFloorUI.dll</HintPath>
     </Reference>
     <Reference Include="ShopFloorUI.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference Assemblies(br)\ShopFloorUI.Common.dll</HintPath>
+      <HintPath>..\..\..\Reference Assemblies\ShopFloorUI.Common.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations, Version=5.0.5.0, Culture=neutral, PublicKeyToken=ddd0da4d3e678217, processorArchitecture=MSIL" />
     <Reference Include="System.ServiceModel" />
@@ -142,17 +145,18 @@
     <Reference Include="System.Windows.Controls.Input, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Windows.Controls.Input.Toolkit, Version=5.0.5.0, Culture=neutral, PublicKeyToken=2c5c654d367bf4a7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference Assemblies(br)\System.Windows.Controls.Input.Toolkit.dll</HintPath>
+      <HintPath>..\..\..\Reference Assemblies\Silverlight5Toolkit\System.Windows.Controls.Input.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Controls.Layout.Toolkit, Version=5.0.5.0, Culture=neutral, PublicKeyToken=2c5c654d367bf4a7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference Assemblies(br)\System.Windows.Controls.Layout.Toolkit.dll</HintPath>
+      <HintPath>..\..\..\Reference Assemblies\Silverlight5Toolkit\System.Windows.Controls.Layout.Toolkit.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Controls.Navigation, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Windows.Controls.Toolkit, Version=5.0.5.0, Culture=neutral, PublicKeyToken=2c5c654d367bf4a7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Reference Assemblies(br)\System.Windows.Controls.Toolkit.dll</HintPath>
+      <HintPath>..\..\..\Reference Assemblies\Silverlight5Toolkit\System.Windows.Controls.Toolkit.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Data, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Reference Assemblies(br)\System.Windows.Interactivity.dll</HintPath>
@@ -162,6 +166,7 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataModel\CampaignProduction.cs" />
     <Compile Include="DataModel\Container.cs" />
     <Compile Include="DataModel\Weight.cs" />
     <Compile Include="LIMS\LIMS샘플링확인.xaml.cs">
@@ -182,6 +187,7 @@
     <Compile Include="Model.Access\BR_BRS_SEL_EquipmentStatus_PROC_OPSG.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_SEL_ProductionOrderBOM_CHGSEQ.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_SEL_ProductionOrder_Component_Summary.Access.cs" />
+    <Compile Include="Model.Access\BR_BRS_SEL_ProductionOrder_RECIPEISTGUID.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_SEL_ProductOrder_JOB_HIST.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_UPD_EquipmentAction_ShopFloor_Charge_Multi.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_UPD_EquipmentAction_ShopFloor_PROCEND_ALL.Access.cs" />
@@ -250,6 +256,9 @@
     <Compile Include="Model.Access\칭량\BR_BRS_GET_DispenseSubLot_VESSID_ISNULL.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_BRS_ProductionOrderDispense_VesselInfo.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_BRS_REG_Dispense_Charging_Solvent_Add.Access.cs" />
+    <Compile Include="Model.Access\칭량\BR_BRS_SEL_AreaWeighing_SourceContainer.Access.cs" />
+    <Compile Include="Model.Access\칭량\BR_BRS_SEL_Charging_Solvent_History.Access.cs" />
+    <Compile Include="Model.Access\칭량\BR_BRS_SEL_ProductionOrderAllocation_AreaWeighing.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_BRS_SEL_ProductionOrderDispense_Result.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_PHR_GET_MaterialSubLot_VESSID_ISNULL.Access.cs" />
@@ -264,6 +273,7 @@
     <Compile Include="Model\BR_BRS_SEL_Charging_Solvent.cs" />
     <Compile Include="Model\BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.cs" />
     <Compile Include="Model\BR_BRS_SEL_ProductionOrder_Component_Summary.cs" />
+    <Compile Include="Model\칭량\BR_BRS_SEL_AreaWeighing_SourceContainer.cs" />
     <Compile Include="TNT\포장공정시작.cs" />
     <Compile Include="DataModel\ComponentInformation.cs" />
     <Compile Include="DataModel\ContainerModel\AbstractContainerInformation.cs" />
@@ -628,6 +638,9 @@
     </Compile>
     <Compile Include="용기사용\IBC사용여부선택ViewModel.cs" />
     <Compile Include="용기사용\용기사용종료.cs" />
+    <Compile Include="원료칭량\Popup\AllocationInfoPopup.xaml.cs">
+      <DependentUpon>AllocationInfoPopup.xaml</DependentUpon>
+    </Compile>
     <Compile Include="원료칭량\Popup\BinBarcodePopup.xaml.cs">
       <DependentUpon>BinBarcodePopup.xaml</DependentUpon>
     </Compile>
@@ -644,14 +657,11 @@
     <Compile Include="원료칭량\Popup\TrustScaleWeightPopup.xaml.cs">
       <DependentUpon>TrustScaleWeightPopup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="원료칭량\원료칭량.xaml.cs">
-      <DependentUpon>원료칭량.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="원료칭량\원료칭량ViewModel.cs" />
     <Compile Include="원료칭량\원료칭량확인및기록.xaml.cs">
       <DependentUpon>원료칭량확인및기록.xaml</DependentUpon>
     </Compile>
     <Compile Include="원료칭량\원료칭량확인및기록ViewModel.cs" />
+    <Compile Include="원료칭량\현장칭량ViewModel.cs" />
     <Compile Include="원료투입\소분원료전량투입.xaml.cs">
       <DependentUpon>소분원료전량투입.xaml</DependentUpon>
     </Compile>
@@ -852,6 +862,9 @@
       <DependentUpon>평균질량측정.xaml</DependentUpon>
     </Compile>
     <Compile Include="칭량\평균질량측정ViewModel.cs" />
+    <Compile Include="원료칭량\현장칭량.xaml.cs">
+      <DependentUpon>현장칭량.xaml</DependentUpon>
+    </Compile>
     <Compile Include="혼합기\혼합기레시피전송.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1163,6 +1176,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="원료칭량\Popup\AllocationInfoPopup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="원료칭량\Popup\BinBarcodePopup.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1180,10 +1197,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="원료칭량\Popup\TrustScaleWeightPopup.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="원료칭량\원료칭량.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1394,6 +1407,10 @@
     <Page Include="칭량\평균질량측정.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="원료칭량\현장칭량.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

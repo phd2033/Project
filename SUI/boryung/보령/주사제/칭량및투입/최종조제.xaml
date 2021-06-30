@@ -8,7 +8,7 @@
            xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"      
            xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk"                                    
            xmlns:local="clr-namespace:보령"
-           xmlns:UserCtrl="clr-namespace:보령.UserControls" 
+           xmlns:localctrl="clr-namespace:보령.UserControls" 
            x:Name="Main" Height="400" Width="900"                                    
            Title="최종조제">
     <ShopFloorUI:ShopFloorCustomWindow.Resources>
@@ -33,7 +33,9 @@
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
             <Grid x:Name="Header" Grid.Row="0">
-                <UserCtrl:CustomUIHeader CurrentOrder="{Binding ElementName=Main, Path=CurrentOrder}"/>
+                <localctrl:CustomUIHeader CurOrder="{Binding ElementName=Main, Path=CurrentOrder}"
+                                          OrderList="{Binding OrderList, Mode=TwoWay}"
+                                          CanSelectOrderNo="{Binding CanSelectOrder, Mode=TwoWay}"/>
             </Grid>
             <Grid x:Name="MainSection" Grid.Row="1">
                 <Grid.RowDefinitions>
@@ -141,7 +143,7 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Margin="5,0" x:Name="btnChangePrint" Width="100" Content="{Binding W[CUIChangePrintButtonText], Source={StaticResource R}, FallbackValue=프린터변경}" Command="{Binding ChangePrintCommand}"/>
                     <Button Margin="5,0" x:Name="btnConfirm" Width="100" Content="{Binding W[CUIDataWriteToEBRButtonText], Source={StaticResource R}, FallbackValue=기록}" Command="{Binding ConfirmCommandAsync}"/>
-                    <Button Margin="5,0" x:Name="btnClose" Width="100" Content="{Binding [CUICloseButtonText], Source={StaticResource R}, FallbackValue=종료}" Click="btnCansel_Click"/>
+                    <Button Margin="5,0" x:Name="btnClose" Width="100" Content="{Binding W[CUICloseButtonText], Source={StaticResource R}, FallbackValue=종료}" Click="btnCansel_Click"/>
                 </StackPanel>
             </Grid>
         </Grid>

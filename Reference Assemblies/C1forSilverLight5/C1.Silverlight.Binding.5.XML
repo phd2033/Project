@@ -1,0 +1,613 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>C1.Silverlight.Binding.5</name>
+    </assembly>
+    <members>
+        <member name="T:C1.Silverlight.Binding.C1Binding">
+            <summary>
+            A <see cref="N:C1.Silverlight.Binding"/> that supports formulas.
+            </summary>
+            <remarks>
+            <para>The <b>C1Binding</b> class is similar to a regular <see cref="N:C1.Silverlight.Binding"/>,
+            but supports expressions instead of simple paths.</para>
+            <para>The expression syntax is similar to the one used in Excel formulas, including 
+            support for the IF statement which makes it easy to create bindings that make 
+            <b>Converters</b> unnecessary.</para>
+            </remarks>
+            <example>
+            The XAML below uses the <b>C1Binding</b> class to bind several properties of a 
+            <b>TextBlock</b> element to a data value. Notice that the bindings are used to provide
+            values for properties of several types, and no converters are required.
+            <code>
+            &lt;TextBlock 
+                Text="{c1:C1Binding Expression=CustomerName}" 
+                Visibility="{c1:C1Binding Expression='if(Active, |Visible|, |Collapsed|)'}"
+                FontWeight="{c1:C1Binding Expression='if(Sales &gt; 200, |Bold|, |Normal|)'}"
+                Foreground="{c1:C1Binding Expression='if(Sales &gt; 200, |Blue|, |Red|)'}" /&gt;
+            </code>
+            Notice how the XAML snippet above specifies the 'Expression' property. This is 
+            required only in Silverlight, and could be omitted in WPF. 
+            Notice also how vertical bars ('|') are used to specify quotes inside expressions. 
+            You could also use &amp;quot; instead, but the bars made the code more readable.
+            </example>
+        </member>
+        <member name="M:C1.Silverlight.Binding.C1Binding.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of a <see cref="T:C1.Silverlight.Binding.C1Binding"/>.
+            </summary>
+            <param name="expression">Binding expression.</param>
+        </member>
+        <member name="M:C1.Silverlight.Binding.C1Binding.#ctor">
+            <summary>
+            Initializes a new instance of a <see cref="T:C1.Silverlight.Binding.C1Binding"/>.
+            </summary>
+        </member>
+        <member name="M:C1.Silverlight.Binding.C1Binding.ProvideValue(System.IServiceProvider)">
+            <summary>
+            Returns an object that is provided as the value of the target property 
+            for this markup extension.
+            </summary>
+            <param name="serviceProvider">A service provider helper that can provide services for the markup extension.</param>
+            <returns>The object value to set on the property where the extension is applied.</returns>
+        </member>
+        <member name="P:C1.Silverlight.Binding.C1Binding.Expression">
+            <summary>
+            Gets or sets the expression used to calculate the binding value.
+            </summary>
+        </member>
+        <member name="P:C1.Silverlight.Binding.C1Binding.StringFormat">
+            <summary>
+            Gets or sets a string that specifies how to format the binding value.
+            </summary>
+        </member>
+        <member name="P:C1.Silverlight.Binding.C1Binding.FallbackValue">
+            <summary>
+            Gets or sets the value to use when the binding is unable to return a value.
+            </summary>
+        </member>
+        <member name="P:C1.Silverlight.Binding.C1Binding.TargetNullValue">
+            <summary>
+            Gets or sets the value that is used in the target when the value of the source is null.
+            </summary>
+        </member>
+        <member name="T:C1.Silverlight.Binding.C1StaticResource">
+            <summary>
+            A <b>StaticResource</b> that supports a path specification.
+            </summary>
+            <remarks>
+            <para>The <b>C1StaticResource</b> class is similar to a regular 
+            <b>StaticResource</b> markup, but supports a path specification
+            instead of simple objects.</para>
+            <para>Paths are specified using the same expression syntax used in
+            the <see cref="T:C1.Silverlight.Binding.C1Binding"/> class. This allows you to use object members
+            as resources.
+            </para>
+            </remarks>
+            <example>
+            The XAML below uses the <b>C1StaticResource</b> class to bind a grid 
+            column using a value converter that is implemented in a 
+            <b>ViewModel</b> object.
+            <code>
+            &lt;c1:C1FlexGrid
+              ItemsSource="{Binding Source={StaticResource _model}, Path=People}"
+              AutoGenerateColumns="False" &gt;
+              &lt;c1:C1FlexGrid.Columns&gt;
+                &lt;c1:Column 
+                  Binding="{Binding JobID, 
+                    Mode=TwoWay, 
+                    Converter={c1:C1StaticResource Key=_model,Path=JobsConverter}}" /&gt;
+              &lt;/c1:C1FlexGrid.Columns&gt;
+            &lt;/c1:C1FlexGrid&gt;
+            </code>
+            The XAML snippet above assigns the <b>_model.JobsConverter</b> object
+            to the <b>Converter</b> property of the binding. This cannot be done
+            using a nested binding because the <b>Binding</b> class is not a
+            dependency object.
+            </example>
+        </member>
+        <member name="M:C1.Silverlight.Binding.C1StaticResource.#ctor">
+            <summary>
+            Initializes a new instance of a <see cref="T:C1.Silverlight.Binding.C1StaticResource"/>.
+            </summary>
+        </member>
+        <member name="M:C1.Silverlight.Binding.C1StaticResource.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of a <see cref="T:C1.Silverlight.Binding.C1StaticResource"/>.
+            </summary>
+            <param name="resourceKey">Key that identifies the resource.</param>
+        </member>
+        <member name="M:C1.Silverlight.Binding.C1StaticResource.ProvideValue(System.IServiceProvider)">
+            <summary>
+            Returns an object that is provided as the value of this markup extension.
+            </summary>
+            <param name="serviceProvider">A service provider helper that can provide services for the markup extension.</param>
+            <returns>The object value to set on the property where the extension is applied.</returns>
+        </member>
+        <member name="P:C1.Silverlight.Binding.C1StaticResource.Key">
+            <summary>
+            Key that identifies the resource.
+            </summary>
+        </member>
+        <member name="P:C1.Silverlight.Binding.C1StaticResource.Path">
+            <summary>
+            Expression that defines the data to extract from the resource.
+            </summary>
+        </member>
+        <member name="T:C1.Silverlight.Binding.C1CalcEngine">
+            <summary>
+            Class that parses strings and returns <see cref="T:C1.Silverlight.Binding.Expression"/> objects that can be evaluated.
+            </summary>
+            <remarks>
+            <para>This class has three extensibility points:</para>
+            <para>Use the <b>DataContext</b> property to add an object's properties to the engine scope.</para>
+            <para>Use the <b>RegisterFunction</b> method to define custom functions.</para>
+            <para>Override the <b>GetExternalObject</b> method to add arbitrary variables to the engine scope.</para>
+            </remarks>
+        </member>
+        <member name="M:C1.Silverlight.Binding.C1CalcEngine.#ctor">
+            <summary>
+            Initializes a new instance of a <see cref="T:C1.Silverlight.Binding.C1CalcEngine"/>.
+            </summary>
+        </member>
+        <member name="M:C1.Silverlight.Binding.C1CalcEngine.Parse(System.String)">
+            <summary>
+            Parses a string into an <see cref="T:C1.Silverlight.Binding.Expression"/>.
+            </summary>
+            <param name="expression">String to parse.</param>
+            <returns>An <see cref="T:C1.Silverlight.Binding.Expression"/> object that can be evaluated.</returns>
+        </member>
+        <member name="M:C1.Silverlight.Binding.C1CalcEngine.Evaluate(System.String)">
+            <summary>
+            Evaluates a string.
+            </summary>
+            <param name="expression">Expression to evaluate.</param>
+            <returns>The value of the expression.</returns>
+            <remarks>
+            If you are going to evaluate the same expression several times,
+            it is more efficient to parse it only once using the <see cref="M:C1.Silverlight.Binding.C1CalcEngine.Parse(System.String)"/>
+            method and then using the Expression.Evaluate method to evaluate
+            the parsed expression.
+            </remarks>
+        </member>
+        <member name="M:C1.Silverlight.Binding.C1CalcEngine.RegisterFunction(System.String,System.Int32,System.Int32,C1.Silverlight.Binding.CalcEngineFunction)">
+            <summary>
+            Registers a function that can be evaluated by this <see cref="T:C1.Silverlight.Binding.C1CalcEngine"/>.
+            </summary>
+            <param name="functionName">Function name.</param>
+            <param name="parmMin">Minimum parameter count.</param>
+            <param name="parmMax">Maximum parameter count.</param>
+            <param name="fn">Delegate that evaluates the function.</param>
+        </member>
+        <member name="M:C1.Silverlight.Binding.C1CalcEngine.RegisterFunction(System.String,System.Int32,C1.Silverlight.Binding.CalcEngineFunction)">
+            <summary>
+            Registers a function that can be evaluated by this <see cref="T:C1.Silverlight.Binding.C1CalcEngine"/>.
+            </summary>
+            <param name="functionName">Function name.</param>
+            <param name="parmCount">Parameter count.</param>
+            <param name="fn">Delegate that evaluates the function.</param>
+        </member>
+        <member name="M:C1.Silverlight.Binding.C1CalcEngine.GetExternalObject(System.String)">
+            <summary>
+            Gets an external object based on an identifier.
+            </summary>
+            <remarks>
+            This method is useful when the engine needs to create objects dynamically.
+            For example, a spreadsheet calc engine would use this method to dynamically create cell
+            range objects based on identifiers that cannot be enumerated at design time 
+            (such as "AB12", "A1:AB12", etc.)
+            </remarks>
+        </member>
+        <member name="P:C1.Silverlight.Binding.C1CalcEngine.CacheExpressions">
+            <summary>
+            Gets or sets whether the calc engine should keep a cache with parsed
+            expressions.
+            </summary>
+        </member>
+        <member name="P:C1.Silverlight.Binding.C1CalcEngine.OptimizeExpressions">
+            <summary>
+            Gets or sets whether the calc engine should optimize expressions when
+            they are parsed.
+            </summary>
+        </member>
+        <member name="P:C1.Silverlight.Binding.C1CalcEngine.IdentifierChars">
+            <summary>
+            Gets or sets a string that specifies special characters that are valid for identifiers.
+            </summary>
+            <remarks>
+            Identifiers must start with a letter or an underscore, which may be followed by
+            additional letters, underscores, or digits. This string allows you to specify
+            additional valid characters such as ':' or '!' (used in Excel range references
+            for example).
+            </remarks>
+        </member>
+        <member name="P:C1.Silverlight.Binding.C1CalcEngine.DataContext">
+            <summary>
+            Gets or sets the DataContext for this <see cref="T:C1.Silverlight.Binding.C1CalcEngine"/>.
+            </summary>
+            <remarks>
+            Once a DataContext is set, all public properties of the object become available
+            to the CalcEngine, including sub-properties such as "Address.Street". These may
+            be used with expressions just like any other constant.
+            </remarks>
+        </member>
+        <member name="P:C1.Silverlight.Binding.C1CalcEngine.Functions">
+            <summary>
+            Gets the dictionary that contains function definitions.
+            </summary>
+        </member>
+        <member name="P:C1.Silverlight.Binding.C1CalcEngine.Variables">
+            <summary>
+            Gets the dictionary that contains simple variables (not in the DataContext).
+            </summary>
+        </member>
+        <member name="P:C1.Silverlight.Binding.C1CalcEngine.CultureInfo">
+            <summary>
+            Gets or sets the <see cref="P:C1.Silverlight.Binding.C1CalcEngine.CultureInfo"/> to use when parsing numbers and dates.
+            </summary>
+        </member>
+        <member name="T:C1.Silverlight.Binding.CalcEngineFunction">
+            <summary>
+            Delegate that represents CalcEngine functions.
+            </summary>
+            <param name="parms">List of <see cref="T:C1.Silverlight.Binding.Expression"/> objects that represent the
+            parameters to be used in the function call.</param>
+            <returns>The function result.</returns>
+        </member>
+        <member name="T:C1.Silverlight.Binding.Expression">
+            <summary>
+            Base class that represents parsed expressions.
+            </summary>
+            <remarks>
+            For example:
+            <code>
+            Expression expr = scriptEngine.Parse(strExpression);
+            object val = expr.Evaluate();
+            </code>
+            </remarks>
+        </member>
+        <member name="M:C1.Silverlight.Binding.Expression.Evaluate">
+            <summary>
+            Returns the value of the <see cref="T:C1.Silverlight.Binding.Expression"/>.
+            </summary>
+            <returns>The value of the <see cref="T:C1.Silverlight.Binding.Expression"/>.</returns>
+        </member>
+        <member name="M:C1.Silverlight.Binding.Expression.Optimize">
+            <summary>
+            Returns an equal or simpler (but equivalent) version of the <see cref="T:C1.Silverlight.Binding.Expression"/>.
+            </summary>
+            <returns>An equal or simpler but equivalent version of the expression.</returns>
+        </member>
+        <member name="M:C1.Silverlight.Binding.Expression.op_Implicit(C1.Silverlight.Binding.Expression)~System.String">
+            <summary>
+            Evaluates the expression and returns the result converted to a string.
+            </summary>
+            <param name="x"><see cref="T:C1.Silverlight.Binding.Expression"/> to evaluate and convert.</param>
+            <returns>Expression value as a string.</returns>
+        </member>
+        <member name="M:C1.Silverlight.Binding.Expression.op_Implicit(C1.Silverlight.Binding.Expression)~System.Double">
+            <summary>
+            Evaluates the expression and returns the result converted to a double.
+            </summary>
+            <param name="x"><see cref="T:C1.Silverlight.Binding.Expression"/> to evaluate and convert.</param>
+            <returns>Expression value as a double.</returns>
+        </member>
+        <member name="M:C1.Silverlight.Binding.Expression.op_Implicit(C1.Silverlight.Binding.Expression)~System.Boolean">
+            <summary>
+            Evaluates the expression and returns the result converted to a Boolean value.
+            </summary>
+            <param name="x"><see cref="T:C1.Silverlight.Binding.Expression"/> to evaluate and convert.</param>
+            <returns>Expression value as a Boolean value.</returns>
+        </member>
+        <member name="M:C1.Silverlight.Binding.Expression.op_Implicit(C1.Silverlight.Binding.Expression)~System.DateTime">
+            <summary>
+            Evaluates the expression and returns the result converted to a <see cref="T:System.DateTime"/> value.
+            </summary>
+            <param name="x"><see cref="T:C1.Silverlight.Binding.Expression"/> to evaluate and convert.</param>
+            <returns>Expression value as a <see cref="T:System.DateTime"/> value.</returns>
+        </member>
+        <member name="M:C1.Silverlight.Binding.Expression.CompareTo(C1.Silverlight.Binding.Expression)">
+            <summary>
+            Compares the value of this <see cref="T:C1.Silverlight.Binding.Expression"/> to the value of another <see cref="T:C1.Silverlight.Binding.Expression"/>.
+            </summary>
+            <param name="other">Expression to compare to.</param>
+            <returns>An integer that indicates whether the value of this expression is smaller than,
+            equal, or greater than the value of the <paramref name="other"/> expression.</returns>
+        </member>
+        <member name="T:C1.Silverlight.Binding.UnaryExpression">
+            <summary>
+            Unary expression, e.g. +123
+            </summary>
+        </member>
+        <member name="T:C1.Silverlight.Binding.BinaryExpression">
+            <summary>
+            Binary expression, e.g. 1+2
+            </summary>
+        </member>
+        <member name="T:C1.Silverlight.Binding.FunctionExpression">
+            <summary>
+            Function call expression, e.g. sin(0.5)
+            </summary>
+        </member>
+        <member name="T:C1.Silverlight.Binding.VariableExpression">
+            <summary>
+            Simple variable reference.
+            </summary>
+        </member>
+        <member name="T:C1.Silverlight.Binding.BindingExpression">
+            <summary>
+            Expression based on an object's properties.
+            </summary>
+        </member>
+        <member name="T:C1.Silverlight.Binding.BindingInfo">
+            <summary>
+            Helper used for building BindingExpression objects.
+            </summary>
+        </member>
+        <member name="T:C1.Silverlight.Binding.XObjectExpression">
+            <summary>
+            Expression that represents an external object.
+            </summary>
+        </member>
+        <member name="M:C1.Silverlight.Binding.XObjectExpression.Evaluate">
+            <summary>
+            Returns the value of the <see cref="T:C1.Silverlight.Binding.Expression"/>.
+            </summary>
+            <returns>The value of the <see cref="T:C1.Silverlight.Binding.Expression"/>.</returns>
+        </member>
+        <member name="M:C1.Silverlight.Binding.XObjectExpression.GetEnumerator">
+            <summary>
+            Gets an <see cref="T:System.Collections.IEnumerator"/> that can be used to iterate over a collection.
+            </summary>
+            <returns>An <see cref="T:System.Collections.IEnumerator"/> that can be used to iterate over a collection.</returns>
+        </member>
+        <member name="P:C1.Silverlight.Binding.XObjectExpression.Value">
+            <summary>
+            Gets the inner value of this expression 
+            (may be an actual value or an IValueObject).
+            </summary>
+        </member>
+        <member name="T:C1.Silverlight.Binding.IValueObject">
+            <summary>
+            Interface supported by external objects that have to return a value
+            other than themselves (e.g. a cell range object should return the 
+            cell content instead of the range itself).
+            </summary>
+        </member>
+        <member name="M:C1.Silverlight.Binding.IValueObject.GetValue">
+            <summary>
+            Gets the value of this object.
+            </summary>
+            <returns>The value of this object.</returns>
+        </member>
+        <member name="T:C1.Silverlight.Binding.ExpressionCache">
+            <summary>
+            Caches expressions based on their string representation.
+            This saves parsing time.
+            </summary>
+            <remarks>
+            Uses weak references to avoid accumulating unused expressions.
+            </remarks>
+        </member>
+        <member name="T:C1.Silverlight.Binding.FunctionDefinition">
+            <summary>
+            Function definition class (keeps function name, parameter counts, and delegate).
+            </summary>
+        </member>
+        <member name="F:C1.Silverlight.Binding.FunctionDefinition.ParmMin">
+            <summary>
+            Gets or sets the minimum number of parameters required by this <see cref="T:C1.Silverlight.Binding.FunctionDefinition"/>.
+            </summary>
+        </member>
+        <member name="F:C1.Silverlight.Binding.FunctionDefinition.ParmMax">
+            <summary>
+            Gets or sets the maximum number of parameters allowed by this <see cref="T:C1.Silverlight.Binding.FunctionDefinition"/>.
+            </summary>
+        </member>
+        <member name="F:C1.Silverlight.Binding.FunctionDefinition.Function">
+            <summary>
+            Gets or sets the <see cref="T:C1.Silverlight.Binding.CalcEngineFunction"/> that evaluates this function.
+            </summary>
+        </member>
+        <member name="M:C1.Silverlight.Binding.FunctionDefinition.#ctor(System.Int32,System.Int32,C1.Silverlight.Binding.CalcEngineFunction)">
+            <summary>
+            Initializes a new instance of a <see cref="T:C1.Silverlight.Binding.FunctionDefinition"/>.
+            </summary>
+            <param name="parmMin">The minimum number of parameters required by this function.</param>
+            <param name="parmMax">The maximum number of parameters allowed by this function.</param>
+            <param name="function">The <see cref="T:C1.Silverlight.Binding.CalcEngineFunction"/> delegate that evaluates this function</param>
+        </member>
+        <member name="T:C1.Silverlight.Binding.Tally">
+            <summary>
+            A class that aggregates values and provides summary statistics
+            (including count, sum, average, standard deviation, and variance).
+            </summary>
+        </member>
+        <member name="M:C1.Silverlight.Binding.Tally.#ctor(System.Boolean)">
+            <summary>
+            Initializes a new instance of a <see cref="T:C1.Silverlight.Binding.Tally"/>.
+            </summary>
+            <param name="numbersOnly">Whether this <see cref="T:C1.Silverlight.Binding.Tally"/> 
+            can be used only with numeric values.</param>
+        </member>
+        <member name="M:C1.Silverlight.Binding.Tally.#ctor">
+            <summary>
+            Initializes a new instance of a <see cref="T:C1.Silverlight.Binding.Tally"/>.
+            </summary>
+        </member>
+        <member name="M:C1.Silverlight.Binding.Tally.Add(C1.Silverlight.Binding.Expression)">
+            <summary>
+            Adds an <see cref="T:C1.Silverlight.Binding.Expression"/> to the <see cref="T:C1.Silverlight.Binding.Tally"/>, updating the 
+            associated summary statistics.
+            </summary>
+            <param name="e"><see cref="T:C1.Silverlight.Binding.Expression"/> to add to the <see cref="T:C1.Silverlight.Binding.Tally"/>.</param>
+        </member>
+        <member name="M:C1.Silverlight.Binding.Tally.AddValue(System.Object)">
+            <summary>
+            Adds a value to the <see cref="T:C1.Silverlight.Binding.Tally"/>, updating the
+            associated summary statistics.
+            </summary>
+            <param name="value">Value to add to the <see cref="T:C1.Silverlight.Binding.Tally"/></param>
+        </member>
+        <member name="M:C1.Silverlight.Binding.Tally.Count">
+            <summary>
+            Gets the total count of values in the <see cref="T:C1.Silverlight.Binding.Tally"/>.
+            </summary>
+        </member>
+        <member name="M:C1.Silverlight.Binding.Tally.Sum">
+            <summary>
+            Gets the sum of the values in the <see cref="T:C1.Silverlight.Binding.Tally"/>.
+            </summary>
+        </member>
+        <member name="M:C1.Silverlight.Binding.Tally.Average">
+            <summary>
+            Gets the average of the values in the <see cref="T:C1.Silverlight.Binding.Tally"/>.
+            </summary>
+        </member>
+        <member name="M:C1.Silverlight.Binding.Tally.Min">
+            <summary>
+            Gets the minimum value in the <see cref="T:C1.Silverlight.Binding.Tally"/>.
+            </summary>
+        </member>
+        <member name="M:C1.Silverlight.Binding.Tally.Max">
+            <summary>
+            Gets the maximum value in the <see cref="T:C1.Silverlight.Binding.Tally"/>.
+            </summary>
+        </member>
+        <member name="M:C1.Silverlight.Binding.Tally.Range">
+            <summary>
+            Gets the range of values in the <see cref="T:C1.Silverlight.Binding.Tally"/> (maximum minus minimum).
+            </summary>
+        </member>
+        <member name="M:C1.Silverlight.Binding.Tally.VarP">
+            <summary>
+            Gets the population variance of the values in the <see cref="T:C1.Silverlight.Binding.Tally"/>.
+            </summary>
+        </member>
+        <member name="M:C1.Silverlight.Binding.Tally.StdP">
+            <summary>
+            Gets the population standard deviation of the values in the <see cref="T:C1.Silverlight.Binding.Tally"/>.
+            </summary>
+        </member>
+        <member name="M:C1.Silverlight.Binding.Tally.Var">
+            <summary>
+            Gets the variance of the values in the <see cref="T:C1.Silverlight.Binding.Tally"/>.
+            </summary>
+        </member>
+        <member name="M:C1.Silverlight.Binding.Tally.Std">
+            <summary>
+            Gets the standard deviation of the values in the <see cref="T:C1.Silverlight.Binding.Tally"/>.
+            </summary>
+        </member>
+        <member name="T:C1.Silverlight.Binding.Token">
+            <summary>
+            Represents a node in the expression tree.
+            </summary>
+        </member>
+        <member name="T:C1.Silverlight.Binding.TKTYPE">
+            <summary>
+            Token types (used when building expressions, sequence defines operator priority)
+            </summary>
+        </member>
+        <member name="T:C1.Silverlight.Binding.TKID">
+            <summary>
+            Token ID (used when evaluating expressions)
+            </summary>
+        </member>
+        <member name="T:C1.Silverlight.Binding.PropertyChangedEventManager">
+            <summary>
+            Provides an implementation so that you can use the
+            "weak event listener" pattern to attach listeners
+            for the <see cref="M:C1.Silverlight.Binding.PropertyChangedEventManager.PropertyChanged(System.Object,System.ComponentModel.PropertyChangedEventArgs)"/> event.
+            </summary>
+        </member>
+        <member name="M:C1.Silverlight.Binding.PropertyChangedEventManager.AddListener(System.ComponentModel.INotifyPropertyChanged,C1.Silverlight.Binding.IWeakEventListener,System.String)">
+            <summary>
+            Adds the specified listener to the list of listeners on the specified source.
+            </summary>
+            <param name="source">The object with the event.</param>
+            <param name="listener">The object to add as a listener.</param>
+            <param name="propertyName">The name of the property that exists on
+            source upon which to listen for changes.</param>
+        </member>
+        <member name="M:C1.Silverlight.Binding.PropertyChangedEventManager.RemoveListener(System.ComponentModel.INotifyPropertyChanged,C1.Silverlight.Binding.IWeakEventListener,System.String)">
+            <summary>
+            Removes the specified listener from the list of listeners on the
+            specified source.
+            </summary>
+            <param name="source">The object with the event.</param>
+            <param name="listener">The object to remove as a listener.</param>
+            <param name="propertyName">The name of the property that exists
+            on source upon which to listen for changes.</param>
+        </member>
+        <member name="M:C1.Silverlight.Binding.PropertyChangedEventManager.StartListening(System.ComponentModel.INotifyPropertyChanged)">
+            <summary>
+            Begin listening for the <see cref="M:C1.Silverlight.Binding.PropertyChangedEventManager.PropertyChanged(System.Object,System.ComponentModel.PropertyChangedEventArgs)"/> event on
+            the provided source.
+            </summary>
+            <param name="source">The object on which to start listening
+            for <see cref="M:C1.Silverlight.Binding.PropertyChangedEventManager.PropertyChanged(System.Object,System.ComponentModel.PropertyChangedEventArgs)"/>.</param>
+        </member>
+        <member name="M:C1.Silverlight.Binding.PropertyChangedEventManager.StopListening(System.ComponentModel.INotifyPropertyChanged)">
+            <summary>
+            Stop listening for the <see cref="M:C1.Silverlight.Binding.PropertyChangedEventManager.PropertyChanged(System.Object,System.ComponentModel.PropertyChangedEventArgs)"/> event on the
+            provided source.
+            </summary>
+            <param name="source">The object on which to start listening for
+            <see cref="M:C1.Silverlight.Binding.PropertyChangedEventManager.PropertyChanged(System.Object,System.ComponentModel.PropertyChangedEventArgs)"/>.</param>
+        </member>
+        <member name="M:C1.Silverlight.Binding.PropertyChangedEventManager.PropertyChanged(System.Object,System.ComponentModel.PropertyChangedEventArgs)">
+            <summary>
+            The method that handles the <see cref="E:System.ComponentModel.INotifyPropertyChanged.PropertyChanged"/> event.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">A <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> that
+            contains the event data.</param>
+        </member>
+        <member name="M:C1.Silverlight.Binding.PropertyChangedEventManager.PrivateAddListener(System.ComponentModel.INotifyPropertyChanged,C1.Silverlight.Binding.IWeakEventListener,System.String)">
+            <summary>
+            Private method to add the specified listener to the list of listeners
+            on the specified source.
+            </summary>
+            <param name="source">The object with the event.</param>
+            <param name="listener">The object to add as a listener.</param>
+            <param name="propertyName">The name of the property that exists
+            on source upon which to listen for changes.</param>
+        </member>
+        <member name="M:C1.Silverlight.Binding.PropertyChangedEventManager.PrivateRemoveListener(System.ComponentModel.INotifyPropertyChanged,C1.Silverlight.Binding.IWeakEventListener,System.String)">
+            <summary>
+            Private method to remove the specified listener from the list of listeners
+            on the specified source.
+            </summary>
+            <param name="source">The object with the event.</param>
+            <param name="listener">The object to remove as a listener.</param>
+            <param name="propertyName">The name of the property that exists on
+            source upon which to listen for changes.</param>
+        </member>
+        <member name="P:C1.Silverlight.Binding.PropertyChangedEventManager.Instance">
+            <summary>
+            Get the current instance of <see cref="T:C1.Silverlight.Binding.PropertyChangedEventManager"/>
+            </summary>
+        </member>
+        <member name="T:C1.Silverlight.Binding.IWeakEventListener">
+            <summary>
+            Provides event listening support for classes that expect to receive events
+            through the WeakEvent pattern and a WeakEventManager.
+            </summary>
+        </member>
+        <member name="M:C1.Silverlight.Binding.IWeakEventListener.ReceiveWeakEvent(System.Type,System.Object,System.EventArgs)">
+            <summary>
+            Receives events from the centralized event manager.
+            </summary>
+            <param name="managerType">The type of the
+               WeakEventManager calling this method.</param>
+            <param name="sender">Object that originated the event.</param>
+            <param name="e">Event data.</param>
+            <returns>true if the listener handled the event. It is considered an error by the
+            WeakEventManager handling in WPF to register a listener for an event that the
+            listener does not handle. Regardless, the method should return false if it receives
+            an event that it does not recognize or handle.
+            </returns>
+        </member>
+    </members>
+</doc>

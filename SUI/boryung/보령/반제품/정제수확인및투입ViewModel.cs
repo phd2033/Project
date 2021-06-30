@@ -429,6 +429,10 @@ namespace 보령
                                         IsEnabled = true;
                                         IsCharging = false;
                                         _DispatcherTimer.Stop();
+                                        _ScaleValue.SetWeight(0, _ScaleValue.Uom, _scalePrecision);
+                                        _TotalWeight.SetWeight(_selectedComponent.TOTALQTY + _ScaleValue.Value, _ScaleValue.Uom, _scalePrecision);
+                                        OnPropertyChanged("TotalWeight");
+                                        OnPropertyChanged("ScaleValue");
                                     }
                                     else
                                     {

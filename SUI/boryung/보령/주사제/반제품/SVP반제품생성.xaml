@@ -9,7 +9,7 @@
     xmlns:icontrol="clr-namespace:LGCNS.iPharmMES.Controls;assembly=LGCNS.iPharmMES.Controls"
     xmlns:c1="http://schemas.componentone.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:보령"
-    xmlns:UserCtrl="clr-namespace:보령.UserControls"    
+    xmlns:localctrl="clr-namespace:보령.UserControls"    
     x:Name="Main" Title="SVP반제품생성" Width="800" Height="500">
     <ShopFloorUI:ShopFloorCustomWindow.Resources>
         <local:SVP반제품생성ViewModel x:Key="viewModel"/>
@@ -27,7 +27,9 @@
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
             <Grid x:Name="Header" Grid.Row="0">
-                <UserCtrl:CustomUIHeader CurrentOrder="{Binding ElementName=Main, Path=CurrentOrder}"/>
+                <localctrl:CustomUIHeader CurOrder="{Binding ElementName=Main, Path=CurrentOrder}"
+                                          OrderList="{Binding OrderList, Mode=TwoWay}"
+                                          CanSelectOrderNo="{Binding CanSelectOrder, Mode=TwoWay}"/>
             </Grid>
             <Grid x:Name="MainSection" Grid.Row="1">
                 <Grid.RowDefinitions>

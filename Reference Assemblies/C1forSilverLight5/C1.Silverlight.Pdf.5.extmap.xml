@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <assembly>
+    <name>_</name>
+    <version>_</version>
+    <publickeytoken>_</publickeytoken>
+    <extension downloadUri="C1.Silverlight.Pdf.5.zip" />
+  </assembly>
+</manifest>

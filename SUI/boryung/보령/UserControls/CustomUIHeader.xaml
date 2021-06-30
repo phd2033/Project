@@ -30,24 +30,36 @@
             </LinearGradientBrush>
         </Grid.Background>
         <Grid Margin="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="90"/>
                 <ColumnDefinition MinWidth="100" Width="*"/>
-                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="90"/>
                 <ColumnDefinition MinWidth="100" Width="*"/>
-                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="90"/>
                 <ColumnDefinition MinWidth="100" Width="*"/>
-                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="90"/>
                 <ColumnDefinition MinWidth="100" Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" Text="{Binding Path=W[CUIBatchNo], Source={StaticResource R}}" Style="{StaticResource Header}"/>
-            <TextBox Grid.Column="1" Name="txtBatchNo" Style="{StaticResource Attribute}"/>
-            <TextBlock Grid.Column="2" Text="{Binding Path=W[CUIOrderNo], Source={StaticResource R}}" Style="{StaticResource Header}"/>
-            <TextBox Grid.Column="3" Name="txtOrderNo" Style="{StaticResource Attribute}"/>
-            <TextBlock Grid.Column="4" Text="{Binding Path=W[CUIProcessName], Source={StaticResource R}}" Style="{StaticResource Header}"/>
-            <TextBox Grid.Column="5" Name="txtProcessName" Style="{StaticResource Attribute}"/>
-            <TextBlock Grid.Column="6" Text="{Binding Path=W[CUIWorkRoom], Source={StaticResource R}}" Style="{StaticResource Header}"/>
-            <TextBox Grid.Column="7" Name="txtWorkRoom" Style="{StaticResource Attribute}"/>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="8" Name="lbCampaignOrder" Text="{Binding W[CUICampaignOrderText], Source={StaticResource R}, FallbackValue='캠페인오더'}"
+                       FontFamily="Malgun Gothic" FontWeight="Bold" FontSize="17" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red" Visibility="Collapsed"/>
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="{Binding W[CUIBatchNo], Source={StaticResource R}, FallbackValue='BatchNo'}" Style="{StaticResource Header}"/>
+            <TextBox Grid.Row="1" Grid.Column="1" Name="txtBatchNo" Style="{StaticResource Attribute}"/>
+            
+            <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding W[CUIOrderNo], Source={StaticResource R}, FallbackValue='OrderNo'}" Style="{StaticResource Header}"/>
+            <TextBox Grid.Row="1" Grid.Column="3" Name="txtOrderNo" Style="{StaticResource Attribute}"/>
+            <ComboBox Grid.Row="1" Grid.Column="3" Name="cboOrderList" DisplayMemberPath="POID" SelectedValuePath="POID" Visibility="Collapsed"
+                      SelectionChanged="cboOrderList_SelectionChanged"/>
+
+            <TextBlock Grid.Row="1" Grid.Column="4" Text="{Binding W[CUIProcessName], Source={StaticResource R}, FallbackValue='ProcessName'}" Style="{StaticResource Header}"/>
+            <TextBox Grid.Row="1" Grid.Column="5" Name="txtProcessName" Style="{StaticResource Attribute}"/>
+            <TextBlock Grid.Row="1" Grid.Column="6" Text="{Binding W[CUIWorkRoom], Source={StaticResource R}, FallbackValue='WorkRoom'}" Style="{StaticResource Header}"/>
+            <TextBox Grid.Row="1" Grid.Column="7" Name="txtWorkRoom" Style="{StaticResource Attribute}"/>
         </Grid>
     </Grid>
 </UserControl>

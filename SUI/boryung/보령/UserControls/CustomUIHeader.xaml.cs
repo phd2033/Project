@@ -18,77 +18,121 @@ namespace 보령.UserControls
         public CustomUIHeader()
         {
             InitializeComponent();
+            txtWorkRoom.Text = AuthRepositoryViewModel.Instance.RoomID;
         }
 
-        #region Property
-        private string _BatchNo;
-        public string BatchNo
-        {
-            get { return _BatchNo; }
-            set
-            {
-                _BatchNo = value;
-                txtBatchNo.Text = _BatchNo;
-            }
-        }
-        private string _ProductionOrderID;
-        public string ProductionOrderID
-        {
-            get { return _ProductionOrderID; }
-            set
-            {
-                _ProductionOrderID = value;
-                txtOrderNo.Text = _ProductionOrderID;
-            }
-        }
-        private string _ProcessName;
-        public string ProcessName
-        {
-            get { return _ProcessName; }
-            set
-            {
-                _ProcessName = value;
-                txtProcessName.Text = _ProcessName;
-            }
-        }
-        private string _WorkRoom;
-        public string WorkRoom
-        {
-            get { return _WorkRoom; }
-            set
-            {
-                _WorkRoom = value;
-                txtWorkRoom.Text = _WorkRoom;
-            }
-        }
-        #endregion
+        #region Dependency Property
 
-        #region Dependency Property   
-        private CurrentOrderInfo _CurrentOrder;
-        public CurrentOrderInfo CurrentOrder
+        #region D.P CurrentOrderInfo
+        private CurrentOrderInfo _CurOrder;
+        public CurrentOrderInfo CurOrder
         {
-            get { return _CurrentOrder; }
-            set
-            {
-                _CurrentOrder = value;
-                if(_CurrentOrder != null)
-                {
-                    txtBatchNo.Text = _CurrentOrder.BatchNo;
-                    txtOrderNo.Text = _CurrentOrder.OrderID;
-                    txtProcessName.Text = _CurrentOrder.OrderProcessSegmentName;
-                    txtWorkRoom.Text = AuthRepositoryViewModel.Instance.RoomID;
-                }
-            }
+            get { return (CurrentOrderInfo)GetValue(CurOrderProperty); }
+            set { SetValue(CurOrderProperty, value); }
         }
-        public static readonly DependencyProperty CurrentOrderProperty =
-            DependencyProperty.Register("CurrentOrder", typeof(CurrentOrderInfo), typeof(CustomUIHeader), new PropertyMetadata(OnCurrentOrderProperty));
-        private static void OnCurrentOrderProperty(DependencyObject d, DependencyPropertyChangedEventArgs e)
+
+        public static readonly DependencyProperty CurOrderProperty =
+            DependencyProperty.Register("CurOrder", typeof(CurrentOrderInfo), typeof(CustomUIHeader), new PropertyMetadata(OnCurOrderProperty));
+
+        private static void OnCurOrderProperty(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             CustomUIHeader parent = (CustomUIHeader)d;
             //값을 전달할 타겟지정
-            parent.CurrentOrder = (CurrentOrderInfo)e.NewValue;
+            CurrentOrderInfo curOrder = (CurrentOrderInfo)e.NewValue;
+            parent._CurOrder = curOrder;
+            parent.txtBatchNo.Text = curOrder.BatchNo;
+            parent.txtOrderNo.Text = curOrder.ProductionOrderID;
+            parent.txtProcessName.Text = curOrder.OrderProcessSegmentName;
         }
         #endregion
 
+        #region D.P OrderList
+
+        public BR_BRS_SEL_ProductionOrder_RECIPEISTGUID.OUTDATACollection OrderList
+        {
+            get { return (BR_BRS_SEL_ProductionOrder_RECIPEISTGUID.OUTDATACollection)GetValue(OrderListProperty); }
+            set { SetValue(OrderListProperty, value); }
+        }
+
+        public static readonly DependencyProperty OrderListProperty =
+            DependencyProperty.Register("OrderList", typeof(BR_BRS_SEL_ProductionOrder_RECIPEISTGUID.OUTDATACollection), typeof(CustomUIHeader), new PropertyMetadata(OnOrderListProperty));
+
+        private static void OnOrderListProperty(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            CustomUIHeader parent = (CustomUIHeader)d;
+            //값을 전달할 타겟지정
+            var orderlist = (BR_BRS_SEL_ProductionOrder_RECIPEISTGUID.OUTDATACollection)e.NewValue;
+            if(orderlist != null && orderlist.Count > 0)
+            {
+                parent.cboOrderList.ItemsSource = orderlist;
+                parent.cboOrderList.Visibility = Visibility.Visible;
+                parent.txtOrderNo.Visibility = Visibility.Collapsed;
+                parent.lbCampaignOrder.Visibility = Visibility.Visible;
+
+                parent.cboOrderList.SelectedIndex = 0;
+            }
+            else
+            {
+                parent.cboOrderList.Visibility = Visibility.Collapsed;
+                parent.txtOrderNo.Visibility = Visibility.Visible;
+                parent.lbCampaignOrder.Visibility = Visibility.Collapsed;
+            }
+        }
+        #endregion
+
+        #region D.P CanSelectOrderNo
+        /// <summary>
+        /// True : Combobox IsEnable True, False : Combobox IsEnable False
+        /// </summary>
+        public bool CanSelectOrderNo
+        {
+            get { return (bool)GetValue(CanSelectOrderNoProperty); }
+            set { SetValue(CanSelectOrderNoProperty, value); }
+        }
+
+        public static readonly DependencyProperty CanSelectOrderNoProperty =
+            DependencyProperty.Register("CanSelectOrderNo", typeof(bool), typeof(CustomUIHeader), new PropertyMetadata(OnCanSelectOrderNoProperty));
+
+        private static void OnCanSelectOrderNoProperty(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            CustomUIHeader parent = (CustomUIHeader)d;
+            //값을 전달할 타겟지정
+            parent.cboOrderList.IsEnabled = (bool)e.NewValue;
+        }
+        #endregion
+
+        #endregion
+
+        #region Event
+        private void cboOrderList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count > 0 && e.AddedItems[0] is BR_BRS_SEL_ProductionOrder_RECIPEISTGUID.OUTDATA)
+            {
+                var curOrder = e.AddedItems[0] as BR_BRS_SEL_ProductionOrder_RECIPEISTGUID.OUTDATA;
+
+                _CurOrder.BatchNo = curOrder.BATCHNO;
+                _CurOrder.OrderID = curOrder.POID;
+                _CurOrder.ProductionOrderID = curOrder.POID;
+
+                txtBatchNo.Text = curOrder.BATCHNO;
+                txtOrderNo.Text = curOrder.POID;
+            }
+
+            OrderChaged(sender, e);
+        }
+
+        /// <summary>
+        /// Seletected OrderNo Chaged Event
+        /// </summary>
+        public event EventHandler OrderNoSelection_Changed;
+
+        private void OrderChaged(object sender, EventArgs e)
+        {
+            if(OrderNoSelection_Changed != null)
+            {
+                OrderNoSelection_Changed(sender, e);
+            }
+        }
+        #endregion
     }
 }

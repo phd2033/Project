@@ -12,7 +12,7 @@
     xmlns:icommon="clr-namespace:LGCNS.iPharmMES.Common;assembly=LGCNS.iPharmMES.Common"    
     xmlns:icontrol="clr-namespace:LGCNS.iPharmMES.Controls;assembly=LGCNS.iPharmMES.Controls"
     xmlns:ShopFloorUI="clr-namespace:ShopFloorUI;assembly=ShopFloorUI.Common"
-    xmlns:UserCtrl="clr-namespace:보령.UserControls"
+    xmlns:localctrl="clr-namespace:보령.UserControls"
     xmlns:local="clr-namespace:보령"
     x:Name="Main"
     mc:Ignorable="d"
@@ -46,7 +46,9 @@
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
             <Grid x:Name="Header" Grid.Row="0">
-                <UserCtrl:CustomUIHeader CurrentOrder="{Binding ElementName=Main, Path=CurrentOrder}"/>
+                <localctrl:CustomUIHeader CurOrder="{Binding ElementName=Main, Path=CurrentOrder}"
+                                          OrderList="{Binding OrderList, Mode=TwoWay}"
+                                          CanSelectOrderNo="{Binding CanSelectOrder, Mode=TwoWay}"/>
             </Grid>
             <Grid x:Name="MainSection" Grid.Row="1">
                 <Grid.RowDefinitions>

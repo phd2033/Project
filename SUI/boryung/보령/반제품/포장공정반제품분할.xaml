@@ -10,7 +10,7 @@
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:c1="http://schemas.componentone.com/winfx/2006/xaml"
     xmlns:my="clr-namespace:보령"
-    xmlns:UserCtrl="clr-namespace:보령.UserControls"                                   
+    xmlns:localctrl="clr-namespace:보령.UserControls"                                   
     x:Name="Main" Width="1200" Height="500" Title="반제품분할">
     <ShopFloorUI:ShopFloorCustomWindow.Resources>
         <my:포장공정반제품분할ViewModel x:Key="ViewModel"/>
@@ -55,7 +55,9 @@
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
             <Grid x:Name="Header" Grid.Row="0">
-                <UserCtrl:CustomUIHeader CurrentOrder="{Binding ElementName=Main, Path=CurrentOrder}"/>
+                <localctrl:CustomUIHeader CurOrder="{Binding ElementName=Main, Path=CurrentOrder}"
+                                          OrderList="{Binding OrderList, Mode=TwoWay}"
+                                          CanSelectOrderNo="{Binding CanSelectOrder, Mode=TwoWay}"/>
             </Grid>
             <Grid x:Name="Section" Grid.Row="1" Margin="5">
                 <Grid.RowDefinitions>

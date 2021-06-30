@@ -90,4 +90,28 @@ namespace 보령
         }
 
     }
+
+    public abstract class WIPContainer : Container
+    {
+        private string _PoId;
+        public string PoId
+        {
+            get { return _PoId; }
+            set
+            {
+                _PoId = value;
+                OnPropertyChanged("PoId");
+            }
+        }
+        private string _OpsgGuid;
+        public string OpsgGuid
+        {
+            get { return _OpsgGuid; }
+            set
+            {
+                _OpsgGuid = value;
+                OnPropertyChanged("OpsgGuid");
+            }
+        }
+    }
 }

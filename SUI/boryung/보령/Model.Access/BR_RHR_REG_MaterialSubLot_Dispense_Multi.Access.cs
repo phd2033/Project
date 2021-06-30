@@ -1,4 +1,4 @@
-﻿﻿using LGCNS.iPharmMES.Common;
+﻿using LGCNS.iPharmMES.Common;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -87,6 +87,38 @@ namespace LGCNS.iPharmMES.Common
                         this._LANGID = value;
                         this.CheckIsOriginal("LANGID", value);
                         this.OnPropertyChanged("LANGID");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+            private string _MLOTID;
+            [BizActorInputItemAttribute()]
+            public string MLOTID
+            {
+                get
+                {
+                    return this._MLOTID;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._MLOTID = value;
+                        this.CheckIsOriginal("MLOTID", value);
+                        this.OnPropertyChanged("MLOTID");
                         if (RowLoadedFlag)
                         {
                             if (this.CheckIsOriginalRow())
@@ -389,9 +421,9 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
-            private System.Nullable<float> _TARE;
+            private System.Nullable<decimal> _TARE;
             [BizActorInputItemAttribute()]
-            public System.Nullable<float> TARE
+            public System.Nullable<decimal> TARE
             {
                 get
                 {
@@ -453,9 +485,9 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
-            private System.Nullable<float> _INVENTORYQTY;
+            private System.Nullable<decimal> _INVENTORYQTY;
             [BizActorInputItemAttribute()]
-            public System.Nullable<float> INVENTORYQTY
+            public System.Nullable<decimal> INVENTORYQTY
             {
                 get
                 {
@@ -485,9 +517,9 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
-            private System.Nullable<float> _DISPENSEQTY;
+            private System.Nullable<decimal> _DISPENSEQTY;
             [BizActorInputItemAttribute()]
-            public System.Nullable<float> DISPENSEQTY
+            public System.Nullable<decimal> DISPENSEQTY
             {
                 get
                 {
@@ -805,9 +837,9 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
-            private System.Nullable<float> _TAREWEIGHT;
+            private System.Nullable<decimal> _TAREWEIGHT;
             [BizActorInputItemAttribute()]
-            public System.Nullable<float> TAREWEIGHT
+            public System.Nullable<decimal> TAREWEIGHT
             {
                 get
                 {
@@ -1061,6 +1093,70 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
+            private System.Nullable<int> _SCALEPRECISION;
+            [BizActorInputItemAttribute()]
+            public System.Nullable<int> SCALEPRECISION
+            {
+                get
+                {
+                    return this._SCALEPRECISION;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._SCALEPRECISION = value;
+                        this.CheckIsOriginal("SCALEPRECISION", value);
+                        this.OnPropertyChanged("SCALEPRECISION");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+            private string _SCALEVALUE;
+            [BizActorInputItemAttribute()]
+            public string SCALEVALUE
+            {
+                get
+                {
+                    return this._SCALEVALUE;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._SCALEVALUE = value;
+                        this.CheckIsOriginal("SCALEVALUE", value);
+                        this.OnPropertyChanged("SCALEVALUE");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
         }
         public sealed partial class OUTDATACollection : BufferedObservableCollection<OUTDATA>
         {
@@ -1249,7 +1345,6 @@ namespace LGCNS.iPharmMES.Common
         public BR_RHR_REG_MaterialSubLot_Dispense_Multi()
         {
             RuleName = "BR_RHR_REG_MaterialSubLot_Dispense_Multi";
-            BizName = "자재 소분 다중 처리";
             _INDATAs = new INDATACollection();
             _OUTDATAs = new OUTDATACollection();
             _HISDATAs = new HISDATACollection();
