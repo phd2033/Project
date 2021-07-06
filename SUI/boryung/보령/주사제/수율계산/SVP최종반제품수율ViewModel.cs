@@ -21,6 +21,7 @@ namespace 보령
         public SVP최종반제품수율ViewModel()
         {
             _BR_BRS_REG_ProductionOrderDetailYield = new BR_BRS_REG_ProductionOrderDetailYield();
+            _BR_BRS_MRG_ProductionOrderDetailAttributeValue_Multi = new BR_BRS_MRG_ProductionOrderDetailAttributeValue_Multi();
         }
 
         SVP최종반제품수율 _mainWnd;
@@ -68,6 +69,7 @@ namespace 보령
             get { return _BR_BRS_REG_ProductionOrderDetailYield; }
             set { _BR_BRS_REG_ProductionOrderDetailYield = value; }
         }
+        private BR_BRS_MRG_ProductionOrderDetailAttributeValue_Multi _BR_BRS_MRG_ProductionOrderDetailAttributeValue_Multi;
         #endregion
         #region Command
         public ICommand LoadedCommandAsync
@@ -95,17 +97,25 @@ namespace 보령
 
                                 // 현재 공정 생산량
                                 var inputvalue = InstructionModel.GetParameterSender(_mainWnd.CurrentInstruction, _mainWnd.Instructions);
-                                if (inputvalue.Count < 1 && string.IsNullOrWhiteSpace(inputvalue[0].Raw.ACTVAL))
-                                    throw new Exception("최종반제품량이 입력되지 않았습니다.");
-                                else
-                                    Result_OUT = inputvalue[0].Raw.ACTVAL;
 
+                                if (inputvalue.Count > 0)
+                                {
+                                    decimal chk;
+                                    if (!string.IsNullOrWhiteSpace(inputvalue[0].Raw.ACTVAL) && decimal.TryParse(inputvalue[0].Raw.ACTVAL, out chk))
+                                    {
+                                        Result_OUT = inputvalue[0].Raw.ACTVAL;
+                                    }
+                                    else
+                                        OnMessage("최종반제품량이 입력되지 않았거나 숫자로 변환이 실패했습니다.");
+                                }
+                                else
+                                    OnMessage("최종반제품량이 입력되지 않았습니다.");
                             }
 
                             CommandResults["LoadedCommandAsync"] = true;
                         }
                         catch (Exception ex)
-                        { 
+                        {
                             CommandResults["LoadedCommandAsync"] = false;
                             OnException(ex.Message, ex);
                         }
@@ -176,6 +186,19 @@ namespace 보령
                                 throw new Exception(string.Format("서명이 완료되지 않았습니다."));
                             }
 
+                            _BR_BRS_MRG_ProductionOrderDetailAttributeValue_Multi.INDATAs.Clear();
+                            _BR_BRS_MRG_ProductionOrderDetailAttributeValue_Multi.INDATAs.Add(new BR_BRS_MRG_ProductionOrderDetailAttributeValue_Multi.INDATA
+                            {
+                                POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
+                                VERSION = 1m,
+                                PODETAID = "OUTPUT_QTY",
+                                PODETAVAL1 = Result_OUT,
+                                INSUSER = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_Yield")
+                            });
+
+                            await _BR_BRS_MRG_ProductionOrderDetailAttributeValue_Multi.Execute();
+
                             // 수율기록
                             _BR_BRS_REG_ProductionOrderDetailYield.INDATAs.Clear();
                             _BR_BRS_REG_ProductionOrderDetailYield.INDATAs.Add(new BR_BRS_REG_ProductionOrderDetailYield.INDATA
@@ -183,11 +206,11 @@ namespace 보령
                                 POID = _mainWnd.CurrentOrder.ProductionOrderID,
                                 OPSGGUID = Guid.Parse(_mainWnd.CurrentOrder.OrderProcessSegmentID),
                                 COMMENT = AuthRepositoryViewModel.GetCommentByFunctionCode("OM_ProductionOrder_Yield"),
-                                INSUSER = !string.IsNullOrWhiteSpace(AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_Yield")) ? AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_Yield") : AuthRepositoryViewModel.Instance.LoginedUserID,
+                                INSUSER = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_Yield"),
                                 YIELD2 = Result_SUM
                             });
 
-                            if(await BR_BRS_REG_ProductionOrderDetailYield.Execute() == true)
+                            if (await BR_BRS_REG_ProductionOrderDetailYield.Execute() == true)
                             {
                                 Brush background = _mainWnd.PrintArea.Background;
                                 _mainWnd.PrintArea.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xD6, 0xD4, 0xD4));
