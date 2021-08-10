@@ -54,9 +54,9 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <!--Header-->
-                <sdk:Label Grid.Row="0" Grid.Column="0" Content="시작시간" Style="{StaticResource HeaderStyle}"/>
-                <sdk:Label Grid.Row="0" Grid.Column="1" Content="현재시간" Style="{StaticResource HeaderStyle}"/>
-                <sdk:Label Grid.Row="0" Grid.Column="2" Content="가동시간" Style="{StaticResource HeaderStyle}"/>
+                <sdk:Label Grid.Row="0" Grid.Column="0" Content="시작시각" Style="{StaticResource HeaderStyle}"/>
+                <sdk:Label Grid.Row="0" Grid.Column="1" Content="현재시각" Style="{StaticResource HeaderStyle}"/>
+                <sdk:Label Grid.Row="0" Grid.Column="2" Content="가동시각" Style="{StaticResource HeaderStyle}"/>
                 <sdk:Label Grid.Row="0" Grid.Column="3" Content="가동범위" Style="{StaticResource HeaderStyle}"/>
                 <!--Content-->
                 <sdk:Label Grid.Row="1" Grid.Column="0" x:Name="lblSTRTDTTM" Content="{Binding STRTDTTM, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}" Style="{StaticResource ContentStyle}"/>

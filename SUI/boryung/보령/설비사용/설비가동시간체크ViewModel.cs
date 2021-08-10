@@ -29,7 +29,7 @@ namespace 보령
         private InstructionModel curInst;
         DispatcherTimer _DispatcherTimer = new DispatcherTimer();
         private int? MIN = null, MAX = null;
-        private string _UOM = "MIN";
+        private string _UOM = "min";// 2021.08.02 박희돈 대문자 MIN -> 소문자 min으로 변경(제조기록서 표현방법)
 
         private DateTime _STRTDTTM;
         public DateTime STRTDTTM
@@ -198,16 +198,16 @@ namespace 보령
                                 var ds = new DataSet();
                                 var dt = new DataTable("DATA");
 
-                                dt.Columns.Add(new DataColumn("시작시간"));
-                                dt.Columns.Add(new DataColumn("종료시간"));
-                                dt.Columns.Add(new DataColumn("가동시간"));
+                                dt.Columns.Add(new DataColumn("시작시각"));
+                                dt.Columns.Add(new DataColumn("종료시각"));
+                                dt.Columns.Add(new DataColumn("가동시각"));
                                 dt.Columns.Add(new DataColumn("필수가동시간"));
                                 ds.Tables.Add(dt);
 
                                 var row = dt.NewRow();
-                                row["시작시간"] = _STRTDTTM != null ? _STRTDTTM.ToString("yyyy-MM-dd HH:mm") : "";
-                                row["종료시간"] = _CURDTTM != null ? _CURDTTM.ToString("yyyy-MM-dd HH:mm") : "";
-                                row["가동시간"] = _WORKTIME ?? "";
+                                row["시작시각"] = _STRTDTTM != null ? _STRTDTTM.ToString("yyyy-MM-dd HH:mm") : "";
+                                row["종료시각"] = _CURDTTM != null ? _CURDTTM.ToString("yyyy-MM-dd HH:mm") : "";
+                                row["가동시각"] = _WORKTIME ?? "";
                                 row["필수가동시간"] = _BASELINE ?? "";
 
                                 dt.Rows.Add(row);

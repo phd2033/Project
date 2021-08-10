@@ -49,11 +49,11 @@
                         <c1:DataGridTextColumn Header="장비명" HorizontalAlignment="Center" Binding="{Binding EQPTNAME}"/>
                         <c1:DataGridTextColumn Header="이전제품명" HorizontalAlignment="Center" Binding="{Binding MTRLNAME}"/>
                         <c1:DataGridTextColumn Header="이전제조번호" HorizontalAlignment="Center" Binding="{Binding BATCHNO}"/>
-                        <c1:DataGridTextColumn Header="교정상태" HorizontalAlignment="Center" Binding="{Binding CALIBRATIONSTATUS}"/>
                         <c1:DataGridTextColumn Header="점검상태" HorizontalAlignment="Center" Binding="{Binding SCALEDAILYSTATUS}"/>
+                        <c1:DataGridTextColumn Header="교정상태" HorizontalAlignment="Center" Binding="{Binding CALIBRATIONSTATUS}"/>
                         <c1:DataGridTextColumn Header="청소상태" HorizontalAlignment="Center" Binding="{Binding STATUS}"/>
                         <c1:DataGridTextColumn Header="청소완료일시" HorizontalAlignment="Center" Binding="{Binding CLEANDTTM}"/>
-                        <c1:DataGridTextColumn Header="유효기간" HorizontalAlignment="Center" Binding="{Binding EXPIREDTTM}"/>
+                        <c1:DataGridTextColumn Header="청소유효일시" HorizontalAlignment="Center" Binding="{Binding EXPIREDTTM}"/>
                         <c1:DataGridTextColumn Header="SOP 문서번호" HorizontalAlignment="Center" Binding="{Binding SOPDOC}"/>
                         <!--<c1:DataGridTemplateColumn Header="생산설비 변경" CellTemplate="{StaticResource ChangeWorkRoomButtonTemplate}"/>-->
                         <c1:DataGridTemplateColumn Header="청소실행" CellTemplate="{StaticResource CleanButtonTemplate}"/>

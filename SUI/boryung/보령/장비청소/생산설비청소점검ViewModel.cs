@@ -373,11 +373,11 @@ namespace 보령
                                 dt.Columns.Add(new DataColumn("설비명"));
                                 dt.Columns.Add(new DataColumn("이전제품명"));
                                 dt.Columns.Add(new DataColumn("이전제조번호"));
-                                dt.Columns.Add(new DataColumn("교정상태"));
                                 dt.Columns.Add(new DataColumn("점검상태"));
+                                dt.Columns.Add(new DataColumn("교정상태"));
                                 dt.Columns.Add(new DataColumn("청소상태"));
                                 dt.Columns.Add(new DataColumn("청소완료일시"));
-                                dt.Columns.Add(new DataColumn("유효기간"));
+                                dt.Columns.Add(new DataColumn("청소유효일시"));
                                 dt.Columns.Add(new DataColumn("SOP문서번호"));
 
                                 foreach (var item in BR_BRS_SEL_EquipmentStatus_PROCEQPT.OUTDATAs)
@@ -388,11 +388,11 @@ namespace 보령
                                     row["설비명"] = item.EQPTNAME != null ? item.EQPTNAME : "";
                                     row["이전제품명"] = item.MTRLNAME != null ? item.MTRLNAME : "";
                                     row["이전제조번호"] = item.BATCHNO != null ? item.BATCHNO : "";
-                                    row["교정상태"] = item.CALIBRATIONSTATUS != null ? item.CALIBRATIONSTATUS : "";
                                     row["점검상태"] = item.SCALEDAILYSTATUS != null ? item.SCALEDAILYSTATUS : "";
+                                    row["교정상태"] = item.CALIBRATIONSTATUS != null ? item.CALIBRATIONSTATUS : "";
                                     row["청소상태"] = item.STATUS != null ? item.STATUS : "";
                                     row["청소완료일시"] = item.CLEANDTTM != null ? item.CLEANDTTM : "";
-                                    row["유효기간"] = item.EXPIREDTTM != null ? item.EXPIREDTTM : "";
+                                    row["청소유효일시"] = item.EXPIREDTTM != null ? item.EXPIREDTTM : "";
                                     row["SOP문서번호"] = item.SOPDOC ?? "";
 
                                     dt.Rows.Add(row);

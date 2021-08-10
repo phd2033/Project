@@ -136,7 +136,7 @@ namespace 보령
                                             BATCHNO = row["이전제조번호"] != null ? row["이전제조번호"].ToString() : "",
                                             STATUS = row["청소상태"] != null ? row["청소상태"].ToString() : "",
                                             CLEANDTTM = row["청소완료일시"] != null ? row["청소완료일시"].ToString() : "",
-                                            EXPIREDTTM = row["유효기간"] != null ? row["유효기간"].ToString() : "",
+                                            EXPIREDTTM = row["청소유효일시"] != null ? row["청소유효일시"].ToString() : "",
                                             CLEANAVAILFLAG = "N",
                                             PROCAVAILFLAG = "N",
                                             AVAILFLAG = "Y"
@@ -393,7 +393,7 @@ namespace 보령
                                 dt.Columns.Add(new DataColumn("이전제조번호"));
                                 dt.Columns.Add(new DataColumn("청소상태"));
                                 dt.Columns.Add(new DataColumn("청소완료일시"));
-                                dt.Columns.Add(new DataColumn("유효기간"));
+                                dt.Columns.Add(new DataColumn("청소유효일시"));
 
                                 foreach (var item in BR_BRS_SEL_EquipmentStatus_ROOM.OUTDATAs)
                                 {
@@ -405,7 +405,7 @@ namespace 보령
                                     row["이전제조번호"] = item.BATCHNO != null ? item.BATCHNO : "";
                                     row["청소상태"] = item.STATUS != null ? item.STATUS : "";
                                     row["청소완료일시"] = item.CLEANDTTM != null ? item.CLEANDTTM : "";
-                                    row["유효기간"] = item.EXPIREDTTM != null ? item.EXPIREDTTM : "";
+                                    row["청소유효일시"] = item.EXPIREDTTM != null ? item.EXPIREDTTM : "";
 
                                     dt.Rows.Add(row);
                                 }
