@@ -204,16 +204,16 @@ namespace 보령
                                 DataTable dt = new DataTable("DATA");
                                 ds.Tables.Add(dt);
 
-                                dt.Columns.Add(new DataColumn("자재코드"));
-                                dt.Columns.Add(new DataColumn("자재명"));
+                                dt.Columns.Add(new DataColumn("원료코드"));
+                                dt.Columns.Add(new DataColumn("원료명"));
                                 dt.Columns.Add(new DataColumn("원료배치번호"));
                                 dt.Columns.Add(new DataColumn("소분량"));
 
                                 foreach (var item in BR_BRS_SEL_ProductionOrderDispenseOutput.OUTDATAs)
                                 {
                                     var row = dt.NewRow();
-                                    row["자재코드"] = item.MTRLID != null ? item.MTRLID : "";
-                                    row["자재명"] = item.MTRLNAME != null ? item.MTRLNAME : "";
+                                    row["원료코드"] = item.MTRLID != null ? item.MTRLID : "";
+                                    row["원료명"] = item.MTRLNAME != null ? item.MTRLNAME : "";
                                     row["원료배치번호"] = item.MLOTID != null ? item.MLOTID : "";
                                     row["소분량"] = item.MSUBLOTQTYUOM != null ? item.MSUBLOTQTYUOM : "";
 

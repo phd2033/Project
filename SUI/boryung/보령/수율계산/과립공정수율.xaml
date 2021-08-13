@@ -82,8 +82,8 @@
                 <Line Grid.Column="4" Grid.ColumnSpan="2" Grid.Row="2"  Stroke="Black" Stretch="Fill" StrokeThickness="1" X1="0" Y1="0" X2="1" Y2="0" ></Line>
                 <sdk:Label  Grid.Column="6" Grid.Row="1" Grid.RowSpan="3" Content="×" Style="{Binding Source={StaticResource LabelStyle}}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 <sdk:Label  Grid.Column="7" Grid.Row="1" Grid.RowSpan="3" Content="100" Style="{Binding Source={StaticResource LabelStyle}}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                <sdk:Label  Grid.Column="4" Grid.Row="1" Grid.ColumnSpan="2" Content="공정 중 제품 (g)" Style="{Binding Source={StaticResource LabelStyle}}" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
-                <sdk:Label  Grid.Column="4" Grid.Row="3" Grid.ColumnSpan="2" Content="투입된 원료 기준량 (g)" Style="{Binding Source={StaticResource LabelStyle}}" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                <sdk:Label  Grid.Column="4" Grid.Row="1" Grid.ColumnSpan="2" Content="실 생산량 (g)" Style="{Binding Source={StaticResource LabelStyle}}" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
+                <sdk:Label  Grid.Column="4" Grid.Row="3" Grid.ColumnSpan="2" Content="인수량 (g)" Style="{Binding Source={StaticResource LabelStyle}}" HorizontalAlignment="Center" VerticalAlignment="Top"/>
 
 
 

@@ -312,8 +312,9 @@ namespace 보령
                                 var ds = new DataSet();
                                 var dt = new DataTable("DATA");
                                 ds.Tables.Add(dt);
-                                dt.Columns.Add(new DataColumn("원료배치번호"));
-                                dt.Columns.Add(new DataColumn("원자재명"));
+                                dt.Columns.Add(new DataColumn("원료코드"));
+                                dt.Columns.Add(new DataColumn("원료명"));
+                                dt.Columns.Add(new DataColumn("원료배치번호"));                                
                                 dt.Columns.Add(new DataColumn("바코드"));
                                 dt.Columns.Add(new DataColumn("투입량"));
                                 dt.Columns.Add(new DataColumn("단위"));
@@ -354,8 +355,9 @@ namespace 보령
                                     if (item.IS_CAN_CHARGING_CHECKED_NAME == "투입완료")
                                     {
                                         var row = dt.NewRow();
-                                        row["원료배치번호"] = item.MLOTID != null ? item.MLOTID : "";
-                                        row["원자재명"] = item.MTRLNAME != null ? item.MTRLNAME : "";
+                                        row["원료코드"] = item.MTRLID != null ? item.MTRLID : "";
+                                        row["원료명"] = item.MTRLNAME != null ? item.MTRLNAME : "";
+                                        row["원료배치번호"] = item.MLOTID != null ? item.MLOTID : "";                                        
                                         row["바코드"] = item.MSUBLOTBCD != null ? item.MSUBLOTBCD : "";
                                         row["투입량"] =  item.CHGQTY != null ? item.CHGQTY : "";
                                         row["단위"] = item.UOM != null ? item.UOM : "";

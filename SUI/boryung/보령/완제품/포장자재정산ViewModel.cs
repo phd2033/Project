@@ -209,12 +209,12 @@ namespace 보령
                                     row["MTRLID"] = item.MTRLID != null ? item.MTRLID : "";
                                     row["MTRLNAME"] = item.MTRLNAME != null ? item.MTRLNAME : "";
                                     row["UOM"] = item.UOM != null ? item.UOM : "";
-                                    row["PICKING"] = item.PICKING.ToString("#0.00#");
-                                    row["ADDING"] = item.ADDING.ToString("#0.00#");
-                                    row["SCRAP"] = item.SCRAP.ToString("#0.00#");
-                                    row["SAMPLE"] = item.SAMPLE.ToString("#0.00#");
-                                    row["REMAIN"] = item.REMAIN.ToString("#0.00#");
-                                    row["USING"] = item.USING.ToString("#0.00#");
+                                    row["PICKING"] = item.PICKING.ToString("#,0");
+                                    row["ADDING"] = item.ADDING.ToString("#,0");
+                                    row["SCRAP"] = item.SCRAP.ToString("#,0");
+                                    row["SAMPLE"] = item.SAMPLE.ToString("#,0");
+                                    row["REMAIN"] = item.REMAIN.ToString("#,0");
+                                    row["USING"] = item.USING.ToString("#,0");
 
                                     dt.Rows.Add(row);
                                 }

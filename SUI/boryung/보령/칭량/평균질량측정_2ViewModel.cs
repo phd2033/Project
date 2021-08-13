@@ -15,7 +15,32 @@ namespace 보령
     public class 평균질량측정_2ViewModel : ViewModelBase
     {
         #region Property
+        public 평균질량측정_2ViewModel()
+        {
+            _ScaleInfo = new BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID();
+            _BR_BRS_SEL_CurrentWeight = new BR_BRS_SEL_CurrentWeight();
+            _BR_BRS_REG_IPC_AVG_WEIGHT_MULTI = new BR_BRS_REG_IPC_AVG_WEIGHT_MULTI();
+            _BR_PHR_REG_ScaleSetTare = new BR_PHR_REG_ScaleSetTare();
+            _filteredComponents = new ObservableCollection<AVG_INDATA>();
 
+            isSaveEnable = false;
+            isBtnEnable = false;
+            sampleCount = 1;
+
+            string interval_str = ShopFloorUI.App.Current.Resources["GetWeightInterval"].ToString();
+            if (int.TryParse(interval_str, out _repeaterInterval) == false)
+                _repeaterInterval = 2000;
+
+            _repeater.Interval = new TimeSpan(0, 0, 0, 0, _repeaterInterval);
+            _repeater.Tick += _repeater_Tick;
+        }
+
+        private 평균질량측정_2 _mainWnd;
+        private DispatcherTimer _repeater = new DispatcherTimer();
+        private int _repeaterInterval = 2000;
+        private ScaleWebAPIHelper _restScaleService = new ScaleWebAPIHelper();
+
+        #region 저울
         private string _eqptID;
         public string eqptID
         {
@@ -23,45 +48,57 @@ namespace 보령
             set
             {
                 _eqptID = value;
-                NotifyPropertyChanged();
+                OnPropertyChanged("eqptID");
             }
         }
-
-        private string _realEqptID;
-        public string realEqptID
+        private int _ScalePrecision;
+        public int ScalePrecision
         {
-            get { return _realEqptID; }
+            get { return _ScalePrecision; }
             set
             {
-                _realEqptID = value;
-                NotifyPropertyChanged();
+                _ScalePrecision = value;
+                OnPropertyChanged("ScalePrecision");
+                OnPropertyChanged("curWeight");
             }
         }
+        private string _ScaleUom;
+        public string ScaleUom
+        {
+            get { return _ScaleUom; }
+            set
+            {
+                _ScaleUom = value;
+                OnPropertyChanged("ScaleUom");
+                OnPropertyChanged("curWeight");
+            }
+        }
+        private Weight _curWeight = new Weight();
+        public string curWeight
+        {
+            get { return _curWeight.WeightUOMString; }
+        }
+        #endregion
 
-        private string _sampleCount;
-        public string sampleCount
+        #region AVG_IPC
+        private decimal _sampleCount;
+        public decimal sampleCount
         {
             get { return _sampleCount; }
             set
             {
-                _sampleCount = value;
+                if (value > 0)
+                    _sampleCount = value;
+                else
+                {
+                    _sampleCount = 1;
+                    OnMessage("샘플수량이 0보다 작을 수 없습니다.");
+                }
+
                 calAvgWeight();
-                NotifyPropertyChanged();
+                OnPropertyChanged("sampleCount");
             }
         }
-
-        private string _curWeighing;
-        public string curWeighing
-        {
-            get { return _curWeighing; }
-            set
-            {
-                _curWeighing = value;
-                calAvgWeight();
-                NotifyPropertyChanged();
-            }
-        }
-
         private string _avgWeighing;
         public string avgWeighing
         {
@@ -69,10 +106,23 @@ namespace 보령
             set
             {
                 _avgWeighing = value;
-                NotifyPropertyChanged();
+                OnPropertyChanged("avgWeighing");
             }
         }
 
+        private ObservableCollection<AVG_INDATA> _filteredComponents;
+        public ObservableCollection<AVG_INDATA> filteredComponents
+        {
+            get { return _filteredComponents; }
+            set
+            {
+                _filteredComponents = value;
+                OnPropertyChanged("filteredComponents");
+            }
+        }
+        #endregion
+
+        #region Control
         private bool _isBtnEnable;
         public bool isBtnEnable
         {
@@ -80,52 +130,7 @@ namespace 보령
             set
             {
                 _isBtnEnable = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private bool _isNumericEnable;
-        public bool isNumericEnable
-        {
-            get { return _isNumericEnable; }
-            set
-            {
-                _isNumericEnable = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private int _maxValue;
-        public int maxValue
-        {
-            get { return _maxValue; }
-            set
-            {
-                _maxValue = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        
-        private string _btnName;
-        public string btnName
-        {
-            get { return _btnName; }
-            set
-            {
-                _btnName = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private DateTime? _startTime;
-        public DateTime? startTime
-        {
-            get { return _startTime; }
-            set
-            {
-                _startTime = value;
-                NotifyPropertyChanged();
+                OnPropertyChanged("isBtnEnable");
             }
         }
 
@@ -136,27 +141,12 @@ namespace 보령
             set
             {
                 _isSaveEnable = value;
-                NotifyPropertyChanged();
+                OnPropertyChanged("isSaveEnable");
             }
         }
+        #endregion
 
-        private bool _isEqptReadonly;
-        public bool isEqptReadonly
-        {
-            get { return _isEqptReadonly; }
-            set
-            {
-                _isEqptReadonly = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private 평균질량측정_2 _mainWnd;
-        private int inx;
-        private DispatcherTimer _repeater = new DispatcherTimer();
-        private int _repeaterInterval = 2000;
-
-        // popup Property
+        // Not Use Scale Property
         private string _popupWeight;
         public string popupWeight
         {
@@ -177,52 +167,16 @@ namespace 보령
                 OnPropertyChanged("popupUOM");
             }
         }
-
         #endregion
 
-        #region DataAccess
-
-        private BR_BRS_CHK_Equipment_Is_Scale _BR_BRS_CHK_Equipment_Is_Scale;
-        public BR_BRS_CHK_Equipment_Is_Scale BR_BRS_CHK_Equipment_Is_Scale
-        {
-            get { return _BR_BRS_CHK_Equipment_Is_Scale; }
-            set { _BR_BRS_CHK_Equipment_Is_Scale = value; }
-        }
-
-        private BR_PHR_SEL_CurrentWeight _BR_PHR_SEL_CurrentWeight;
-        public BR_PHR_SEL_CurrentWeight BR_PHR_SEL_CurrentWeight
-        {
-            get { return _BR_PHR_SEL_CurrentWeight; }
-            set { _BR_PHR_SEL_CurrentWeight = value; }
-        }
-
+        #region BizRule
+        private BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID _ScaleInfo;
         private BR_PHR_REG_ScaleSetTare _BR_PHR_REG_ScaleSetTare;
-        public BR_PHR_REG_ScaleSetTare BR_PHR_REG_ScaleSetTare
-        {
-            get { return _BR_PHR_REG_ScaleSetTare; }
-            set
-            {
-                _BR_PHR_REG_ScaleSetTare = value;
-                NotifyPropertyChanged();
-            }
-        }
-
-        private ObservableCollection<AVG_INDATA> _filteredComponents;
-        public ObservableCollection<AVG_INDATA> filteredComponents
-        {
-            get { return _filteredComponents; }
-            set
-            {
-                _filteredComponents = value;
-                NotifyPropertyChanged();
-            }
-        }
-
+        private BR_BRS_SEL_CurrentWeight _BR_BRS_SEL_CurrentWeight;
+        private BR_BRS_REG_IPC_AVG_WEIGHT_MULTI _BR_BRS_REG_IPC_AVG_WEIGHT_MULTI;
         #endregion
 
         #region Command
-
-
         public ICommand LoadedCommand
         {
             get
@@ -251,13 +205,6 @@ namespace 보령
                                     _repeater = null;
                                 };
 
-                                isSaveEnable = false;
-                                isEqptReadonly = false;
-                                inx = 1;
-
-                                isNumericEnable = true;
-
-                                _startTime = await AuthRepositoryViewModel.GetDBDateTimeNow();
                                 _mainWnd.txtEQPTID.Focus();
                             }
                             ///
@@ -283,7 +230,6 @@ namespace 보령
                 });
             }
         }
-
         public ICommand BarcodeChangedCommand
         {
             get
@@ -300,38 +246,39 @@ namespace 보령
                             CommandCanExecutes["BarcodeChangedCommand"] = false;
 
                             ///
-                            
-                            //유효한 내용인지 확인해야지.
-                            _BR_BRS_CHK_Equipment_Is_Scale.INDATAs.Clear();
-                            _BR_BRS_CHK_Equipment_Is_Scale.OUTDATAs.Clear();
 
-                            _BR_BRS_CHK_Equipment_Is_Scale.INDATAs.Add(new BR_BRS_CHK_Equipment_Is_Scale.INDATA()
+                            if (!string.IsNullOrWhiteSpace(arg.ToString()))
                             {
-                                EQPTID = _mainWnd.txtEQPTID.Text
-                            });
+                                string eqpt = arg.ToString();
 
+                                // 저울정보 확인
+                                _ScaleInfo.INDATAs.Clear();
+                                _ScaleInfo.OUTDATAs.Clear();
 
-                            if (await _BR_BRS_CHK_Equipment_Is_Scale.Execute() && _BR_BRS_CHK_Equipment_Is_Scale.OUTDATAs[0].ISPROPER.Equals("Y"))
-                            {
-                                isBtnEnable = true;
-                                //isNumericEnable = true;
-                                realEqptID = _mainWnd.txtEQPTID.Text;
-                                eqptID = _mainWnd.txtEQPTID.Text;
-                                _repeater.Start();
+                                _ScaleInfo.INDATAs.Add(new BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.INDATA()
+                                {
+                                    EQPTID = eqpt
+                                });
+
+                                if (await _ScaleInfo.Execute() && _ScaleInfo.OUTDATAs.Count > 0)
+                                {
+                                    ScaleUom = _ScaleInfo.OUTDATAs[0].NOTATION;
+                                    ScalePrecision = Convert.ToInt32(_ScaleInfo.OUTDATAs[0].PRECISION.GetValueOrDefault());
+                                    _curWeight.SetWeight(0, ScaleUom, ScalePrecision);
+
+                                    avgWeighing = "";
+                                    eqptID = eqpt;
+                                    _repeater.Start();
+                                }
+                                else
+                                {
+                                    avgWeighing = "";
+                                    eqptID = "";
+                                    _mainWnd.txtEQPTID.Focus();
+                                    _repeater.Stop();
+                                }
                             }
 
-                            //저울이 아니라면 값을 초기화, 저울이 아닌경우 경고창, 하지만 에러가 아니기 때문에 Catch문에 잡히지 않음.
-                            if (_BR_BRS_CHK_Equipment_Is_Scale.OUTDATAs.Count == 0)
-                            {
-                                isBtnEnable = false;
-                                //isNumericEnable = false;
-                                sampleCount = "1";
-                                curWeighing = "";
-                                avgWeighing = "";
-                                _mainWnd.txtEQPTID.Text = "";
-                                _mainWnd.txtEQPTID.Focus();
-                                _repeater.Stop();
-                            }
                             ///
 
                             CommandResults["BarcodeChangedCommand"] = true;
@@ -354,7 +301,183 @@ namespace 보령
                 });
             }
         }
-        
+        public ICommand SetTareCommand
+        {
+            get
+            {
+                return new AsyncCommandBase(async arg =>
+                {
+                    using (await AwaitableLocks["SetTareCommand"].EnterAsync())
+                    {
+                        try
+                        {
+                            IsBusy = true;
+
+                            CommandResults["SetTareCommand"] = false;
+                            CommandCanExecutes["SetTareCommand"] = false;
+
+                            ///
+                            if (!string.IsNullOrWhiteSpace(_eqptID) && _ScaleInfo.OUTDATAs[0] != null)
+                            {
+                                _repeater.Stop();
+                                // 저울에 Tare 명령어 전달
+                                bool success = false;
+                                if (_ScaleInfo.OUTDATAs[0].INTERFACE.ToUpper() == "REST")
+                                {
+                                    var result = await _restScaleService.DownloadString(_eqptID, ScaleCommand.ST);
+
+                                    success = result.code == "1" ? true : false;
+                                }
+                                else
+                                {
+                                    _BR_PHR_REG_ScaleSetTare.INDATAs.Clear();
+                                    _BR_PHR_REG_ScaleSetTare.INDATAs.Add(new BR_PHR_REG_ScaleSetTare.INDATA
+                                    {
+                                        ScaleID = _eqptID
+                                    });
+
+                                    if (await _BR_PHR_REG_ScaleSetTare.Execute())
+                                        success = true;
+                                }
+                                _repeater.Start();
+                            }
+
+                            ///
+
+                            CommandResults["SetTareCommand"] = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            CommandResults["SetTareCommand"] = false;
+                            OnException(ex.Message, ex);
+                        }
+                        finally
+                        {
+                            CommandCanExecutes["SetTareCommand"] = true;
+
+                            IsBusy = false;
+                        }
+                    }
+                }, arg =>
+                {
+                    return CommandCanExecutes.ContainsKey("SetTareCommand") ?
+                        CommandCanExecutes["SetTareCommand"] : (CommandCanExecutes["SetTareCommand"] = true);
+                });
+            }
+        }
+        public ICommand RecordCommand
+        {
+            get
+            {
+                return new AsyncCommandBase(async arg =>
+                {
+                    using (await AwaitableLocks["RecordCommand"].EnterAsync())
+                    {
+                        try
+                        {
+                            IsBusy = true;
+
+                            CommandResults["RecordCommand"] = false;
+                            CommandCanExecutes["RecordCommand"] = false;
+
+                            ///
+
+                            DateTime record = await AuthRepositoryViewModel.GetDBDateTimeNow();
+
+                            filteredComponents.Add(new AVG_INDATA()
+                            {
+                                CHK = "N",
+                                RECORDDTTM = record,
+                                INX = filteredComponents.Count > 0 ? filteredComponents.Count + 1 : 1,
+                                SCALEID = eqptID,
+                                SMPQTY = sampleCount.ToString("0 T"),
+                                CUR_WEIGHT = _curWeight.WeightUOMString,
+                                AVG_WEIGHT = avgWeighing
+                            });
+
+                            ///
+
+
+                            CommandResults["RecordCommand"] = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            CommandResults["RecordCommand"] = false;
+                            OnException(ex.Message, ex);
+                        }
+                        finally
+                        {
+                            CommandCanExecutes["RecordCommand"] = true;
+
+                            if (filteredComponents.Count > 0)
+                                isSaveEnable = true;
+                            else isSaveEnable = false;
+
+                            IsBusy = false;
+                        }
+                    }
+                }, arg =>
+                {
+                    return CommandCanExecutes.ContainsKey("RecordCommand") ?
+                        CommandCanExecutes["RecordCommand"] : (CommandCanExecutes["RecordCommand"] = true);
+                });
+            }
+        }
+        public ICommand RowDeleteCommand
+        {
+            get
+            {
+                return new AsyncCommandBase(async arg =>
+                {
+                    using (await AwaitableLocks["RowDeleteCommand"].EnterAsync())
+                    {
+                        try
+                        {
+                            IsBusy = true;
+
+                            CommandResults["RowDeleteCommand"] = false;
+                            CommandCanExecutes["RowDeleteCommand"] = false;
+
+                            ///
+
+                            var elements = (from data in filteredComponents
+                                            where data.CHK == "N"
+                                            select data).ToList();
+
+                            filteredComponents.Clear();
+
+                            int inx = 1;
+                            foreach (var data in elements)
+                            {
+                                data.INX = inx++;
+                                filteredComponents.Add(data);
+                            }
+
+                            ///
+                            CommandResults["RowDeleteCommand"] = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            CommandResults["RowDeleteCommand"] = false;
+                            OnException(ex.Message, ex);
+                        }
+                        finally
+                        {
+                            CommandCanExecutes["RowDeleteCommand"] = true;
+
+                            if (filteredComponents.Count == 0)
+                                isSaveEnable = false;
+
+                            IsBusy = false;
+                        }
+                    }
+                }, arg =>
+                {
+                    return CommandCanExecutes.ContainsKey("RowDeleteCommand") ?
+                        CommandCanExecutes["RowDeleteCommand"] : (CommandCanExecutes["RowDeleteCommand"] = true);
+                });
+            }
+        }
         public ICommand ClickConfirmCommand
         {
             get
@@ -373,6 +496,7 @@ namespace 보령
                             ///
                             if (filteredComponents.Count > 0)
                             {
+                                _BR_BRS_REG_IPC_AVG_WEIGHT_MULTI.INDATAs.Clear();
 
                                 //XML 형식으로 저장
                                 DataSet ds = new DataSet();
@@ -388,31 +512,45 @@ namespace 보령
                                 foreach (var rowdata in filteredComponents)
                                 {
                                     var row = dt.NewRow();
-                                    row["순번"] = rowdata.INX != null ? rowdata.INX.ToString() : "";
+                                    row["순번"] = rowdata.INX.ToString();
                                     row["장비번호"] = rowdata.SCALEID != null ? rowdata.SCALEID : "";
                                     row["샘플수량"] = rowdata.SMPQTY != null ? rowdata.SMPQTY : "";
                                     row["현재무게"] = rowdata.CUR_WEIGHT != null ? rowdata.CUR_WEIGHT : "";
                                     row["평균무게"] = rowdata.AVG_WEIGHT != null ? rowdata.AVG_WEIGHT : "";
-                                    dt.Rows.Add(row);                                   
+                                    dt.Rows.Add(row);
+
+                                    _BR_BRS_REG_IPC_AVG_WEIGHT_MULTI.INDATAs.Add(new BR_BRS_REG_IPC_AVG_WEIGHT_MULTI.INDATA()
+                                    {
+                                        SCALEID = rowdata.SCALEID,
+                                        POID = ProductionOrderInfo.OrderID,
+                                        OPSGGUID = ProductionOrderInfo.OrderProcessSegmentID,
+                                        SMPQTY = short.Parse(rowdata.SMPQTY.Replace(" T", "")),
+                                        AVG_WEIGHT = (rowdata.AVG_WEIGHT.Substring(0, rowdata.AVG_WEIGHT.Length - 2)).Replace(",", ""),
+                                        SMPQTYUOMID = "",
+                                        USERID = ProductionOrderInfo.UserID,
+                                        LOCATIONID = "",
+                                        STRTDTTM = rowdata.RECORDDTTM
+                                    });
                                 }
 
-                                var xml = BizActorRuleBase.CreateXMLStream(ds);
-                                var bytesArray = System.Text.Encoding.UTF8.GetBytes(xml);
-
-                                _mainWnd.CurrentInstruction.Raw.ACTVAL = _mainWnd.TableTypeName;
-                                _mainWnd.CurrentInstruction.Raw.NOTE = bytesArray;
-
-                                var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction);
-
-                                if (result != enumInstructionRegistErrorType.Ok)
+                                if (await _BR_BRS_REG_IPC_AVG_WEIGHT_MULTI.Execute() == true)
                                 {
-                                    throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", _mainWnd.CurrentInstruction.Raw.IRTGUID, result));
+                                    var xml = BizActorRuleBase.CreateXMLStream(ds);
+                                    var bytesArray = System.Text.Encoding.UTF8.GetBytes(xml);
+
+                                    _mainWnd.CurrentInstruction.Raw.ACTVAL = _mainWnd.TableTypeName;
+                                    _mainWnd.CurrentInstruction.Raw.NOTE = bytesArray;
+
+                                    var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction);
+
+                                    if (result != enumInstructionRegistErrorType.Ok)
+                                    {
+                                        throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", _mainWnd.CurrentInstruction.Raw.IRTGUID, result));
+                                    }
+
+                                    if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
+                                    else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
                                 }
-
-                                if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
-                                else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
-
-                                _mainWnd.Close();
                             }
                             else
                             {
@@ -469,7 +607,6 @@ namespace 보령
                             dt.Columns.Add(new DataColumn("현재무게"));
                             dt.Columns.Add(new DataColumn("평균무게"));
 
-
                             var row = dt.NewRow();
                             row["순번"] = "N/A";
                             row["장비번호"] = "N/A";
@@ -493,8 +630,6 @@ namespace 보령
 
                             if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
                             else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
-
-                            _mainWnd.Close();
 
                             ///
 
@@ -520,221 +655,6 @@ namespace 보령
             }
         }
 
-        public ICommand ClickCancelCommand
-        {
-            get
-            {
-                return new AsyncCommandBase(async arg =>
-                {
-                    using (await AwaitableLocks["ClickCancelCommand"].EnterAsync())
-                    {
-                        try
-                        {
-                            IsBusy = true;
-
-                            CommandResults["ClickCancelCommand"] = false;
-                            CommandCanExecutes["ClickCancelCommand"] = false;
-
-                            ///
-                            _mainWnd.Close(); 
-                            ///
-
-                            CommandResults["ClickCancelCommand"] = true;
-                        }
-                        catch (Exception ex)
-                        {
-                            CommandResults["ClickCancelCommand"] = false;
-                            OnException(ex.Message, ex);
-                        }
-                        finally
-                        {
-                            CommandCanExecutes["ClickCancelCommand"] = true;
-
-                            IsBusy = false;
-                        }
-                    }
-                }, arg =>
-                {
-                    return CommandCanExecutes.ContainsKey("ClickCancelCommand") ?
-                        CommandCanExecutes["ClickCancelCommand"] : (CommandCanExecutes["ClickCancelCommand"] = true);
-                });
-            }
-        }
-
-        public ICommand SetTareCommand
-        {
-            get
-            {
-                return new AsyncCommandBase(async arg =>
-                {
-                    using (await AwaitableLocks["SetTareCommand"].EnterAsync())
-                    {
-                        try
-                        {
-                            IsBusy = true;
-
-                            CommandResults["SetTareCommand"] = false;
-                            CommandCanExecutes["SetTareCommand"] = false;
-
-                            ///
-
-                            _BR_PHR_REG_ScaleSetTare.INDATAs.Clear();
-                            _BR_PHR_REG_ScaleSetTare.OUTDATAs.Clear();
-
-                            _BR_PHR_REG_ScaleSetTare.INDATAs.Add(new BR_PHR_REG_ScaleSetTare.INDATA
-                            {
-                                ScaleID = realEqptID
-                            });
-
-                            if (await _BR_PHR_REG_ScaleSetTare.Execute() != false)
-                            {
-                                curWeighing = string.Format("{0:0.##0}{1}", 0, _BR_PHR_SEL_CurrentWeight.OUTDATAs[0].UOM);
-                            }
-                           
-                            ///
-
-                            CommandResults["SetTareCommand"] = true;
-                        }
-                        catch (Exception ex)
-                        {
-                            CommandResults["SetTareCommand"] = false;
-                            OnException(ex.Message, ex);
-                        }
-                        finally
-                        {
-                            CommandCanExecutes["SetTareCommand"] = true;
-
-                            IsBusy = false;
-                        }
-                    }
-                }, arg =>
-                {
-                    return CommandCanExecutes.ContainsKey("SetTareCommand") ?
-                        CommandCanExecutes["SetTareCommand"] : (CommandCanExecutes["SetTareCommand"] = true);
-                });
-            }
-        }
-         
-        public ICommand RecordCommand
-        {
-            get
-            {
-                return new AsyncCommandBase(async arg =>
-                {
-                    using (await AwaitableLocks["RecordCommand"].EnterAsync())
-                    {
-                        try
-                        {
-                            IsBusy = true;
-
-                            CommandResults["RecordCommand"] = false;
-                            CommandCanExecutes["RecordCommand"] = false;
-
-                            ///
-                            // if (_BR_PHR_SEL_CurrentWeight.OUTDATAs.Count == 0 || _BR_PHR_SEL_CurrentWeight.OUTDATAs[0].Weight == null) return; 저울 미사용 기능으로 인한 삭제
-                            calAvgWeight();
-
-                            filteredComponents.Add(new AVG_INDATA()
-                            {
-                                CHK = "N",
-                                INX = inx++,
-                                SCALEID = realEqptID,
-                                SMPQTY = sampleCount,
-                                CUR_WEIGHT = curWeighing,
-                                AVG_WEIGHT = avgWeighing
-                            });
-
-                            ///
-
-
-                            CommandResults["RecordCommand"] = true;
-                        }
-                        catch (Exception ex)
-                        {
-                            CommandResults["RecordCommand"] = false;
-                            OnException(ex.Message, ex);
-                        }
-                        finally
-                        {
-                            CommandCanExecutes["RecordCommand"] = true;
-
-                            if (filteredComponents.Count > 0)
-                            {
-                                isSaveEnable = true;
-                                isEqptReadonly = true;
-                            }
-                            else isSaveEnable = false;
-
-                            IsBusy = false;
-                        }
-                    }
-                }, arg =>
-                {
-                    return CommandCanExecutes.ContainsKey("RecordCommand") ?
-                        CommandCanExecutes["RecordCommand"] : (CommandCanExecutes["RecordCommand"] = true);
-                });
-            }
-        }
-        
-        public ICommand RowDeleteCommand
-        {
-            get
-            {
-                return new AsyncCommandBase(async arg =>
-                {
-                    using (await AwaitableLocks["RowDeleteCommand"].EnterAsync())
-                    {
-                        try
-                        {
-                            IsBusy = true;
-
-                            CommandResults["RowDeleteCommand"] = false;
-                            CommandCanExecutes["RowDeleteCommand"] = false;
-
-                            ///
-
-                            var elements = (from data in filteredComponents
-                                            where data.CHK == "N"
-                                            select data).ToList();
-
-                            filteredComponents.Clear();
-                            inx = 1;
-
-                            foreach (var data in elements)
-                            {
-                                data.INX = inx++;
-                                filteredComponents.Add(data);
-                            }
-
-                            ///
-                            CommandResults["RowDeleteCommand"] = true;
-                        }
-                        catch (Exception ex)
-                        {
-                            CommandResults["RowDeleteCommand"] = false;
-                            OnException(ex.Message, ex);
-                        }
-                        finally
-                        {
-                            CommandCanExecutes["RowDeleteCommand"] = true;
-
-                            if (filteredComponents.Count == 0)
-                            {
-                                isSaveEnable = false;
-                                isEqptReadonly = false;
-                            }
-
-                            IsBusy = false;
-                        }
-                    }
-                }, arg =>
-                {
-                    return CommandCanExecutes.ContainsKey("RowDeleteCommand") ?
-                        CommandCanExecutes["RowDeleteCommand"] : (CommandCanExecutes["RowDeleteCommand"] = true);
-                });
-            }
-        }
-
         public ICommand UnuseScaleCommand
         {
             get
@@ -748,22 +668,19 @@ namespace 보령
                             ///
                             _repeater.Stop();
 
-                            _BR_PHR_SEL_CurrentWeight.INDATAs.Clear();
-                            _BR_PHR_SEL_CurrentWeight.OUTDATAs.Clear();
-
-                            isEqptReadonly = true;
-                            eqptID = "";
-
-                            var popup = new InputWeightpopup()
+                            var popup = new InputWeightpopup();
+                            popup.Closed += (s, e) =>
                             {
-                                DataContext = this
-                            };
-                            popup.txtUOM.Text = "g";
-
-                            popup.btnConfirm.Click += (s, e) =>
+                                if (popup.DialogResult.GetValueOrDefault())
                                 {
-                                    this.isBtnEnable = true;
-                                };
+                                    eqptID = "";
+
+                                    _curWeight.SetWeight(Convert.ToDecimal(popup.txtWeight.Value), "g", 3);
+                                    calAvgWeight();
+                                    isBtnEnable = true;
+                                    OnPropertyChanged("curWeight");
+                                }
+                            };
 
                             popup.Show();
                             ///
@@ -787,151 +704,165 @@ namespace 보령
                 });
             }
         }
-
+        #endregion
         async void _repeater_Tick(object sender, EventArgs e)
         {
             try
             {
                 _repeater.Stop();
 
-                _BR_PHR_SEL_CurrentWeight.INDATAs.Clear();
-                _BR_PHR_SEL_CurrentWeight.OUTDATAs.Clear();
-                _BR_PHR_SEL_CurrentWeight.INDATAs.Add(new BR_PHR_SEL_CurrentWeight.INDATA()
+                if (!string.IsNullOrWhiteSpace(_eqptID) && _ScaleInfo.OUTDATAs[0] != null)
                 {
-                    ScaleID = realEqptID
-                });
+                    bool success = false;
+                    string curWeight = string.Empty;
+                    if (_ScaleInfo.OUTDATAs[0].INTERFACE.ToUpper() == "REST")
+                    {
+                        var result = await _restScaleService.DownloadString(_eqptID, ScaleCommand.GW);
 
-                if (await _BR_PHR_SEL_CurrentWeight.Execute(exceptionHandle: LGCNS.iPharmMES.Common.Common.enumBizRuleXceptionHandleType.FailEvent) == true)
-                    curWeighing = string.Format("{0:0.##0}{1}", _BR_PHR_SEL_CurrentWeight.OUTDATAs[0].Weight, _BR_PHR_SEL_CurrentWeight.OUTDATAs[0].UOM);
+                        if (result.code == "1")
+                        {
+                            success = true;
+                            curWeight = result.data;
+                            ScaleUom = result.unit;
 
-                _repeater.Start();
+                            // 저울 유효숫자 설정
+                            if (curWeight.Contains("."))
+                            {
+                                var splt = curWeight.Split('.');
+                                if (splt.Length > 1)
+                                    ScalePrecision = splt[1].Length;
+                                else
+                                    ScalePrecision = 0;
+                            }
+                            else
+                                ScalePrecision = 0;
+                        }
+                    }
+                    else
+                    {
+                        _BR_BRS_SEL_CurrentWeight.INDATAs.Clear();
+                        _BR_BRS_SEL_CurrentWeight.OUTDATAs.Clear();
+
+                        _BR_BRS_SEL_CurrentWeight.INDATAs.Add(new BR_BRS_SEL_CurrentWeight.INDATA
+                        {
+                            ScaleID = eqptID
+                        });
+
+                        if (await _BR_BRS_SEL_CurrentWeight.Execute(exceptionHandle: Common.enumBizRuleXceptionHandleType.FailEvent) == true && _BR_BRS_SEL_CurrentWeight.OUTDATAs.Count > 0)
+                        {
+                            success = true;
+                            curWeight = string.Format(("{0:N" + _curWeight.Precision + "}"), _BR_BRS_SEL_CurrentWeight.OUTDATAs[0].Weight);
+                            ScaleUom = _BR_BRS_SEL_CurrentWeight.OUTDATAs[0].UOM;
+                        }
+                    }
+
+                    if (success)
+                    {
+                        _curWeight.SetWeight(curWeight, ScaleUom);
+                        isBtnEnable = true;
+                    }
+                    else
+                    {
+                        _curWeight.Value = 0;
+                        isBtnEnable = false;
+                    }
+
+                    calAvgWeight();
+                    OnPropertyChanged("curWeight");
+
+                    _repeater.Start();
+                }
             }
             catch (Exception ex)
             {
-                _BR_PHR_SEL_CurrentWeight.INDATAs.Clear();
-                _BR_PHR_SEL_CurrentWeight.OUTDATAs.Clear();
+                OnException(ex.Message, ex);
                 _repeater.Start();
             }
         }
-
-        #endregion
-
+        /// <summary>
+        /// 평균값 계산
+        /// </summary>
         public void calAvgWeight()
         {
-            decimal? convertedWeight = null;
-            decimal? temp = null;
-
-            //측정한 값이 존재
-            if (_BR_PHR_SEL_CurrentWeight.OUTDATAs.Count > 0)
-            {
-                if (_BR_PHR_SEL_CurrentWeight.OUTDATAs[0].UOM == "kg")
-                {
-                    convertedWeight = _BR_PHR_SEL_CurrentWeight.OUTDATAs[0].Weight * 1000000;
-                }
-                else if (_BR_PHR_SEL_CurrentWeight.OUTDATAs[0].UOM == "g")
-                {
-                    convertedWeight = _BR_PHR_SEL_CurrentWeight.OUTDATAs[0].Weight * 1000;
-                }
-                else if (_BR_PHR_SEL_CurrentWeight.OUTDATAs[0].UOM == "mg")
-                {
-                    convertedWeight = _BR_PHR_SEL_CurrentWeight.OUTDATAs[0].Weight;
-                }
-
-                temp = convertedWeight / decimal.Parse(sampleCount);
-
-                avgWeighing = string.Format("{0:#,##0.#0}{1}", temp, "mg");
-            }
-            else if (!string.IsNullOrWhiteSpace(popupWeight) || !string.IsNullOrWhiteSpace(popupUOM))
-            {
-                if (popupUOM.Equals("kg") || popupUOM.Equals("g") || popupUOM.Equals("mg"))
-                {
-                    if (popupUOM == "kg")
-                    {
-                        convertedWeight = decimal.Parse(popupWeight) * 1000000;
-                    }
-                    else if (popupUOM == "g")
-                    {
-                        convertedWeight = decimal.Parse(popupWeight) * 1000;
-                    }
-                    else if (popupUOM == "mg")
-                    {
-                        convertedWeight = decimal.Parse(popupWeight);
-                    }
-
-                    temp = convertedWeight / decimal.Parse(sampleCount);
-
-                    avgWeighing = string.Format("{0:#,##0.#0}{1}", temp, "mg");
-                }
-            }
+            if (sampleCount > 0 && _curWeight.Value > 0)
+                avgWeighing = string.Format("{0:#,0} mg", (Weight.Add(0, "mg", _curWeight.Value, _curWeight.Uom) / Convert.ToDecimal(_sampleCount)));
         }
 
-        public 평균질량측정_2ViewModel()
-        {
-            _BR_BRS_CHK_Equipment_Is_Scale = new BR_BRS_CHK_Equipment_Is_Scale();
-            _BR_PHR_SEL_CurrentWeight = new BR_PHR_SEL_CurrentWeight();
-            _BR_PHR_REG_ScaleSetTare = new BR_PHR_REG_ScaleSetTare();
-            _filteredComponents = new ObservableCollection<AVG_INDATA>();
-
-            isBtnEnable = false;
-            isNumericEnable = false;
-
-            _btnName = "기록";
-            sampleCount = "1";
-            maxValue = 2000000000;
-
-            string interval_str = ShopFloorUI.App.Current.Resources["GetWeightInterval"].ToString();
-            if (int.TryParse(interval_str, out _repeaterInterval) == false)
-                _repeaterInterval = 2000;
-
-            _repeater.Interval = new TimeSpan(0, 0, 0, 0, _repeaterInterval);
-            _repeater.Tick += _repeater_Tick;
-        }
-
-        public partial class AVG_INDATA
+        public partial class AVG_INDATA : BizActorDataSetBase
         {
             private string _CHK;
             public string CHK
             {
                 get { return _CHK; }
-                set { _CHK = value; }
+                set
+                {
+                    _CHK = value;
+                    OnPropertyChanged("CHK");
+                }
             }
-
+            private int _INX;
+            public int INX
+            {
+                get { return _INX; }
+                set
+                {
+                    _INX = value;
+                    OnPropertyChanged("INX");
+                }
+            }
+            private DateTime _RECORDDTTM;
+            public DateTime RECORDDTTM
+            {
+                get { return _RECORDDTTM; }
+                set
+                {
+                    _RECORDDTTM = value;
+                    OnPropertyChanged("RECORDDTTM");
+                }
+            }
             private string _SCALEID;
             public string SCALEID
             {
                 get { return _SCALEID; }
-                set { _SCALEID = value; }
+                set
+                {
+                    _SCALEID = value;
+                    OnPropertyChanged("SCALEID");
+                }
             }
 
             private string _SMPQTY;
             public string SMPQTY
             {
                 get { return _SMPQTY; }
-                set { _SMPQTY = value; }
+                set
+                {
+                    _SMPQTY = value;
+                    OnPropertyChanged("SMPQTY");
+                }
             }
 
             private string _CUR_WEIGHT;
             public string CUR_WEIGHT
             {
                 get { return _CUR_WEIGHT; }
-                set { _CUR_WEIGHT = value; }
+                set
+                {
+                    _CUR_WEIGHT = value;
+                    OnPropertyChanged("CUR_WEIGHT");
+                }
             }
 
             private string _AVG_WEIGHT;
             public string AVG_WEIGHT
             {
                 get { return _AVG_WEIGHT; }
-                set { _AVG_WEIGHT = value; }
+                set
+                {
+                    _AVG_WEIGHT = value;
+                    OnPropertyChanged("AVG_WEIGHT");
+                }
             }
-
-            private int _INX;
-            public int INX
-            {
-                get { return _INX; }
-                set { _INX = value; }
-            }
-
-            public AVG_INDATA() { }
         }
     }
 }

@@ -55,7 +55,7 @@
                     </Grid.ColumnDefinitions>
                     <sdk:Label Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Content="공정 수율 계산식" HorizontalAlignment="Right"/>
                     <sdk:Label Grid.Row="0" Grid.Column="1" Grid.RowSpan="3" Content=" = "/>
-                    <sdk:Label Grid.Row="0" Grid.Column="2" Content="T (실 생산량 + 샘플량)"/>
+                    <sdk:Label Grid.Row="0" Grid.Column="2" Content="T (실 생산량)"/>
                     <Line Grid.Row="1" Grid.Column="2" Stroke="Black" Stretch="Fill" StrokeThickness="1" X2="1"/>
                     <sdk:Label Grid.Row="2" Grid.Column="2" Content="T (인수량)"/>
                     <sdk:Label Grid.Row="0" Grid.Column="3" Grid.RowSpan="3" Content=" X 100" HorizontalAlignment="Left"/>

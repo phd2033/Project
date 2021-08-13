@@ -27,11 +27,20 @@
             <RowDefinition/>
             <RowDefinition Height="60"/>
         </Grid.RowDefinitions>
-        <c1:C1DataGrid Grid.Row="0" Name="gridPackingInfo" CanUserAddRows="False" CanUserRemoveRows="False" CanUserSort="False" CanUserFilter="False"
-                       AutoGeneratingColumn="gridPackingInfo_AutoGeneratingColumn"
-                       CommittedEdit="gridPackingInfo_CommittedEdit"
-                       LoadedCellPresenter="gridPackingInfo_LoadedCellPresenter">
+        <c1:C1DataGrid Grid.Row="0" Name="gridPackingInfo" AutoGenerateColumns="False" HeadersVisibility="Column"
+                       CanUserEditRows="True" CanUserAddRows="False" CanUserRemoveRows="False" CanUserSort="False" CanUserFilter="False"
+                       ItemsSource="{Binding PackingInfoList}"
+                       CommittedEdit="gridPackingInfo_CommittedEdit">
             <c1:C1DataGrid.Columns>
+                <c1:DataGridTextColumn Header="자재코드" IsReadOnly="True" Binding="{Binding MTRLID}"/>
+                <c1:DataGridTextColumn Header="자재명" IsReadOnly="True" Binding="{Binding MTRLNAME}"/>
+                <c1:DataGridTextColumn Header="단위" IsReadOnly="True" Binding="{Binding UOM}"/>
+                <c1:DataGridNumericColumn Header="인수량" IsReadOnly="False" Binding="{Binding PICKING}"/>
+                <c1:DataGridNumericColumn Header="추가량" IsReadOnly="False" Binding="{Binding ADDING}"/>
+                <c1:DataGridNumericColumn Header="불량(폐기)" IsReadOnly="False" Binding="{Binding SCRAP}"/>
+                <c1:DataGridNumericColumn Header="샘플량" IsReadOnly="False" Binding="{Binding SAMPLE}"/>
+                <c1:DataGridNumericColumn Header="잔량(환입)" IsReadOnly="False" Binding="{Binding REMAIN}"/>
+                <c1:DataGridNumericColumn Header="사용량" IsReadOnly="False" Binding="{Binding USING}"/>
             </c1:C1DataGrid.Columns>
         </c1:C1DataGrid>
         <Grid Grid.Row="1">

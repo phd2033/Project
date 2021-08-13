@@ -357,7 +357,6 @@ namespace 보령
 
                             chargingItem.ForEach(o =>
                             {
-
                                 bizRule.INDATAs.Add(new BR_BRS_REG_MaterialSubLot_Dispense_Charging_FERT.INDATA()
                                 {
                                     LANGID = AuthRepositoryViewModel.Instance.LangID,
@@ -384,7 +383,7 @@ namespace 보령
                                 row["자재ID"] = o.MTRLID != null ? o.MTRLID.ToString() : "";
                                 row["자재명"] = o.MTRLNAME != null ? o.MTRLNAME.ToString() : "";
                                 row["OUTPUTID"] = o.OUTPUTID != null ? o.OUTPUTID.ToString() : "";
-                                row["현재수량"] = o.MSUBLOTQTY != null ? o.MSUBLOTQTY.ToString() : "";
+                                row["현재수량"] = o.MSUBLOTQTY != null ? o.MSUBLOTQTY.GetValueOrDefault().ToString("0") : "";
                                 row["IBC관리번호"] = o.VESSELID != null ? o.VESSELID.ToString() : "";
                                 row["투입일자"] = chargingdttm.ToString();
                                 row["작업자"] = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_Charging");

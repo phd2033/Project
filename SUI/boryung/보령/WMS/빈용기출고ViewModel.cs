@@ -15,6 +15,7 @@ using ShopFloorUI;
 using C1.Silverlight.Data;
 using System.Text;
 using 보령.UserControls;
+using System.Threading.Tasks;
 
 namespace 보령
 {
@@ -25,14 +26,38 @@ namespace 보령
         {
             _BR_PHR_SEL_EquipmentGroup = new BR_PHR_SEL_EquipmentGroup();
             _BR_PHR_SEL_ProductionOrderOutput_Define = new BR_PHR_SEL_ProductionOrderOutput_Define();
+            _BR_PHR_SEL_ProductionOrderOutput_Define_AnyType = new BR_PHR_SEL_ProductionOrderOutput_Define_AnyType();
             _BR_BRS_SEL_ProductionOrder_IBCList = new BR_BRS_SEL_ProductionOrder_IBCList();
             _BR_BRS_REG_WMS_Request_OUT = new BR_BRS_REG_WMS_Request_OUT();
             _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT = new BR_BRS_CHK_VESSEL_INFO_REQUESTOUT();
-
-            _ListContainer = new ObservableCollection<IBCInfo>();
-            _CompleteComponent = new ObservableCollection<IBCInfo>();
+            
+            _EmptyContainerList = new ObservableCollection<EmptyWIPContainer>();
+            _RequestOutContainerList = new ObservableCollection<EmptyWIPContainer>();
         }
         private 빈용기출고 _mainWnd;
+
+        #region Campaign Production
+        private BR_BRS_SEL_ProductionOrder_RECIPEISTGUID.OUTDATACollection _OrderList;
+        public BR_BRS_SEL_ProductionOrder_RECIPEISTGUID.OUTDATACollection OrderList
+        {
+            get { return _OrderList; }
+            set
+            {
+                _OrderList = value;
+                OnPropertyChanged("OrderList");
+            }
+        }
+        private bool _CanSelectOrder;
+        public bool CanSelectOrder
+        {
+            get { return _CanSelectOrder; }
+            set
+            {
+                _CanSelectOrder = value;
+                OnPropertyChanged("CanSelectOrder");
+            }
+        }
+        #endregion
 
         private BR_PHR_SEL_EquipmentGroup.OUTDATA _VesselType;
         public BR_PHR_SEL_EquipmentGroup.OUTDATA VesselType
@@ -45,25 +70,36 @@ namespace 보령
             }
         }
 
-        private ObservableCollection<IBCInfo> _ListContainer;
-        public ObservableCollection<IBCInfo> ListContainer
+        private string _OutputId, _OutputguId;
+
+        private bool _btnRequestEnable;
+        public bool btnRequestEnable
         {
-            get { return _ListContainer; }
+            get { return _btnRequestEnable; }
             set
             {
-                _ListContainer = value;
-                OnPropertyChanged("ListContainer");
+                _btnRequestEnable = value;
+                OnPropertyChanged("btnRequestEnable");
             }
         }
-
-        private ObservableCollection<IBCInfo> _CompleteComponent;
-        public ObservableCollection<IBCInfo> CompleteComponent
+        private ObservableCollection<EmptyWIPContainer> _EmptyContainerList;
+        public ObservableCollection<EmptyWIPContainer> EmptyContainerList
         {
-            get { return _CompleteComponent; }
+            get { return _EmptyContainerList; }
             set
             {
-                _CompleteComponent = value;
-                OnPropertyChanged("CompleteComponent");
+                _EmptyContainerList = value;
+                OnPropertyChanged("EmptyContainerList");
+            }
+        }
+        private ObservableCollection<EmptyWIPContainer> _RequestOutContainerList;
+        public ObservableCollection<EmptyWIPContainer> RequestOutContainerList
+        {
+            get { return _RequestOutContainerList; }
+            set
+            {
+                _RequestOutContainerList = value;
+                OnPropertyChanged("RequestOutContainerList");
             }
         }
         #endregion
@@ -80,6 +116,7 @@ namespace 보령
             }
         }
         private BR_PHR_SEL_ProductionOrderOutput_Define _BR_PHR_SEL_ProductionOrderOutput_Define;
+        private BR_PHR_SEL_ProductionOrderOutput_Define_AnyType _BR_PHR_SEL_ProductionOrderOutput_Define_AnyType;
         private BR_BRS_SEL_ProductionOrder_IBCList _BR_BRS_SEL_ProductionOrder_IBCList;
         public BR_BRS_SEL_ProductionOrder_IBCList BR_BRS_SEL_ProductionOrder_IBCList
         {
@@ -115,6 +152,11 @@ namespace 보령
                             {
                                 _mainWnd = arg as 빈용기출고;
 
+                                #region Campaign Order
+                                OrderList = await CampaignProduction.GetProductionOrderList(_mainWnd.CurrentInstruction.Raw.RECIPEISTGUID, _mainWnd.CurrentOrder.ProductionOrderID);
+                                CanSelectOrder = OrderList.Count > 0 ? true : false;
+                                #endregion
+
                                 // 현재 페이즈가 완료 상태이고 기록이 있는 경우 XML기록 결과를 보여줌
                                 if (_mainWnd.CurrentInstruction.Raw.INSERTEDYN.Equals("Y") && _mainWnd.CurrentInstruction.PhaseState.Equals("COMP") && _mainWnd.CurrentInstruction.Raw.NOTE != null)
                                 {
@@ -127,17 +169,38 @@ namespace 보령
                                     {
                                         foreach (DataRow row in ds.Tables[0].Rows)
                                         {
-                                            CompleteComponent.Add(new IBCInfo
+                                            _RequestOutContainerList.Add(new EmptyWIPContainer
                                             {
                                                 CHK = false,
-                                                VESSELID = row["용기번호"] != null ? row["용기번호"].ToString() : "",
+                                                STATUS = row["상태"] != null ? row["상태"].ToString() : "",
+                                                PoId = row["오더번호"] != null ? row["오더번호"].ToString() : "",
+                                                VesselId = row["용기번호"] != null ? row["용기번호"].ToString() : "",
                                                 OPSGNAME = row["공정명"] != null ? row["공정명"].ToString() : "",
                                                 OUTPUTID = row["공정중제품"] != null ? row["공정중제품"].ToString() : "",
                                                 WASHINGDTTM = row["세척일시"] != null ? row["세척일시"].ToString() : "",
-                                                CLEANEXPIREDTTM = row["세척유효기간"] != null ? row["세척유효기간"].ToString() : "",
-                                                STATUS = row["상태"] != null ? row["상태"].ToString() : ""
+                                                CLEANEXPIREDTTM = row["세척유효일시"] != null ? row["세척유효일시"].ToString() : ""
                                             });
                                         }
+                                        OnPropertyChanged("RequestOutContainerList");
+                                    }
+                                }
+
+                                // 공정중제품 정보 조회
+                                if (!string.IsNullOrWhiteSpace(_mainWnd.CurrentInstruction.Raw.BOMID))
+                                {
+                                    _BR_PHR_SEL_ProductionOrderOutput_Define_AnyType.INDATAs.Clear();
+                                    _BR_PHR_SEL_ProductionOrderOutput_Define_AnyType.OUTDATAs.Clear();
+                                    _BR_PHR_SEL_ProductionOrderOutput_Define_AnyType.INDATAs.Add(new BR_PHR_SEL_ProductionOrderOutput_Define_AnyType.INDATA
+                                    {
+                                        POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                        OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID != null ? new Guid?(new Guid(_mainWnd.CurrentOrder.OrderProcessSegmentID)) : null,
+                                        OUTPUTID = string.IsNullOrWhiteSpace(_mainWnd.CurrentInstruction.Raw.BOMID) ? null : _mainWnd.CurrentInstruction.Raw.BOMID
+                                    });
+
+                                    if (await _BR_PHR_SEL_ProductionOrderOutput_Define_AnyType.Execute() && _BR_PHR_SEL_ProductionOrderOutput_Define_AnyType.OUTDATAs.Count > 0)
+                                    {
+                                        _OutputId = _BR_PHR_SEL_ProductionOrderOutput_Define_AnyType.OUTDATAs[0].OUTPUTID != null ? _BR_PHR_SEL_ProductionOrderOutput_Define_AnyType.OUTDATAs[0].OUTPUTID.ToString() : "";
+                                        _OutputguId = _BR_PHR_SEL_ProductionOrderOutput_Define_AnyType.OUTDATAs[0].OUTPUTGUID != null ? _BR_PHR_SEL_ProductionOrderOutput_Define_AnyType.OUTDATAs[0].OUTPUTGUID.ToString() : "";
                                     }
                                 }
 
@@ -183,7 +246,6 @@ namespace 보령
                 });
             }
         }
-
         public ICommand SearchEmptyCommandAsync
         {
             get
@@ -199,57 +261,26 @@ namespace 보령
 
                             ///
                             IsBusy = true;
-                            ListContainer.Clear();
 
-                            _BR_PHR_SEL_ProductionOrderOutput_Define.INDATAs.Clear();
-                            _BR_PHR_SEL_ProductionOrderOutput_Define.OUTDATAs.Clear();
+                            _EmptyContainerList.Clear();
 
-                            _BR_BRS_SEL_ProductionOrder_IBCList.INDATAs.Clear();
-                            _BR_BRS_SEL_ProductionOrder_IBCList.OUTDATAs.Clear();
-
-                            _BR_PHR_SEL_ProductionOrderOutput_Define.INDATAs.Add(new BR_PHR_SEL_ProductionOrderOutput_Define.INDATA
+                            // 공정중제품을 지정하지 않은 경우 조회
+                            if(string.IsNullOrWhiteSpace(_OutputId) || string.IsNullOrWhiteSpace(_OutputguId))
                             {
-                                POID = _mainWnd.CurrentOrder.ProductionOrderID,
-                                OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID != null ? new Guid?(new Guid(_mainWnd.CurrentOrder.OrderProcessSegmentID)) : null
-                            });
+                                _BR_PHR_SEL_ProductionOrderOutput_Define.INDATAs.Clear();
+                                _BR_PHR_SEL_ProductionOrderOutput_Define.OUTDATAs.Clear();
 
-                            if (await _BR_PHR_SEL_ProductionOrderOutput_Define.Execute() == true && _BR_PHR_SEL_ProductionOrderOutput_Define.OUTDATAs.Count > 0)
-                            {
-                                foreach (var output in _BR_PHR_SEL_ProductionOrderOutput_Define.OUTDATAs)
+                                _BR_PHR_SEL_ProductionOrderOutput_Define.INDATAs.Add(new BR_PHR_SEL_ProductionOrderOutput_Define.INDATA
                                 {
-                                    _BR_BRS_SEL_ProductionOrder_IBCList.INDATAs.Add(new BR_BRS_SEL_ProductionOrder_IBCList.INDATA
-                                    {
-                                        TYPE = "EMPTY",
-                                        EQPTGRPID = this.VesselType != null ? this.VesselType.EQPTGRPID : "",
-                                        POID = _mainWnd.CurrentOrder.ProductionOrderID,
-                                        OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
-                                        OUTPUTGUID = output.OUTPUTGUID.ToString()
-                                    });
+                                    POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                    OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID != null ? new Guid?(new Guid(_mainWnd.CurrentOrder.OrderProcessSegmentID)) : null
+                                });
 
-                                    if (await _BR_BRS_SEL_ProductionOrder_IBCList.Execute() == true)
-                                    {
-                                        foreach (var item in _BR_BRS_SEL_ProductionOrder_IBCList.OUTDATAs)
-                                        {
-                                            ListContainer.Add(new IBCInfo
-                                            {
-                                                CHK = false,
-                                                VESSELID = item.EQPTID,
-                                                POID = _mainWnd.CurrentOrder.ProductionOrderID,
-                                                OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
-                                                OPSGNAME = _mainWnd.CurrentOrder.OrderProcessSegmentName,
-                                                OUTPUTID = output.OUTPUTID,
-                                                OUTPUTGUID = output.OUTPUTGUID.ToString(),
-                                                Weight = 0m,
-                                                WASHINGDTTM = item.WASHINGDTTM,
-                                                CLEANEXPIREDTTM = item.CLEANEXPIREDTTM,
-                                                CVSTATUS = item.MTRLNAME,
-                                                STATUS = "대기"
-                                            });
-                                        }
-                                    }
-                                }
-                                
+                                await _BR_PHR_SEL_ProductionOrderOutput_Define.Execute();
                             }
+
+                            await GetEmptyContainerList();
+
                             ///
 
                             CommandResults["SearchEmptyCommandAsync"] = true;
@@ -272,7 +303,6 @@ namespace 보령
                 });
             }
         }
-
         public ICommand RequestOUTCommandAsync
         {
             get
@@ -288,18 +318,14 @@ namespace 보령
 
                             ///
                             IsBusy = true;
-                            _mainWnd.btnRequestOut.IsEnabled = false;
 
-                            if (ListContainer.Count < 1)
-                                return;
+                            btnRequestEnable = false;
 
-                            if (ListContainer.Count(x => x.CHK && (x.STATUS.Equals("대기") || x.STATUS.Equals("실패"))) > 0)
+                            if (_EmptyContainerList.Count(x => x.CHK && (x.STATUS.Equals("대기") || x.STATUS.Equals("실패"))) > 0)
                             {
 
                                 var authelper = new iPharmAuthCommandHelper();
-
                                 authelper.InitializeAsync(Common.enumCertificationType.Function, Common.enumAccessType.Create, "EM_Equipment_InOut");
-
                                 if (await authelper.ClickAsync(Common.enumCertificationType.Function
                                     , Common.enumAccessType.Create
                                     , "WMS 출고"
@@ -313,7 +339,7 @@ namespace 보령
                                     throw new Exception(string.Format("서명이 완료되지 않았습니다."));
                                 }
 
-                                var RequestList = _ListContainer.Where(x => x.CHK && (x.STATUS.Equals("대기") || x.STATUS.Equals("실패")));
+                                var RequestList = _EmptyContainerList.Where(x => x.CHK && (x.STATUS.Equals("대기") || x.STATUS.Equals("실패")));
 
                                 foreach (var item in RequestList)
                                 {
@@ -322,11 +348,11 @@ namespace 보령
 
                                     _BR_BRS_REG_WMS_Request_OUT.INDATAs.Add(new LGCNS.iPharmMES.Common.BR_BRS_REG_WMS_Request_OUT.INDATA
                                     {
-                                        VESSELID = item.VESSELID,
+                                        VESSELID = item.VesselId,
                                         ROOMNO = AuthRepositoryViewModel.Instance.RoomID,
                                         USERID = AuthRepositoryViewModel.GetUserIDByFunctionCode("EM_Equipment_InOut"),
-                                        POID = item.POID,
-                                        OPSGGUID = item.OPSGGUID,
+                                        POID = item.PoId,
+                                        OPSGGUID = item.OpsgGuid,
                                         OUTPUTGUID = item.OUTPUTGUID,
                                         OUTGUBUN = "EMPTY",
                                         GROSSWEIGHT = null,
@@ -337,7 +363,7 @@ namespace 보령
                                     {
                                         item.STATUS = "출고완료";
                                         item.CHK = false;
-                                        CompleteComponent.Add(item);
+                                        RequestOutContainerList.Add(item);
                                     }
                                     else
                                     {
@@ -358,7 +384,7 @@ namespace 보령
                         finally
                         {
                             CommandCanExecutes["RequestOUTCommandAsync"] = true;
-                            _mainWnd.btnRequestOut.IsEnabled = true;
+                            btnRequestEnable = true;
                             IsBusy = false;
                         }
                     }
@@ -412,18 +438,18 @@ namespace 보령
                                                 if(_BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.OUTDATAs[0].TYPE.Equals("EMPTY"))
                                                 {
                                                     bool hasVessel = false;
-                                                    foreach (var item in CompleteComponent)
+                                                    foreach (var item in _RequestOutContainerList)
                                                     {
-                                                        if (item.VESSELID == text)
+                                                        if (item.VesselId == text)
                                                             hasVessel = true;
                                                     }
 
                                                     if (!hasVessel)
                                                     {
-                                                        CompleteComponent.Add(new IBCInfo
+                                                        RequestOutContainerList.Add(new EmptyWIPContainer
                                                         {
                                                             STATUS = "출고완료",
-                                                            VESSELID = _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.OUTDATAs[0].EQPTID,
+                                                            VesselId = _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.OUTDATAs[0].EQPTID,
                                                             OUTPUTID = _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.OUTDATAs[0].OUTPUTID,
                                                             OPSGNAME = _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.OUTDATAs[0].OPSGNAME,
                                                             WASHINGDTTM = _BR_BRS_CHK_VESSEL_INFO_REQUESTOUT.OUTDATAs[0].WASHINGDTTM,
@@ -448,8 +474,6 @@ namespace 보령
                             };
 
                             ScanPopup.Show();
-
-
                             ///
 
                             CommandResults["CheckVesselCommand"] = true;
@@ -489,11 +513,10 @@ namespace 보령
                             ///
                             IsBusy = true;
 
-                            if (CompleteComponent.Count <= 0)
+                            if (_RequestOutContainerList.Count <= 0)
                                 throw new Exception("출고완료된 용기정보가 없습니다.");
 
                             var authHelper = new iPharmAuthCommandHelper();
-
                             if (_mainWnd.CurrentInstruction.Raw.INSDTTM.Equals("Y") && _mainWnd.CurrentInstruction.PhaseState.Equals("COMP"))
                             {
                                 authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
@@ -512,7 +535,6 @@ namespace 보령
                             }
 
                             authHelper.InitializeAsync(Common.enumCertificationType.Function, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
-
                             if (await authHelper.ClickAsync(
                                 Common.enumCertificationType.Function,
                                 Common.enumAccessType.Create,
@@ -530,20 +552,22 @@ namespace 보령
                             ds.Tables.Add(dt);
 
                             dt.Columns.Add(new DataColumn("상태"));
+                            dt.Columns.Add(new DataColumn("오더번호"));
                             dt.Columns.Add(new DataColumn("용기번호"));
                             dt.Columns.Add(new DataColumn("공정중제품"));
                             dt.Columns.Add(new DataColumn("공정명"));
                             dt.Columns.Add(new DataColumn("세척일시"));
                             dt.Columns.Add(new DataColumn("세척유효기간"));
 
-                            foreach (var item in CompleteComponent)
+                            foreach (var item in _RequestOutContainerList)
                             {
                                 if (item.STATUS.Equals("출고완료"))
                                 {
                                     var row = dt.NewRow();
 
                                     row["상태"] = item.STATUS != null ? item.STATUS : "";
-                                    row["용기번호"] = item.VESSELID != null ? item.VESSELID : "";
+                                    row["오더번호"] = item.PoId != null ? item.PoId : "";
+                                    row["용기번호"] = item.VesselId != null ? item.VesselId : "";
                                     row["공정중제품"] = item.OUTPUTID != null ? item.OUTPUTID : "";
                                     row["공정명"] = item.OPSGNAME != null ? item.OPSGNAME : "";
                                     row["세척일시"] = item.WASHINGDTTM != null ? item.WASHINGDTTM : "";
@@ -591,12 +615,99 @@ namespace 보령
         }
         #endregion
 
-        #region [Constructor]
-        
-        #endregion
-
         #region [UserDefine]
-        public class IBCInfo : ViewModelBase
+        private async Task GetEmptyContainerList()
+        {
+            try
+            {
+                _BR_BRS_SEL_ProductionOrder_IBCList.INDATAs.Clear();
+                _BR_BRS_SEL_ProductionOrder_IBCList.OUTDATAs.Clear();
+
+                if (_BR_PHR_SEL_ProductionOrderOutput_Define.OUTDATAs.Count > 0)
+                {
+                    foreach (var item in _BR_PHR_SEL_ProductionOrderOutput_Define.OUTDATAs)
+                    {
+                        _BR_BRS_SEL_ProductionOrder_IBCList.INDATAs.Add(new BR_BRS_SEL_ProductionOrder_IBCList.INDATA
+                        {
+                            TYPE = "EMPTY",
+                            EQPTGRPID = this.VesselType != null ? this.VesselType.EQPTGRPID : "",
+                            POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                            OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
+                            OUTPUTGUID = item.OUTPUTGUID.ToString()
+                        });
+                    }
+                }
+                else
+                {
+                    _BR_BRS_SEL_ProductionOrder_IBCList.INDATAs.Add(new BR_BRS_SEL_ProductionOrder_IBCList.INDATA
+                    {
+                        TYPE = "EMPTY",
+                        EQPTGRPID = this.VesselType != null ? this.VesselType.EQPTGRPID : "",
+                        POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                        OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
+                        OUTPUTGUID = _OutputguId
+                    });
+                }
+
+                if (await _BR_BRS_SEL_ProductionOrder_IBCList.Execute())
+                {
+                    if (_BR_PHR_SEL_ProductionOrderOutput_Define.OUTDATAs.Count > 0)
+                    {
+                        foreach (var output in _BR_PHR_SEL_ProductionOrderOutput_Define.OUTDATAs)
+                        {
+                            foreach (var item in _BR_BRS_SEL_ProductionOrder_IBCList.OUTDATAs)
+                            {
+                                _EmptyContainerList.Add(new EmptyWIPContainer
+                                {
+                                    CHK = false,
+                                    VesselId = item.EQPTID,
+                                    PoId = _mainWnd.CurrentOrder.ProductionOrderID,
+                                    OpsgGuid = _mainWnd.CurrentOrder.OrderProcessSegmentID,
+                                    OPSGNAME = _mainWnd.CurrentOrder.OrderProcessSegmentName,
+                                    OUTPUTID = output.OUTPUTID,
+                                    OUTPUTGUID = output.OUTPUTGUID.HasValue ? output.OUTPUTGUID.ToString() : null,
+                                    WASHINGDTTM = item.WASHINGDTTM,
+                                    CLEANEXPIREDTTM = item.CLEANEXPIREDTTM,
+                                    CVSTATUS = item.MTRLNAME,
+                                    STATUS = "대기"
+                                });
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var item in _BR_BRS_SEL_ProductionOrder_IBCList.OUTDATAs)
+                        {
+                            _EmptyContainerList.Add(new EmptyWIPContainer
+                            {
+                                CHK = false,
+                                VesselId = item.EQPTID,
+                                PoId = _mainWnd.CurrentOrder.ProductionOrderID,
+                                OpsgGuid = _mainWnd.CurrentOrder.OrderProcessSegmentID,
+                                OPSGNAME = _mainWnd.CurrentOrder.OrderProcessSegmentName,
+                                OUTPUTID = _OutputId,
+                                OUTPUTGUID = _OutputguId,
+                                WASHINGDTTM = item.WASHINGDTTM,
+                                CLEANEXPIREDTTM = item.CLEANEXPIREDTTM,
+                                CVSTATUS = item.MTRLNAME,
+                                STATUS = "대기"
+                            });
+                        }
+                    }
+
+                    btnRequestEnable = true;
+                }
+
+                
+                return;
+            }
+            catch (Exception ex)
+            {
+                OnException(ex.Message, ex);
+            }
+        }
+
+        public class EmptyWIPContainer : WIPContainer
         {
             private bool _CHK;
             public bool CHK
@@ -606,39 +717,6 @@ namespace 보령
                 {
                     _CHK = value;
                     OnPropertyChanged("CHK");
-                }
-            }
-
-            private string _VESSELID;
-            public string VESSELID
-            {
-                get { return _VESSELID; }
-                set
-                {
-                    _VESSELID = value;
-                    OnPropertyChanged("VESSELID");
-                }
-            }
-
-            private string _POID;
-            public string POID
-            {
-                get { return _POID; }
-                set
-                {
-                    _POID = value;
-                    OnPropertyChanged("POID");
-                }
-            }
-
-            private string _OPSGGUID;
-            public string OPSGGUID
-            {
-                get { return _OPSGGUID; }
-                set
-                {
-                    _OPSGGUID = value;
-                    OnPropertyChanged("OPSGGUID");
                 }
             }
             private string _OPSGNAME;
@@ -651,7 +729,6 @@ namespace 보령
                     OnPropertyChanged("OPSGNAME");
                 }
             }
-
             private string _OUTPUTID;
             public string OUTPUTID
             {
@@ -693,18 +770,6 @@ namespace 보령
                     OnPropertyChanged("STATUS");
                 }
             }
-
-            private decimal _Weight;
-            public decimal Weight
-            {
-                get { return _Weight; }
-                set
-                {
-                    _Weight = value;
-                    OnPropertyChanged("Weight");
-                }
-            }
-
             private string _WASHINGDTTM;
             public string WASHINGDTTM
             {
@@ -725,7 +790,6 @@ namespace 보령
                     _CLEANEXPIREDTTM = value;
                     OnPropertyChanged("CLEANEXPIREDTTM");
                 }
-
             }
         }
         #endregion

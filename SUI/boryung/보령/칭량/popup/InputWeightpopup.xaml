@@ -5,8 +5,6 @@
            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
            xmlns:ShopFloorUI="clr-namespace:ShopFloorUI;assembly=ShopFloorUI.Common"   
            xmlns:icommon="clr-namespace:LGCNS.iPharmMES.Common;assembly=LGCNS.iPharmMES.Common"
-           mc:Ignorable="d"
-           xmlns:navigation="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Navigation"
            Width="300" Height="120"
            Title="InputWeightpopup">
     <Grid x:Name="LayoutRoot">
@@ -18,11 +16,14 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="20"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBox Name="txtWeight" Grid.Column="0" Height="30" Width="100" HorizontalAlignment="Right"/>
-            <TextBox Name="txtUOM" Grid.Column="2" Height="30" Width="100" HorizontalAlignment="Left" Text="g" IsReadOnly="True"/>
+            <ShopFloorUI:NumericKeyPadType Name="txtWeight" Height="30" VerticalAlignment="Center" FontSize="15"/>
+            <TextBox Name="txtUOM" Grid.Column="2" Height="30" Width="30" Text="g" IsReadOnly="True" FontSize="15" TextAlignment="Center"/>
         </Grid>
-        <Button Content="Confirm" Grid.Row="1" Height="30" Width="60" Name="btnConfirm" Click="btnConfirm_Click"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1">
+            <Button Content="확인" Margin="5,0" Height="30" Width="60" Name="btnConfirm" Click="btnConfirm_Click"/>
+            <Button Content="취소" Margin="5,0" Height="30" Width="60" Name="btnCancel" Click="btnCancel_Click"/>
+        </StackPanel>
     </Grid>
 </icommon:iPharmMESChildWindow>

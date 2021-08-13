@@ -554,6 +554,9 @@ namespace 보령
                             dt.Columns.Add(new DataColumn("바코드"));
                             dt.Columns.Add(new DataColumn("무게"));
                             dt.Columns.Add(new DataColumn("단위"));
+                            dt.Columns.Add(new DataColumn("저울ID"));
+                            dt.Columns.Add(new DataColumn("상한값"));
+                            dt.Columns.Add(new DataColumn("하한값"));
 
                             // 정제수 소분및투입
                             _BR_RHR_REG_MaterialSubLot_Dispense_Charging_NEW.INDATAs.Clear();
@@ -592,6 +595,9 @@ namespace 보령
                                 row["바코드"] = lastWeighingInfo.MSUBLOTBCD != null ? lastWeighingInfo.MSUBLOTBCD : "";
                                 row["무게"] = string.Format(("{0:N" + _scalePrecision + "}"), lastWeighingInfo.TOTALQTY);
                                 row["단위"] = _TotalWeight.Uom;
+                                row["저울ID"] = _ScaleInfo.EQPTID;
+                                row["상한값"] = _UpperWeight.WeightUOMString;
+                                row["하한값"] = _LowerWeight.WeightUOMString;
                                 dt.Rows.Add(row);
 
                                 var xml = BizActorRuleBase.CreateXMLStream(ds);

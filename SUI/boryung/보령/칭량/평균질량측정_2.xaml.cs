@@ -13,7 +13,7 @@ using System.ComponentModel;
 
 namespace 보령
 {
-    [Description("공정검사(평균질량) 측정 (수율계산시 반영 안 됨)")]
+    [Description("공정검사(평균질량) 측정 (저울 인터페이스 및 샘플수량 입력)")]
     public partial class 평균질량측정_2 : ShopFloorCustomWindow
     {
         public 평균질량측정_2()
@@ -26,10 +26,9 @@ namespace 보령
             get { return "TABLE,평균질량측정"; }
         }
 
-        private void txtSample_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void btnClose_Click(object sender, RoutedEventArgs e)
         {
-            if(txtSample != null)
-                (this.LayoutRoot.DataContext as 평균질량측정_2ViewModel).sampleCount = txtSample.Value.ToString();
+            DialogResult = false;
         }
     }
 }

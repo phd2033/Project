@@ -592,8 +592,8 @@ namespace 보령
                             {
                                 var row = dt.NewRow();
                                 row["OUTPUTID"] = x.OUTPUTID;
-                                row["수량"] = x.STATUS != "투입완료" ? (x.MSUBLOTQTY != null ? decimal.Parse(x.MSUBLOTQTY.ToString()).ToString("0.##0") : "")
-                                                                     : (x.OLDMSUBLOTQTY != null ? decimal.Parse(x.OLDMSUBLOTQTY.ToString()).ToString("0.##0") : "");
+                                row["수량"] = x.STATUS != "투입완료" ? (x.MSUBLOTQTY != null ? decimal.Parse(x.MSUBLOTQTY.ToString()).ToString("#,0.##0 g") : "")
+                                                                     : (x.OLDMSUBLOTQTY != null ? decimal.Parse(x.OLDMSUBLOTQTY.ToString()).ToString("#,0.##0 g") : "");
                                 row["상태"] = String.IsNullOrWhiteSpace(x.STATUS) ? "" : x.STATUS;
                                 dt.Rows.Add(row);
                             });

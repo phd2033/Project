@@ -26,10 +26,9 @@ namespace 보령
             get { return "TABLE,평균질량측정"; }
         }
 
-        private void txtSample_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void btnClose_Click(object sender, RoutedEventArgs e)
         {
-            if(txtSample != null)
-                (this.LayoutRoot.DataContext as 평균질량측정ViewModel).sampleCount = txtSample.Value.ToString();
+            DialogResult = false;
         }
     }
 }
