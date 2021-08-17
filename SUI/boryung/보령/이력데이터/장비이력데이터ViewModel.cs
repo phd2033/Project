@@ -155,9 +155,11 @@ namespace 보령
                                 OnMessage("조회할 태그 정보가 1개 이상이어야 합니다");
                                 return;
                             }
-                            txtEQPTID = (_inputValues[0].Raw.ACTVAL != null && _inputValues[0].Raw.ACTVAL.Length > 0) ? _inputValues[0].Raw.ACTVAL : _inputValues[0].Raw.EQPTID;
 
-                            await checkEqptInfo(txtEQPTID);
+                            // 2021.08.17 박희돈 주석처리 - 폼 로드시 설비 값이 없어야 한다고 정남호D 요청. 
+                            //txtEQPTID = (_inputValues[0].Raw.ACTVAL != null && _inputValues[0].Raw.ACTVAL.Length > 0) ? _inputValues[0].Raw.ACTVAL : _inputValues[0].Raw.EQPTID;
+
+                            //await checkEqptInfo(txtEQPTID);
                             ///
 
 
