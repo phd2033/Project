@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShopFloorUI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -12,7 +13,7 @@ using System.Windows.Shapes;
 
 namespace 보령
 {
-    public partial class 원료칭량확인및기록 : ShopFloorUI.ShopFloorCustomWindow
+    public partial class 원료칭량확인및기록 : ShopFloorCustomWindow
     {
         public 원료칭량확인및기록()
         {
@@ -23,15 +24,17 @@ namespace 보령
         {
             get { return "TABLE,원료칭량확인및기록"; }
         }
-
-        private void OKButton_Click(object sender, RoutedEventArgs e)
+        private async void Main_Loaded(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
+            if (Phase != null)
+            {
+                if (await Phase.SessionCheck() != enumInstructionRegistErrorType.Ok)
+                    DialogResult = false;
+            }
         }
-
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        private void btnClose_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = false;
+            DialogResult = false;
         }
     }
 }

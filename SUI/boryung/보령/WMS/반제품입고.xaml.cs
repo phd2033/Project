@@ -25,10 +25,17 @@ namespace 보령
         {
             get { return "TABLE,반제품입고"; }
         }
-
+        private async void Main_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (Phase != null)
+            {
+                if (await Phase.SessionCheck() != enumInstructionRegistErrorType.Ok)
+                    DialogResult = false;
+            }
+        }
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
+            this.DialogResult = false;
         }
 
         private void txtVesselId_KeyDown(object sender, KeyEventArgs e)

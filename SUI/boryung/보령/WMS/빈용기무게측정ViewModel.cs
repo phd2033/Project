@@ -31,8 +31,9 @@ namespace 보령
             _BR_PHR_SEL_System_Printer = new BR_PHR_SEL_System_Printer();
             _BR_BRS_SEL_CurrentWeight = new BR_BRS_SEL_CurrentWeight();
             _BR_BRS_CHK_EMPTY_VESSEL_Info = new BR_BRS_CHK_EMPTY_VESSEL_Info();
-            _IBCCollection = new ObservableCollection<IBCInfo>();
             _BR_BRS_REG_VESSEL_WEIGHT = new BR_BRS_REG_VESSEL_WEIGHT();
+
+            _IBCList = new ObservableCollection<TareCheckedContainer>();
 
             string interval_str = ShopFloorUI.App.Current.Resources["GetWeightInterval"].ToString();
             if (int.TryParse(interval_str, out _repeaterInterval) == false)
@@ -43,12 +44,35 @@ namespace 보령
         }
 
         빈용기무게측정 _mainWnd;
+        private string _Outputguid = "";
 
+        #region Campaign Production
+        private BR_BRS_SEL_ProductionOrder_RECIPEISTGUID.OUTDATACollection _OrderList;
+        public BR_BRS_SEL_ProductionOrder_RECIPEISTGUID.OUTDATACollection OrderList
+        {
+            get { return _OrderList; }
+            set
+            {
+                _OrderList = value;
+                OnPropertyChanged("OrderList");
+            }
+        }
+        private bool _CanSelectOrder;
+        public bool CanSelectOrder
+        {
+            get { return _CanSelectOrder; }
+            set
+            {
+                _CanSelectOrder = value;
+                OnPropertyChanged("CanSelectOrder");
+            }
+        }
+        #endregion
+
+        #region Scale
         private DispatcherTimer _repeater = new DispatcherTimer();
         private int _repeaterInterval = 2000;
         private ScaleWebAPIHelper _restScaleService = new ScaleWebAPIHelper();
-
-        private string _Outputguid = "";
         private BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.OUTDATA _ScaleInfo;
         public string ScaleId
         {
@@ -61,6 +85,7 @@ namespace 보령
             }
         }
         private bool _ScaleException = true;
+        private bool _VesselChecked = false;
         private string _ScaleUom = "g";
         private int _ScalePrecision = 3;
         private BR_PHR_SEL_System_Printer.OUTDATA _selectedPrint;
@@ -90,7 +115,9 @@ namespace 보령
         {
             get
             {
-                if (_ScaleException)
+                if(!_VesselChecked)
+                    return "용기정보없음";
+                else if (_ScaleException)
                     return "연결실패";
                 else
                     return _TareWeight.WeightUOMString;
@@ -106,15 +133,16 @@ namespace 보령
                 OnPropertyChanged("btnRecordEnable");
             }
         }
+        #endregion
 
-        private ObservableCollection<IBCInfo> _IBCCollection;
-        public ObservableCollection<IBCInfo> IBCCollection
+        private ObservableCollection<TareCheckedContainer> _IBCList;
+        public ObservableCollection<TareCheckedContainer> IBCList
         {
-            get { return _IBCCollection; }
+            get { return _IBCList; }
             set
             {
-                _IBCCollection = value;
-                OnPropertyChanged("IBCCollection");
+                _IBCList = value;
+                OnPropertyChanged("IBCList");
             }
         }
 
@@ -181,8 +209,13 @@ namespace 보령
                                 _repeater = null;
                             };
 
+                            #region Campaign Order
+                            OrderList = await CampaignProduction.GetProductionOrderList(_mainWnd.CurrentInstruction.Raw.RECIPEISTGUID, _mainWnd.CurrentOrder.ProductionOrderID);
+                            CanSelectOrder = OrderList.Count > 0 ? true : false;
+                            #endregion
+
                             // 공정중제품 정보 조회
-                            if(string.IsNullOrWhiteSpace(_mainWnd.CurrentInstruction.Raw.BOMID))
+                            if (string.IsNullOrWhiteSpace(_mainWnd.CurrentInstruction.Raw.BOMID))
                             {
                                 _BR_PHR_SEL_ProductionOrderOutput_Define.INDATAs.Clear();
                                 _BR_PHR_SEL_ProductionOrderOutput_Define.OUTDATAs.Clear();
@@ -311,6 +344,7 @@ namespace 보령
                         IsBusy = true;
 
                         _repeater.Stop();
+
                         VesselId = arg as string;
 
                         _BR_BRS_CHK_EMPTY_VESSEL_Info.INDATAs.Clear();
@@ -321,8 +355,12 @@ namespace 보령
 
                         if (await _BR_BRS_CHK_EMPTY_VESSEL_Info.Execute())
                         {
-                            if (CheckVesselId(VesselId))
-                                _repeater.Start();                            
+                            if (CheckVesselId(_VesselId))
+                            {
+                                _VesselChecked = true;
+                                _repeater.Start();
+                                OnPropertyChanged("TareWeight");
+                            }                                                        
                             else
                             {
                                 OnMessage("중복된 용기번호 입니다.");
@@ -370,7 +408,7 @@ namespace 보령
                         ///
                         IsBusy = true;
 
-                        if (TareWeight != "연결실패" && _TareWeight.Value > 0)
+                        if (!string.IsNullOrWhiteSpace(_VesselId) && _VesselChecked && !_ScaleException && _TareWeight.Value > 0)
                         {
                             _repeater.Stop();
                             btnRecordEnable = false;
@@ -382,7 +420,7 @@ namespace 보령
                                 USERID = AuthRepositoryViewModel.Instance.LoginedUserID,
                                 POID = _mainWnd.CurrentOrder.ProductionOrderID,
                                 OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
-                                OUTPUTGUID = this._Outputguid,
+                                OUTPUTGUID = _Outputguid,
                                 OUTGUBUN = "EMPTY",
                                 GROSSWEIGHT = _TareWeight.Value,
                                 UOMID = _ScaleUom,
@@ -393,13 +431,15 @@ namespace 보령
 
                             if (await _BR_BRS_REG_VESSEL_WEIGHT.Execute())
                             {
-                                IBCCollection.Add(new IBCInfo
+                                IBCList.Add(new TareCheckedContainer
                                 {
+                                    PoId = _mainWnd.CurrentOrder.ProductionOrderID,
                                     VesselId = _VesselId,
                                     ScaleId = ScaleId,
-                                    TotalWeight = "",
-                                    TareWeight = _TareWeight.WeightString,
-                                    RawWeight = ""
+                                    TareWeight = _TareWeight.Value,
+                                    NetWeight = 0,
+                                    Precision = _TareWeight.Precision,
+                                    Uom = _TareWeight.Uom
                                 });
 
                                 InitializeData();
@@ -445,7 +485,7 @@ namespace 보령
                         ///
                         IsBusy = true;
 
-                        if (IBCCollection.Count > 0)
+                        if (IBCList.Count > 0)
                         { 
                             var authHelper = new iPharmAuthCommandHelper();
                             if (_mainWnd.CurrentInstruction.Raw.INSERTEDYN.Equals("Y") && _mainWnd.Phase.CurrentPhase.STATE.Equals("COMP")) // 값 수정
@@ -483,16 +523,18 @@ namespace 보령
                             DataTable dt = new DataTable("DATA");
                             ds.Tables.Add(dt);
 
+                            dt.Columns.Add(new DataColumn("POID"));
                             dt.Columns.Add(new DataColumn("IBCID"));
                             dt.Columns.Add(new DataColumn("SCALEID"));
                             dt.Columns.Add(new DataColumn("TAREWEIGHT"));
 
-                            foreach (var item in IBCCollection)
+                            foreach (var item in IBCList)
                             {
                                 var row = dt.NewRow();
+                                row["POID"] = item.PoId != null ? item.PoId : "";
                                 row["IBCID"] = item.VesselId != null ? item.VesselId : "";
                                 row["SCALEID"] = item.ScaleId != null ? item.ScaleId : "";
-                                row["TAREWEIGHT"] = item.TareWeight != null ? item.TareWeight : "";
+                                row["TAREWEIGHT"] = item.TareWeightStr != null ? item.TareWeightStr : "";
 
                                 dt.Rows.Add(row);
                             }
@@ -660,6 +702,7 @@ namespace 보령
             }
         }
         #endregion
+
         #region [etc]
         private async void _repeater_Tick(object sender, EventArgs e)
         {
@@ -702,7 +745,7 @@ namespace 보령
                         _ScaleException = false;
                         _ScaleUom = _TareWeight.Uom;
                         _ScalePrecision = _TareWeight.Precision;
-                        if(!string.IsNullOrWhiteSpace(_VesselId))
+                        if(!_VesselChecked)
                             btnRecordEnable = true;
                     }
                     else
@@ -725,21 +768,44 @@ namespace 보령
 
         private bool CheckVesselId(string Id)
         {
-            foreach (IBCInfo item in _IBCCollection)
+            string ID = Id.ToUpper();
+            foreach (TareCheckedContainer item in _IBCList)
             {
-                if (Id == item.VesselId)
+                if (ID == item.VesselId)
                     return false;
             }
+
             return true;
         }
         private void InitializeData()
         {
+            _VesselChecked = false;
             VesselId = "";
             _TareWeight.Value = 0;
             btnRecordEnable = false;
             _mainWnd.txtVesselId.Focus();
             OnPropertyChanged("TareWeight");
         }
+
+        public class TareCheckedContainer : WIPContainer
+        {
+            private string _ScaleId;
+            public string ScaleId
+            {
+                get { return this._ScaleId; }
+                set
+                {
+                    this._ScaleId = value;
+                    this.OnPropertyChanged("VesselId");
+                }
+            }
+
+            public string TareWeightStr
+            {
+                get { return TareWeight.ToString("F" + Precision); }
+            }
+        }
+
         public class IBCInfo : ViewModelBase
         {
             private string _VesselId;

@@ -8,69 +8,68 @@
     xmlns:c1="http://schemas.componentone.com/winfx/2006/xaml"
     xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk"
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:toolkit="http://schemas.microsoft.com/winfx/2006/xaml/presentation/toolkit"
     xmlns:local="clr-namespace:보령"
-    mc:Ignorable="d"
-    Width="800" Height="400" Title="칭량실적확인 및 WMS전송" Name="Main">
+    xmlns:localctrl="clr-namespace:보령.UserControls"
+    Name="Main" Loaded="Main_Loaded"
+    Width="900" Height="400" Title="칭량실적확인 및 WMS전송">
     <ShopFloorUI:ShopFloorCustomWindow.Resources>
         <ResourceDictionary>
             <local:칭량실적확인WMS전송ViewModel x:Name="ViewModel"/>
         </ResourceDictionary>
     </ShopFloorUI:ShopFloorCustomWindow.Resources>
-    <Grid x:Name="LayoutRoot" Background="White" DataContext="{Binding Source={StaticResource ViewModel}}">
+    <toolkit:BusyIndicator x:Name="BusyIn" DataContext="{Binding Source={StaticResource ViewModel}}">
         <i:Interaction.Triggers>
             <i:EventTrigger EventName="Loaded">
-                <i:InvokeCommandAction Command="{Binding LoadedCommand}" CommandParameter="{Binding ElementName=Main}"/>
+                <i:InvokeCommandAction Command="{Binding LoadedCommandAsync}" CommandParameter="{Binding ElementName=Main}"/>
             </i:EventTrigger>
         </i:Interaction.Triggers>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
-            <RowDefinition/>
-            <RowDefinition Height="40"/>
-        </Grid.RowDefinitions>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="20"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <sdk:Label Grid.Column="1" Content="배치 번호 "/>
-            <TextBox Grid.Column="2" Width="200" VerticalAlignment="Center" Text="{Binding BatchNo, Mode=TwoWay}" IsReadOnly="True"/>
-            <sdk:Label Grid.Column="3" Content="  오더 번호 "/>
-            <TextBox Grid.Column="4" Width="200" VerticalAlignment="Center" Text="{Binding POID, Mode=TwoWay}" IsReadOnly="True"/>
-            <Button Grid.Column="6" Width="150" VerticalAlignment="Center" HorizontalAlignment="Center"
-                    Content="{Binding W[RemainQtyConfirm], Source={StaticResource R}, FallbackValue='|RemainQtyConfirm|'}"
-                    Command="{Binding RemainQtyConfirmCommand}"/>
+        <Grid x:Name="LayoutRoot" Background="White" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" x:Name="Header">
+                <localctrl:CustomUIHeader CurOrder="{Binding ElementName=Main, Path=CurrentOrder}"
+                                          OrderList="{Binding OrderList, Mode=TwoWay}"
+                                          CanSelectOrderNo="{Binding CanSelectOrder, Mode=TwoWay}"/>
+            </Grid>
+
+            <Grid Grid.Row="1" x:Name="MainSection">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Button Grid.Row="0" Width="150" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Right" Content="{Binding W[RemainQtyConfirm], Source={StaticResource R}, FallbackValue='|RemainQtyConfirm|'}"
+                        Command="{Binding RemainQtyConfirmCommand}"/>
+
+                <c1:C1DataGrid Grid.Row="1" AutoGenerateColumns="False" HeadersVisibility="Column"
+                               CanUserAddRows="False" CanUserEditRows="False" CanUserRemoveRows="False" CanUserResizeRows="False"
+                               ItemsSource="{Binding BR_BRS_SEL_ProductionOrderWeighingResult.OUTDATAs}">
+                    <c1:C1DataGrid.Columns>
+                        <c1:DataGridTextColumn Header="오더번호" Binding="{Binding POID}" IsReadOnly="True"/>
+                        <c1:DataGridTextColumn Header="자재코드" Binding="{Binding MTRLID}" IsReadOnly="True"/>
+                        <c1:DataGridTextColumn Header="자재명" Binding="{Binding MTRLNAME}" IsReadOnly="True"/>
+                        <c1:DataGridTextColumn Header="원료성적번호" Binding="{Binding MLOTID}" IsReadOnly="True"/>
+                        <c1:DataGridTextColumn Header="원료시험번호" Binding="{Binding INSPECTIONNO}" IsReadOnly="True"/>
+                        <c1:DataGridTextColumn Header="출고실적수량" Binding="{Binding PRODUCTQTY}" IsReadOnly="True"/>
+                        <c1:DataGridTextColumn Header="기타입고수량" Binding="{Binding OTHERINQTY}" IsReadOnly="True"/>
+                        <c1:DataGridTextColumn Header="폐기출고수량" Binding="{Binding SCRAPQTY}" IsReadOnly="True"/>
+                        <c1:DataGridTextColumn Header="WMS전송여부" Binding="{Binding WMS_IF_FLAG}" IsReadOnly="True"/>
+                    </c1:C1DataGrid.Columns>
+                </c1:C1DataGrid>
+            </Grid>
+
+            <Grid Grid.Row="2" x:Name="Footer">
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button Margin="5,0" Name="btnGetWeighingResult" Width="100" Height="30" Content="조회" Command="{Binding SerachWeighingResultCommandAsync}"/>
+                    <Button Margin="5,0" Name="btnComfirm" Width="100" Height="30" Content="확인(전송)" Command="{Binding ConfirmCommandAsync}"/>
+                    <Button Margin="5,0" Name="btnClose" Width="100" Height="30" Content="{Binding W[CUICloseButtonText], Source={StaticResource R}, FallbackValue='닫기'}" Click="btnClose_Click" />
+                </StackPanel>
+            </Grid>
+
         </Grid>
-        <c1:C1DataGrid Grid.Row="1"
-                       CanUserResizeRows="False"
-                       CanUserAddRows="False"
-                       CanUserRemoveRows="False"
-                       AutoGenerateColumns="False" 
-                       HeadersVisibility="Column"
-                       ItemsSource="{Binding BR_BRS_SEL_ProductionOrderWeighingResult.OUTDATAs}">
-            <c1:C1DataGrid.Columns>
-                <c1:DataGridTextColumn Header="자재코드" Binding="{Binding MTRLID}" IsReadOnly="True"/>
-                <c1:DataGridTextColumn Header="자재명" Binding="{Binding MTRLNAME}" IsReadOnly="True"/>
-                <c1:DataGridTextColumn Header="원료성적번호" Binding="{Binding MLOTID}" IsReadOnly="True"/>
-                <c1:DataGridTextColumn Header="원료시험번호" Binding="{Binding INSPECTIONNO}" IsReadOnly="True"/>
-                <c1:DataGridTextColumn Header="출고실적수량" Binding="{Binding PRODUCTQTY}" IsReadOnly="True"/>
-                <c1:DataGridTextColumn Header="기타입고수량" Binding="{Binding OTHERINQTY}" IsReadOnly="True"/>
-                <c1:DataGridTextColumn Header="폐기출고수량" Binding="{Binding SCRAPQTY}" IsReadOnly="True"/>
-                <c1:DataGridTextColumn Header="WMS전송여부" Binding="{Binding WMS_IF_FLAG}" IsReadOnly="True"/>
-            </c1:C1DataGrid.Columns>
-        </c1:C1DataGrid>
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Content="확인(전송)" Width="120" Height="30" Margin="5">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="Click">
-                        <i:InvokeCommandAction Command="{Binding ConfirmCommandAsync}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </Button>
-            <Button Content="닫기" Width="120" Height="30" Margin="5" Click="Button_Click"/>
-        </StackPanel>
-    </Grid>
+    </toolkit:BusyIndicator>
 </ShopFloorUI:ShopFloorCustomWindow>

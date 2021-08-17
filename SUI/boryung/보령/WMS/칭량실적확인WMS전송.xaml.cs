@@ -24,10 +24,18 @@ namespace 보령
         {
             get { return "TABLE,칭량실적확인WMS전송"; }
         }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Main_Loaded(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
+            if (Phase != null)
+            {
+                if (await Phase.SessionCheck() != enumInstructionRegistErrorType.Ok)
+                    DialogResult = false;
+            }
+        }
+
+        private void btnClose_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
         }
     }
 }

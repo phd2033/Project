@@ -31,7 +31,7 @@ namespace 보령
             _BR_BRS_SEL_CurrentWeight = new BR_BRS_SEL_CurrentWeight();
             _BR_BRS_SEL_VESSEL_Info = new BR_BRS_SEL_VESSEL_Info();
             _BR_BRS_REG_ProductionOrderOutput_Scale_Weight_Multi = new BR_BRS_REG_ProductionOrderOutput_Scale_Weight_Multi();
-            _IBCCollection = new ObservableCollection<IBCInfo>();
+            _IBCList = new ObservableCollection<ChargedWIPContainer>();
 
             string interval_str = ShopFloorUI.App.Current.Resources["GetWeightInterval"].ToString();
             if (int.TryParse(interval_str, out _repeaterInterval) == false)
@@ -43,6 +43,30 @@ namespace 보령
 
         반제품무게측정 _mainWnd;
 
+        #region Campaign Production
+        private BR_BRS_SEL_ProductionOrder_RECIPEISTGUID.OUTDATACollection _OrderList;
+        public BR_BRS_SEL_ProductionOrder_RECIPEISTGUID.OUTDATACollection OrderList
+        {
+            get { return _OrderList; }
+            set
+            {
+                _OrderList = value;
+                OnPropertyChanged("OrderList");
+            }
+        }
+        private bool _CanSelectOrder;
+        public bool CanSelectOrder
+        {
+            get { return _CanSelectOrder; }
+            set
+            {
+                _CanSelectOrder = value;
+                OnPropertyChanged("CanSelectOrder");
+            }
+        }
+        #endregion
+
+        #region Scale
         private DispatcherTimer _repeater = new DispatcherTimer();
         private int _repeaterInterval = 2000;
         private ScaleWebAPIHelper _restScaleService = new ScaleWebAPIHelper();
@@ -59,8 +83,25 @@ namespace 보령
             }
         }
         private bool _ScaleException = true;
+        private bool _VesselChecked = false;
         private string _ScaleUom = "g";
         private int _ScalePrecision = 3;
+
+        private Weight _TotalWeight = new Weight();
+        public string TotalWeight
+        {
+            get
+            {
+                if (!_VesselChecked)
+                    return "용기정보없음";
+                else if (_ScaleException)
+                    return "연결실패";
+                else
+                    return _TotalWeight.WeightUOMString;
+            }
+        }
+        #endregion
+
         private BR_PHR_SEL_System_Printer.OUTDATA _selectedPrint;
         public string curPrintName
         {
@@ -83,17 +124,7 @@ namespace 보령
                 OnPropertyChanged("VesselId");
             }
         }
-        private Weight _TotalWeight = new Weight();
-        public string TotalWeight
-        {
-            get
-            {
-                if (_ScaleException)
-                    return "연결실패";
-                else
-                    return _TotalWeight.WeightUOMString;
-            }
-        }
+       
         private bool _btnRecordEnable;
         public bool btnRecordEnable
         {
@@ -105,17 +136,16 @@ namespace 보령
             }
         }
 
-        private ObservableCollection<IBCInfo> _IBCCollection;
-        public ObservableCollection<IBCInfo> IBCCollection
+        private ObservableCollection<ChargedWIPContainer> _IBCList;
+        public ObservableCollection<ChargedWIPContainer> IBCList
         {
-            get { return _IBCCollection; }
+            get { return _IBCList; }
             set
             {
-                _IBCCollection = value;
-                OnPropertyChanged("IBCCollection");
+                _IBCList = value;
+                OnPropertyChanged("IBCList");
             }
         }
-
         #endregion
 
         #region [BizRule]
@@ -170,6 +200,11 @@ namespace 보령
 
                                 _repeater = null;
                             };
+
+                            #region Campaign Order
+                            OrderList = await CampaignProduction.GetProductionOrderList(_mainWnd.CurrentInstruction.Raw.RECIPEISTGUID, _mainWnd.CurrentOrder.ProductionOrderID);
+                            CanSelectOrder = OrderList.Count > 0 ? true : false;
+                            #endregion
 
                             // 작업장 저울목록 조회
                             _BR_PHR_SEL_EquipmentCustomAttributeValue_ScaleInfo.INDATAs.Clear();
@@ -280,7 +315,12 @@ namespace 보령
                         if (await _BR_BRS_SEL_VESSEL_Info.Execute())
                         {
                             if (CheckVesselId(VesselId))
+                            {
+                                _VesselChecked = true;
                                 _repeater.Start();
+                                OnPropertyChanged("TotalWeight");
+                            }
+                                
                             else
                             {
                                 OnMessage("중복된 용기번호 입니다.");
@@ -314,7 +354,6 @@ namespace 보령
                 });
             }
         }
-
         public ICommand RecordingCommand
         {
             get
@@ -329,7 +368,7 @@ namespace 보령
                         ///
                         IsBusy = true;
 
-                        if (TotalWeight != "연결실패" && _TotalWeight.Value > 0)
+                        if (!string.IsNullOrWhiteSpace(_VesselId) && _VesselChecked && !_ScaleException && _TotalWeight.Value > 0)
                         {
                             _repeater.Stop();
                             btnRecordEnable = false;
@@ -350,13 +389,15 @@ namespace 보령
                                 Weight tare = new Weight();
                                 tare.SetWeight(_BR_BRS_SEL_VESSEL_Info.OUTDATAs[0].TAREWEIGHT.GetValueOrDefault(), _TotalWeight.Uom, _TotalWeight.Precision);
 
-                                IBCCollection.Add(new IBCInfo
+                                IBCList.Add(new ChargedWIPContainer
                                 {
+                                    PoId = _BR_BRS_SEL_VESSEL_Info.OUTDATAs[0].POID,
                                     VesselId = _BR_BRS_SEL_VESSEL_Info.OUTDATAs[0].VESSELID,
                                     ScaleId = ScaleId,
-                                    TotalWeight = _TotalWeight.WeightString,
-                                    TareWeight = tare.WeightString,
-                                    RawWeight = _TotalWeight.Subtract(tare).WeightString
+                                    Uom = _TotalWeight.Uom,
+                                    Precision = _TotalWeight.Precision,
+                                    TareWeight = tare.Value,
+                                    NetWeight = _TotalWeight.Value - tare.Value
                                 });
 
                                 InitializeData();
@@ -404,7 +445,7 @@ namespace 보령
                         ///
                         IsBusy = true;
 
-                        if (IBCCollection.Count > 0)
+                        if (_IBCList.Count > 0)
                         {
                             var authHelper = new iPharmAuthCommandHelper();
                             if (_mainWnd.CurrentInstruction.Raw.INSERTEDYN.Equals("Y") && _mainWnd.Phase.CurrentPhase.STATE.Equals("COMP")) // 값 수정
@@ -443,20 +484,23 @@ namespace 보령
                             DataTable dt = new DataTable("DATA");
                             ds.Tables.Add(dt);
 
+                            dt.Columns.Add(new DataColumn("POID"));
                             dt.Columns.Add(new DataColumn("IBCID"));
                             dt.Columns.Add(new DataColumn("SCALEID"));
                             dt.Columns.Add(new DataColumn("TOTALWEIGHT"));
                             dt.Columns.Add(new DataColumn("TAREWEIGHT"));
                             dt.Columns.Add(new DataColumn("RAWWEIGHT"));
 
-                            foreach (var item in IBCCollection)
+                            foreach (var item in _IBCList)
                             {
                                 var row = dt.NewRow();
+
+                                row["POID"] = item.PoId != null ? item.PoId : "";
                                 row["IBCID"] = item.VesselId != null ? item.VesselId : "";
                                 row["SCALEID"] = item.ScaleId != null ? item.ScaleId : "";
-                                row["TOTALWEIGHT"] = item.TotalWeight != null ? item.TotalWeight : "";
-                                row["TAREWEIGHT"] = item.TareWeight != null ? item.TareWeight : "";
-                                row["RAWWEIGHT"] = item.RawWeight != null ? item.RawWeight : "";
+                                row["TOTALWEIGHT"] = item != null ? item.GrossWeight.ToString("F" + item.Precision) : "";
+                                row["TAREWEIGHT"] = item != null ? item.TareWeight.ToString("F" + item.Precision) : "";
+                                row["RAWWEIGHT"] = item != null ? item.NetWeight.ToString("F" + item.Precision) : "";
 
                                 dt.Rows.Add(row);
                             }
@@ -669,7 +713,8 @@ namespace 보령
                         _ScaleException = false;
                         _ScaleUom = _TotalWeight.Uom;
                         _ScalePrecision = _TotalWeight.Precision;
-                        if (!string.IsNullOrWhiteSpace(_VesselId))
+
+                        if (_VesselChecked)
                             btnRecordEnable = true;
                     }
                     else
@@ -691,7 +736,7 @@ namespace 보령
         }
         private bool CheckVesselId(string Id)
         {
-            foreach (IBCInfo item in _IBCCollection)
+            foreach (ChargedWIPContainer item in _IBCList)
             {
                 if (Id == item.VesselId)
                     return false;
@@ -706,19 +751,9 @@ namespace 보령
             _mainWnd.txtVesselId.Focus();
             OnPropertyChanged("TotalWeight");         
         }
-        public class IBCInfo : ViewModelBase
-        {
-            private string _VesselId;
-            public string VesselId
-            {
-                get { return this._VesselId; }
-                set
-                {
-                    this._VesselId = value;
-                    this.OnPropertyChanged("VesselId");
-                }
-            }
 
+        public class ChargedWIPContainer : WIPContainer
+        {
             private string _ScaleId;
             public string ScaleId
             {
@@ -727,39 +762,6 @@ namespace 보령
                 {
                     this._ScaleId = value;
                     this.OnPropertyChanged("VesselId");
-                }
-            }
-
-            private string _TotalWeight;
-            public string TotalWeight
-            {
-                get { return this._TotalWeight; }
-                set
-                {
-                    this._TotalWeight = value;
-                    this.OnPropertyChanged("TotalWeight");
-                }
-            }
-
-            private string _TareWeight;
-            public string TareWeight
-            {
-                get { return this._TareWeight; }
-                set
-                {
-                    this._TareWeight = value;
-                    this.OnPropertyChanged("TareWeight");
-                }
-            }
-
-            private string _RawWeight;
-            public string RawWeight
-            {
-                get { return this._RawWeight; }
-                set
-                {
-                    this._RawWeight = value;
-                    this.OnPropertyChanged("RawWeighit");
                 }
             }
         }

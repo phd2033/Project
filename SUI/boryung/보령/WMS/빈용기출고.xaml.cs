@@ -24,17 +24,29 @@ namespace 보령
         {
             get { return "TABLE,빈용기출고"; }
         }
+        private async void Main_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (Phase != null)
+            {
+                if (await Phase.SessionCheck() != enumInstructionRegistErrorType.Ok)
+                    DialogResult = false;
+            }
+
+        }
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
+            this.DialogResult = false;
         }
 
         private void GridContainer_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (sender is C1.Silverlight.DataGrid.C1DataGrid && (sender as C1.Silverlight.DataGrid.C1DataGrid).CurrentRow.DataItem is 빈용기출고ViewModel.IBCInfo)
+            if (sender is C1.Silverlight.DataGrid.C1DataGrid)
             {
-                var curRow = (sender as C1.Silverlight.DataGrid.C1DataGrid).CurrentRow.DataItem as 빈용기출고ViewModel.IBCInfo;
-                curRow.CHK = curRow.STATUS.Equals("출고완료") ? false : !curRow.CHK;
+                if((sender as C1.Silverlight.DataGrid.C1DataGrid).CurrentRow != null && (sender as C1.Silverlight.DataGrid.C1DataGrid).CurrentRow.DataItem != null)
+                {
+                    var curRow = (sender as C1.Silverlight.DataGrid.C1DataGrid).CurrentRow.DataItem as 빈용기출고ViewModel.EmptyWIPContainer;
+                    curRow.CHK = curRow.STATUS.Equals("출고완료") ? false : !curRow.CHK;
+                }
             }           
         }
     }

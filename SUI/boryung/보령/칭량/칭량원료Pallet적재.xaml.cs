@@ -24,7 +24,14 @@ namespace 보령
         {
             get { return "TABLE,칭량원료Pallet적재"; }
         }
-
+        private async void Main_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (Phase != null)
+            {
+                if (await Phase.SessionCheck() != enumInstructionRegistErrorType.Ok)
+                    DialogResult = false;
+            }
+        }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = false;

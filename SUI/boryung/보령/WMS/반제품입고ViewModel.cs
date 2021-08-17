@@ -4,6 +4,8 @@ using ShopFloorUI;
 using System;
 using System.Collections.ObjectModel;
 using System.Net;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -18,7 +20,38 @@ namespace 보령
     public class 반제품입고ViewModel : ViewModelBase
     {
         #region [Property]
+        public 반제품입고ViewModel()
+        {
+            _BR_PHR_GET_BIN_INFO = new BR_PHR_GET_BIN_INFO();
+            _BR_BRS_REG_WMS_Request_IN = new BR_BRS_REG_WMS_Request_IN();
+            _BR_BRS_GET_VESSEL_WMS_IN = new BR_BRS_GET_VESSEL_WMS_IN();
+            _IBCList = new ObservableCollection<ChargedContainer>();
+        }
+
         private 반제품입고 _mainWnd;
+
+        #region Campaign Production
+        private BR_BRS_SEL_ProductionOrder_RECIPEISTGUID.OUTDATACollection _OrderList;
+        public BR_BRS_SEL_ProductionOrder_RECIPEISTGUID.OUTDATACollection OrderList
+        {
+            get { return _OrderList; }
+            set
+            {
+                _OrderList = value;
+                OnPropertyChanged("OrderList");
+            }
+        }
+        private bool _CanSelectOrder;
+        public bool CanSelectOrder
+        {
+            get { return _CanSelectOrder; }
+            set
+            {
+                _CanSelectOrder = value;
+                OnPropertyChanged("CanSelectOrder");
+            }
+        }
+        #endregion
 
         private string _VesselId;
         public string VesselId
@@ -42,18 +75,19 @@ namespace 보령
             }
         }
 
-        private ObservableCollection<StrgOutInfo> _StrgOuts;
-        public ObservableCollection<StrgOutInfo> StrgOuts
+        private ObservableCollection<ChargedContainer> _IBCList;
+        public ObservableCollection<ChargedContainer> IBCList
         {
-            get { return _StrgOuts; }
+            get { return _IBCList; }
             set
             {
-                _StrgOuts = value;
-                OnPropertyChanged("StrgOuts");
+                _IBCList = value;
+                OnPropertyChanged("IBCList");
             }
         }
 
         #endregion
+
         #region [BizRule]
         private BR_PHR_GET_BIN_INFO _BR_PHR_GET_BIN_INFO;
         public BR_PHR_GET_BIN_INFO BR_PHR_GET_BIN_INFO
@@ -67,28 +101,11 @@ namespace 보령
         }
 
         private BR_BRS_REG_WMS_Request_IN _BR_BRS_REG_WMS_Request_IN;
-        public BR_BRS_REG_WMS_Request_IN BR_BRS_REG_WMS_Request_IN
-        {
-            get { return _BR_BRS_REG_WMS_Request_IN; }
-            set
-            {
-                _BR_BRS_REG_WMS_Request_IN = value;
-                OnPropertyChanged("BR_BRS_REG_WMS_Request_IN");
-            }
-        }
 
         private BR_BRS_GET_VESSEL_WMS_IN _BR_BRS_GET_VESSEL_WMS_IN;
-        public BR_BRS_GET_VESSEL_WMS_IN BR_BRS_GET_VESSEL_WMS_IN
-        {
-            get { return _BR_BRS_GET_VESSEL_WMS_IN; }
-            set
-            {
-                _BR_BRS_GET_VESSEL_WMS_IN = value;
-                OnPropertyChanged("BR_BRS_GET_VESSEL_WMS_IN");
-            }
-        }
-
+        
         #endregion
+
         #region [Command]
         public ICommand LoadedCommand
         {
@@ -103,37 +120,41 @@ namespace 보령
 
                         ///
                         if (arg != null && arg is 반제품입고)
+                        {
                             _mainWnd = arg as 반제품입고;
 
-                        // 이전 데이터 load
-                        _BR_BRS_GET_VESSEL_WMS_IN.INDATAs.Clear();
-                        _BR_BRS_GET_VESSEL_WMS_IN.OUTDATAs.Clear();
+                            #region Campaign Order
+                            OrderList = await CampaignProduction.GetProductionOrderList(_mainWnd.CurrentInstruction.Raw.RECIPEISTGUID, _mainWnd.CurrentOrder.ProductionOrderID);
+                            CanSelectOrder = OrderList.Count > 0 ? true : false;
+                            #endregion
 
-                        _BR_BRS_GET_VESSEL_WMS_IN.INDATAs.Add(new BR_BRS_GET_VESSEL_WMS_IN.INDATA
-                        {
-                            RECIPEISTGUID = _mainWnd.CurrentInstruction.Raw.RECIPEISTGUID,
-                            ACTIVITYID = _mainWnd.CurrentInstruction.Raw.ACTIVITYID,
-                            IRTGUID = _mainWnd.CurrentInstruction.Raw.IRTGUID,
-                            IRTRSTGUID = _mainWnd.CurrentInstruction.Raw.IRTRSTGUID
-                        });
-
-                        await _BR_BRS_GET_VESSEL_WMS_IN.Execute();
-
-                        if (_BR_BRS_GET_VESSEL_WMS_IN.OUTDATAs.Count > 0)
-                        {
-                            foreach (var item in _BR_BRS_GET_VESSEL_WMS_IN.OUTDATAs)
+                            // 현재 페이즈가 완료 상태이고 기록이 있는 경우 XML기록 결과를 보여줌
+                            if (_mainWnd.CurrentInstruction.Raw.INSERTEDYN.Equals("Y") && _mainWnd.CurrentInstruction.PhaseState.Equals("COMP") && _mainWnd.CurrentInstruction.Raw.NOTE != null)
                             {
-                                StrgOuts.Add(new StrgOutInfo
-                                {
-                                    IBCID = item.IBCID,
-                                    STRGDAY = item.STRGDAY,
-                                    EXPIREDTTM = item.EXPIREDTTM,
-                                    MLOTID = item.MLOTID
-                                });
-                            }
-                        }
+                                var bytearray = _mainWnd.CurrentInstruction.Raw.NOTE;
+                                string xml = Encoding.UTF8.GetString(bytearray, 0, bytearray.Length);
+                                DataSet ds = new DataSet();
+                                ds.ReadXmlFromString(xml);
 
-                        _mainWnd.txtVesselId.Focus();
+                                if (ds.Tables.Count == 1 && ds.Tables[0].TableName == "DATA")
+                                {
+                                    foreach (DataRow row in ds.Tables[0].Rows)
+                                    {
+                                        _IBCList.Add(new ChargedContainer
+                                        {
+                                            PoId = row["POID"] != null ? row["POID"].ToString() : "",
+                                            VesselId = row["IBCID"] != null ? row["IBCID"].ToString() : "",
+                                            STRGDAY = row["STRGDAY"] != null ? row["STRGDAY"].ToString() : "",
+                                            EXPIREDTTM = row["EXPIREDTTM"] != null ? row["EXPIREDTTM"].ToString() : "",
+                                            MLOTID = row["MLOTID"] != null ? row["MLOTID"].ToString() : ""
+                                        });
+                                    }
+                                    OnPropertyChanged("IBCList");
+                                }
+                            } 
+
+                            _mainWnd.txtVesselId.Focus();
+                        }
                         ///
 
                         CommandResults["LoadedCommand"] = true;
@@ -220,7 +241,13 @@ namespace 보령
                         CommandResults["StorageOutCommandAsync"] = false;
 
                         ///
-                        if (VesselId == IBCNo && CheckIBCId(IBCNo))
+                        if(CheckIBCId(IBCNo))
+                        {
+                            OnMessage("이미 요청한 용기입니다.");
+                            return;
+                        }
+
+                        if (_VesselId == _IBCNo)
                         {
                             _BR_BRS_REG_WMS_Request_IN.INDATAs.Clear();
                             _BR_BRS_REG_WMS_Request_IN.OUTDATAs.Clear();
@@ -238,9 +265,10 @@ namespace 보령
                             {
                                 if (_BR_BRS_REG_WMS_Request_IN.OUTDATAs.Count > 0)
                                 {
-                                    StrgOuts.Add(new StrgOutInfo
+                                    IBCList.Add(new ChargedContainer
                                     {
-                                        IBCID = IBCNo,
+                                        PoId = _mainWnd.CurrentOrder.ProductionOrderID,
+                                        VesselId = IBCNo,
                                         STRGDAY = _BR_BRS_REG_WMS_Request_IN.OUTDATAs[0].STRGDAY,
                                         EXPIREDTTM = _BR_BRS_REG_WMS_Request_IN.OUTDATAs[0].EXPIREDTTM,
                                         MLOTID = _BR_BRS_REG_WMS_Request_IN.OUTDATAs[0].MLOTID
@@ -284,7 +312,7 @@ namespace 보령
                         CommandResults["ComfirmCommandAsync"] = false;
 
                         ///
-                        if (StrgOuts.Count > 0)
+                        if (_IBCList.Count > 0)
                         {
                             var authHelper = new iPharmAuthCommandHelper(); // function code 입력
                             authHelper.InitializeAsync(Common.enumCertificationType.Function, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
@@ -305,15 +333,17 @@ namespace 보령
                             DataTable dt = new DataTable("DATA");
                             ds.Tables.Add(dt);
 
+                            dt.Columns.Add(new DataColumn("POID"));
                             dt.Columns.Add(new DataColumn("IBCID"));
                             dt.Columns.Add(new DataColumn("STRGDAY"));
                             dt.Columns.Add(new DataColumn("EXPIREDTTM"));
                             dt.Columns.Add(new DataColumn("MLOTID"));
 
-                            foreach (var item in StrgOuts)
+                            foreach (var item in _IBCList)
                             {
                                 var row = dt.NewRow();
-                                row["IBCID"] = item.IBCID != null ? item.IBCID : "";
+                                row["POID"] = item.PoId != null ? item.PoId : "";
+                                row["IBCID"] = item.VesselId != null ? item.VesselId : "";
                                 row["STRGDAY"] = item.STRGDAY != null ? item.STRGDAY : "";
                                 row["EXPIREDTTM"] = item.EXPIREDTTM != null ? item.EXPIREDTTM : "";
                                 row["MLOTID"] = item.MLOTID != null ? item.MLOTID : "";
@@ -358,37 +388,22 @@ namespace 보령
             }
         }
         #endregion
-        #region [Constructor]
-        public 반제품입고ViewModel()
-        {
-            _BR_PHR_GET_BIN_INFO = new BR_PHR_GET_BIN_INFO();
-            _BR_BRS_REG_WMS_Request_IN = new BR_BRS_REG_WMS_Request_IN();
-            _BR_BRS_GET_VESSEL_WMS_IN = new BR_BRS_GET_VESSEL_WMS_IN();
-            _StrgOuts = new ObservableCollection<StrgOutInfo>();
-        }
-        #endregion
+
         #region [etc]
         private bool CheckIBCId(string Id)
         {
-            foreach (StrgOutInfo item in StrgOuts)
+            string ID = Id.ToUpper();
+
+            foreach (ChargedContainer item in _IBCList)
             {
-                if (Id == item.IBCID)
+                if (ID == item.VesselId.ToUpper())
                     return false;
             }
             return true;
         }
-        public class StrgOutInfo : ViewModelBase
+
+        public class ChargedContainer : WIPContainer
         {
-            private string _IBCID;
-            public string IBCID
-            {
-                get { return this._IBCID; }
-                set
-                {
-                    this._IBCID = value;
-                    this.OnPropertyChanged("IBCID");
-                }
-            }
             private string _STRGDAY;
             public string STRGDAY
             {
