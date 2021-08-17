@@ -31,6 +31,7 @@ namespace 보령
             _BR_BRS_SEL_Charging_Solvent = new BR_BRS_SEL_Charging_Solvent();
             _BR_BRS_REG_ProductionOrderOutput_LastSoluction = new BR_BRS_REG_ProductionOrderOutput_LastSoluction();
             _BR_PHR_SEL_PRINT_LabelImage = new BR_PHR_SEL_PRINT_LabelImage();
+            _BR_BRS_SEL_ProductionOrderOutputSubLot = new BR_BRS_SEL_ProductionOrderOutputSubLot();
 
             int interval = 2000;
             string interval_str = ShopFloorUI.App.Current.Resources["GetWeightInterval"].ToString();
@@ -234,6 +235,35 @@ namespace 보령
             }
         }
 
+        private bool _DispensingbtnEnable;
+        /// <summary>
+        /// 할당정보 선택 버튼 Enable
+        /// </summary>
+        public bool DispensingbtnEnable
+        {
+            get { return _DispensingbtnEnable; }
+            set
+            {
+                _DispensingbtnEnable = value;
+                OnPropertyChanged("DispensingbtnEnable");
+            }
+        }
+
+        private bool _ConfirmbtnEnable;
+        /// <summary>
+        /// 할당정보 선택 버튼 Enable
+        /// </summary>
+        public bool ConfirmbtnEnable
+        {
+            get { return _ConfirmbtnEnable; }
+            set
+            {
+                _ConfirmbtnEnable = value;
+                OnPropertyChanged("ConfirmbtnEnable");
+            }
+        }
+
+
         private BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_SOLUTION _BR_BRS_REG_ProductionOrderOutput_LastSoluction_ori;
         #endregion
         #region [BizRule]
@@ -245,6 +275,7 @@ namespace 보령
         private BR_BRS_SEL_Charging_Solvent _BR_BRS_SEL_Charging_Solvent;
         private BR_BRS_REG_ProductionOrderOutput_LastSoluction _BR_BRS_REG_ProductionOrderOutput_LastSoluction;
         private BR_PHR_SEL_PRINT_LabelImage _BR_PHR_SEL_PRINT_LabelImage;
+        private BR_BRS_SEL_ProductionOrderOutputSubLot _BR_BRS_SEL_ProductionOrderOutputSubLot;
         #endregion
         #region [Command]
         public ICommand LoadedCommand
@@ -314,6 +345,21 @@ namespace 보령
                                     _outputguid = _BR_PHR_SEL_ProductionOrderOutput_Define.OUTDATAs[0].OUTPUTGUID;
                                 else
                                     throw new Exception("공정중제품 정보를 조회하지 못했습니다.");
+
+                                //최종조제 정보 조회
+                                //최종조제 정보가 있으면 소분버튼 비활성화.
+                                _BR_BRS_SEL_ProductionOrderOutputSubLot.INDATAs.Add(new BR_BRS_SEL_ProductionOrderOutputSubLot.INDATA
+                                {
+                                    POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                    OPSGGUID = new Guid(_mainWnd.CurrentOrder.OrderProcessSegmentID)
+                                });
+                                if (await _BR_BRS_SEL_ProductionOrderOutputSubLot.Execute() == _BR_BRS_SEL_ProductionOrderOutputSubLot.OUTDATAs.Count > 0)
+                                    DispensingbtnEnable = false;
+                                else
+                                    DispensingbtnEnable = true;
+
+                                // 화면 열리면 기록 버튼 비활성화
+                                ConfirmbtnEnable = false;
 
                                 // 프린트 조회
                                 _BR_PHR_SEL_System_Printer.INDATAs.Add(new BR_PHR_SEL_System_Printer.INDATA
@@ -778,6 +824,126 @@ namespace 보령
                 });
             }
         }
+        public ICommand DispensingCommandAsync
+        {
+            get
+            {
+                return new AsyncCommandBase(async arg =>
+                {
+                    using (await AwaitableLocks["DispensingCommandAsync"].EnterAsync())
+                    {
+                        try
+                        {
+                            IsBusy = true;
+
+                            CommandResults["DispensingCommandAsync"] = false;
+                            CommandCanExecutes["DispensingCommandAsync"] = false;
+
+                            if (_curstate != state.end)
+                                throw new Exception("칭량이 완료되지 않았습니다.");
+
+                            var authHelper = new iPharmAuthCommandHelper();                            
+                            authHelper.InitializeAsync(Common.enumCertificationType.Function, Common.enumAccessType.Create, "OM_ProductionOrder_Charging");
+                            if (await authHelper.ClickAsync(
+                                Common.enumCertificationType.Function,
+                                Common.enumAccessType.Create,
+                                "최종조제",
+                                "최종조제",
+                                false,
+                                "OM_ProductionOrder_Charging",
+                                "", null, null) == false)
+                            {
+                                throw new Exception(string.Format("서명이 완료되지 않았습니다."));
+                            }
+
+                            // 최종 조제시 보충원료 소분 및 투입
+                            _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_SOLUTIONs.Clear();
+                            _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_SOLUTIONs.Add(_BR_BRS_REG_ProductionOrderOutput_LastSoluction_ori.Copy());
+
+                            _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_WATERs.Clear();
+                            _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_WATER_INVs.Clear();
+                            _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_WATERs.Add(new BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_WATER
+                            {
+                                INSUSER = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_Charging"),
+                                LANGID = AuthRepositoryViewModel.Instance.LangID,
+                                MSUBLOTBCD = _BR_BRS_SEL_Charging_Solvent.OUTDATAs[0].MSUBLOTBCD,
+                                MSUBLOTQTY = _AddWeight.Value,
+                                POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
+                                IS_NEED_CHKWEIGHT = "N",
+                                IS_FULL_CHARGE = "Y",
+                                IS_CHECKONLY = "N",
+                                IS_INVEN_CHARGE = "Y",
+                                IS_OUTPUT = "N",
+                                MSUBLOTID = _BR_BRS_SEL_Charging_Solvent.OUTDATAs[0].MSUBLOTID,
+                                CHECKINUSER = AuthRepositoryViewModel.GetSecondUserIDByFunctionCode("OM_ProductionOrder_Charging"),
+                            });
+                            _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_WATER_INVs.Add(new BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_WATER_INV
+                            {
+                                COMPONENTGUID = _BR_BRS_SEL_Charging_Solvent.OUTDATA_BOMs[0].COMPONENTGUID
+                            });
+
+                            _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATAs.Clear();
+                            _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATAs.Add(new BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA
+                            {
+                                POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                WEIGHINGMETHOD = "WH007"
+                            });
+
+                            if (await _BR_BRS_REG_ProductionOrderOutput_LastSoluction.Execute())
+                            {
+                                if (_BR_BRS_REG_ProductionOrderOutput_LastSoluction.OUTDATAs.Count > 0 && curPrintName != "N/A")
+                                {
+                                    _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Clear();
+                                    _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Clear();
+
+                                    _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Add(new BR_PHR_SEL_PRINT_LabelImage.INDATA
+                                    {
+                                        ReportPath = "/Reports/Label/LABEL_C0402_018_10",
+                                        PrintName = _selectedPrint.PRINTERNAME,
+                                        USERID = AuthRepositoryViewModel.Instance.LoginedUserID
+                                    });
+                                    _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
+                                    {
+                                        ParamName = "MSUBLOTID",
+                                        ParamValue = _BR_BRS_REG_ProductionOrderOutput_LastSoluction.OUTDATAs[0].MSUBLOTID
+                                    });
+                                    _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
+                                    {
+                                        ParamName = "GUBUN",
+                                        ParamValue = "최종 조제량"
+                                    });
+
+                                    await _BR_PHR_SEL_PRINT_LabelImage.Execute(Common.enumBizRuleOutputClearMode.Always, Common.enumBizRuleXceptionHandleType.FailEvent);
+                                }
+                            }
+
+                            DispensingbtnEnable = false;
+                            ConfirmbtnEnable = true;
+                            CommandResults["DispensingCommandAsync"] = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            DispensingbtnEnable = true;
+                            ConfirmbtnEnable = false;
+                            CommandResults["DispensingCommandAsync"] = false;
+                            OnException(ex.Message, ex);
+                        }
+                        finally
+                        {
+                            CommandCanExecutes["DispensingCommandAsync"] = true;
+
+                            IsBusy = false;
+                        }
+
+                    }
+                }, arg =>
+                {
+                    return CommandCanExecutes.ContainsKey("DispensingCommandAsync") ?
+                        CommandCanExecutes["DispensingCommandAsync"] : (CommandCanExecutes["DispensingCommandAsync"] = true);
+                });
+            }
+        }
         public ICommand ConfirmCommandAsync
         {
             get
@@ -847,80 +1013,18 @@ namespace 보령
 
                             var xml = BizActorRuleBase.CreateXMLStream(ds);
                             var bytesArray = System.Text.Encoding.UTF8.GetBytes(xml);
+                            
+                            _mainWnd.CurrentInstruction.Raw.ACTVAL = _mainWnd.TableTypeName;
+                            _mainWnd.CurrentInstruction.Raw.NOTE = bytesArray;
 
-                            // 최종 조제시 보충원료 소분 및 투입
-                            _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_SOLUTIONs.Clear();
-                            _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_SOLUTIONs.Add(_BR_BRS_REG_ProductionOrderOutput_LastSoluction_ori.Copy());
-
-                            _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_WATERs.Clear();
-                            _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_WATER_INVs.Clear();
-                            _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_WATERs.Add(new BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_WATER
+                            var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction, true);
+                            if (result != enumInstructionRegistErrorType.Ok)
                             {
-                                INSUSER = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_Charging"),
-                                LANGID = AuthRepositoryViewModel.Instance.LangID,
-                                MSUBLOTBCD = _BR_BRS_SEL_Charging_Solvent.OUTDATAs[0].MSUBLOTBCD,
-                                MSUBLOTQTY = _AddWeight.Value,
-                                POID = _mainWnd.CurrentOrder.ProductionOrderID,
-                                OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
-                                IS_NEED_CHKWEIGHT = "N",
-                                IS_FULL_CHARGE = "Y",
-                                IS_CHECKONLY = "N",
-                                IS_INVEN_CHARGE = "Y",
-                                IS_OUTPUT = "N",
-                                MSUBLOTID = _BR_BRS_SEL_Charging_Solvent.OUTDATAs[0].MSUBLOTID,
-                                CHECKINUSER = AuthRepositoryViewModel.GetSecondUserIDByFunctionCode("OM_ProductionOrder_Charging"),
-                            });
-                            _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_WATER_INVs.Add(new BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_WATER_INV
-                            {
-                                COMPONENTGUID = _BR_BRS_SEL_Charging_Solvent.OUTDATA_BOMs[0].COMPONENTGUID
-                            });
-
-                            _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATAs.Clear();
-                            _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATAs.Add(new BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA
-                            {
-                                POID = _mainWnd.CurrentOrder.ProductionOrderID,
-                                WEIGHINGMETHOD = "WH007"
-                            });
-
-                            if (await _BR_BRS_REG_ProductionOrderOutput_LastSoluction.Execute())
-                            {
-                                if(_BR_BRS_REG_ProductionOrderOutput_LastSoluction.OUTDATAs.Count > 0 && curPrintName != "N/A")
-                                {
-                                    _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Clear();
-                                    _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Clear();
-
-                                    _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Add(new BR_PHR_SEL_PRINT_LabelImage.INDATA
-                                    {
-                                        ReportPath = "/Reports/Label/LABEL_C0402_018_10",
-                                        PrintName = _selectedPrint.PRINTERNAME,
-                                        USERID = AuthRepositoryViewModel.Instance.LoginedUserID
-                                    });
-                                    _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
-                                    {
-                                        ParamName = "MSUBLOTID",
-                                        ParamValue = _BR_BRS_REG_ProductionOrderOutput_LastSoluction.OUTDATAs[0].MSUBLOTID
-                                    });
-                                    _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
-                                    {
-                                        ParamName = "GUBUN",
-                                        ParamValue = "최종 조제량"
-                                    });
-
-                                    await _BR_PHR_SEL_PRINT_LabelImage.Execute(Common.enumBizRuleOutputClearMode.Always, Common.enumBizRuleXceptionHandleType.FailEvent);
-                                }
-
-                                _mainWnd.CurrentInstruction.Raw.ACTVAL = _mainWnd.TableTypeName;
-                                _mainWnd.CurrentInstruction.Raw.NOTE = bytesArray;
-
-                                var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction, true);
-                                if (result != enumInstructionRegistErrorType.Ok)
-                                {
-                                    throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", _mainWnd.CurrentInstruction.Raw.IRTGUID, result));
-                                }
-
-                                if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
-                                else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
+                                throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", _mainWnd.CurrentInstruction.Raw.IRTGUID, result));
                             }
+
+                            if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
+                            else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
 
                             CommandResults["ConfirmCommandAsync"] = true;
                         }
@@ -974,7 +1078,6 @@ namespace 보령
 
                         popup.Show();
                         ///
-
                         CommandResults["ChangePrintCommand"] = true;
                     }
                     catch (Exception ex)
