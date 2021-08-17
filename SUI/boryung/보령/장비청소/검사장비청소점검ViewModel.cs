@@ -664,6 +664,7 @@ namespace 보령
                                 dt.Columns.Add(new DataColumn("교정일자"));
                                 dt.Columns.Add(new DataColumn("차기교정일자"));
                                 dt.Columns.Add(new DataColumn("점검상태"));
+                                dt.Columns.Add(new DataColumn("SOP문서번호"));
 
                                 foreach (var item in BR_BRS_SEL_EquipmentStatus_PROCEQPT.OUTDATAs)
                                 {
@@ -674,6 +675,7 @@ namespace 보령
                                     row["교정일자"] = item.CALIBATIONDTTM != null ? item.CALIBATIONDTTM : "";
                                     row["차기교정일자"] = item.NEXTCALIBATIONDTTM != null ? item.NEXTCALIBATIONDTTM : "";
                                     row["점검상태"] = item.SCALEDAILYSTATUS != null ? item.SCALEDAILYSTATUS : "";
+                                    row["SOP문서번호"] = item.SOPDOC ?? "";
 
                                     dt.Rows.Add(row);
                                 }

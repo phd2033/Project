@@ -43,13 +43,14 @@
             <!--<Grid x:Name="Header" Grid.Row="0"/>-->
             <Grid x:Name="Body" Grid.Row="0">
                 <c1:C1DataGrid x:Name="EqptInfoGrid" AutoGenerateColumns="False" CanUserAddRows="False" CanUserEditRows="False" CanUserRemoveRows="False" HeadersVisibility="Column"
-                               ItemsSource="{Binding BR_BRS_SEL_EquipmentStatus_PROCEQPT.OUTDATAs}">
+                               ItemsSource="{Binding BR_BRS_SEL_EquipmentStatus_PROCEQPT.OUTDATAs}" Height="318" VerticalAlignment="Bottom">
                     <c1:C1DataGrid.Columns>
                         <c1:DataGridTextColumn Header="장비번호" HorizontalAlignment="Center" Binding="{Binding EQPTID}"/>
                         <c1:DataGridTextColumn Header="장비명" HorizontalAlignment="Center" Binding="{Binding EQPTNAME}"/>
                         <c1:DataGridTextColumn Header="교정일자" HorizontalAlignment="Center" Binding="{Binding CALIBATIONDTTM}"/>
                         <c1:DataGridTextColumn Header="차기교정일자" HorizontalAlignment="Center" Binding="{Binding NEXTCALIBATIONDTTM}"/>
                         <c1:DataGridTextColumn Header="점검상태" HorizontalAlignment="Center" Binding="{Binding SCALEDAILYSTATUS}"/>
+                        <c1:DataGridTextColumn Header="SOP 문서번호" HorizontalAlignment="Center" Binding="{Binding SOPDOC}"/>
                         <c1:DataGridTemplateColumn Header="검사장비 변경" CellTemplate="{StaticResource ChangeWorkRoomButtonTemplate}"/>
                         <c1:DataGridTemplateColumn Header="청소실행" CellTemplate="{StaticResource CleanButtonTemplate}"/>
                     </c1:C1DataGrid.Columns>
