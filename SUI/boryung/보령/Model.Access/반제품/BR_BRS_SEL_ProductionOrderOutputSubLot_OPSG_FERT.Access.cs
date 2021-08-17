@@ -133,6 +133,38 @@ namespace 보령
                     }
                 }
             }
+            private string _ISSPLIT;
+            [BizActorInputItemAttribute()]
+            public string ISSPLIT
+            {
+                get
+                {
+                    return this._ISSPLIT;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._ISSPLIT = value;
+                        this.CheckIsOriginal("ISSPLIT", value);
+                        this.OnPropertyChanged("ISSPLIT");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
         }
         public sealed partial class OUTDATACollection : BufferedObservableCollection<OUTDATA>
         {

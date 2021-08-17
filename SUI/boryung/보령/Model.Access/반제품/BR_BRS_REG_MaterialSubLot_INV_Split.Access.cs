@@ -4,200 +4,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace 보령
 {
-    
+
     /// <summary>
     /// summary of BR_BRS_REG_MaterialSubLot_INV_Split
     /// </summary>
     public partial class BR_BRS_REG_MaterialSubLot_INV_Split : BizActorRuleBase
     {
-        public sealed partial class INDATACollection : BufferedObservableCollection<INDATA>
-        {
-        }
-        private INDATACollection _INDATAs;
-        [BizActorInputSetAttribute()]
-        public INDATACollection INDATAs
-        {
-            get
-            {
-                return this._INDATAs;
-            }
-        }
-        [BizActorInputSetDefineAttribute(Order="0")]
-        [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
-        public partial class INDATA : BizActorDataSetBase
-        {
-            public INDATA()
-            {
-                RowLoadedFlag = false;
-            }
-            private bool _RowLoadedFlag;
-            public bool RowLoadedFlag
-            {
-                get
-                {
-                    return this._RowLoadedFlag;
-                }
-                set
-                {
-                    this._RowLoadedFlag = value;
-                    this.OnPropertyChanged("_RowLoadedFlag");
-                }
-            }
-            private string _RowIndex;
-            public string RowIndex
-            {
-                get
-                {
-                    return this._RowIndex;
-                }
-                set
-                {
-                    this._RowIndex = value;
-                    this.OnPropertyChanged("RowIndex");
-                }
-            }
-            private string _RowEditSec;
-            public string RowEditSec
-            {
-                get
-                {
-                    return this._RowEditSec;
-                }
-                set
-                {
-                    this._RowEditSec = value;
-                    this.OnPropertyChanged("RowEditSec");
-                }
-            }
-            private string _MSUBLOTID;
-            [BizActorInputItemAttribute()]
-            public string MSUBLOTID
-            {
-                get
-                {
-                    return this._MSUBLOTID;
-                }
-                set
-                {
-                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
-                    {
-                    }
-                    else
-                    {
-                        this._MSUBLOTID = value;
-                        this.CheckIsOriginal("MSUBLOTID", value);
-                        this.OnPropertyChanged("MSUBLOTID");
-                        if (RowLoadedFlag)
-                        {
-                            if (this.CheckIsOriginalRow())
-                            {
-                                RowEditSec = "SEL";
-                            }
-                            else
-                            {
-                                RowEditSec = "UPD";
-                            }
-                        }
-                    }
-                }
-            }
-            private string _VESSELID;
-            [BizActorInputItemAttribute()]
-            public string VESSELID
-            {
-                get
-                {
-                    return this._VESSELID;
-                }
-                set
-                {
-                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
-                    {
-                    }
-                    else
-                    {
-                        this._VESSELID = value;
-                        this.CheckIsOriginal("VESSELID", value);
-                        this.OnPropertyChanged("VESSELID");
-                        if (RowLoadedFlag)
-                        {
-                            if (this.CheckIsOriginalRow())
-                            {
-                                RowEditSec = "SEL";
-                            }
-                            else
-                            {
-                                RowEditSec = "UPD";
-                            }
-                        }
-                    }
-                }
-            }
-            private System.Nullable<decimal> _MSUBLOTQTY;
-            [BizActorInputItemAttribute()]
-            public System.Nullable<decimal> MSUBLOTQTY
-            {
-                get
-                {
-                    return this._MSUBLOTQTY;
-                }
-                set
-                {
-                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
-                    {
-                    }
-                    else
-                    {
-                        this._MSUBLOTQTY = value;
-                        this.CheckIsOriginal("MSUBLOTQTY", value);
-                        this.OnPropertyChanged("MSUBLOTQTY");
-                        if (RowLoadedFlag)
-                        {
-                            if (this.CheckIsOriginalRow())
-                            {
-                                RowEditSec = "SEL";
-                            }
-                            else
-                            {
-                                RowEditSec = "UPD";
-                            }
-                        }
-                    }
-                }
-            }
-            private System.Nullable<decimal> _TAREWEIGHT;
-            [BizActorInputItemAttribute()]
-            public System.Nullable<decimal> TAREWEIGHT
-            {
-                get
-                {
-                    return this._TAREWEIGHT;
-                }
-                set
-                {
-                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
-                    {
-                    }
-                    else
-                    {
-                        this._TAREWEIGHT = value;
-                        this.CheckIsOriginal("TAREWEIGHT", value);
-                        this.OnPropertyChanged("TAREWEIGHT");
-                        if (RowLoadedFlag)
-                        {
-                            if (this.CheckIsOriginalRow())
-                            {
-                                RowEditSec = "SEL";
-                            }
-                            else
-                            {
-                                RowEditSec = "UPD";
-                            }
-                        }
-                    }
-                }
-            }
-        }
         public sealed partial class INDATA_POCollection : BufferedObservableCollection<INDATA_PO>
         {
         }
@@ -210,7 +22,7 @@ namespace 보령
                 return this._INDATA_POs;
             }
         }
-        [BizActorInputSetDefineAttribute(Order="1")]
+        [BizActorInputSetDefineAttribute(Order = "0")]
         [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
         public partial class INDATA_PO : BizActorDataSetBase
         {
@@ -386,6 +198,382 @@ namespace 보령
                 }
             }
         }
+        public sealed partial class INDATA_SPLITCollection : BufferedObservableCollection<INDATA_SPLIT>
+        {
+        }
+        private INDATA_SPLITCollection _INDATA_SPLITs;
+        [BizActorInputSetAttribute()]
+        public INDATA_SPLITCollection INDATA_SPLITs
+        {
+            get
+            {
+                return this._INDATA_SPLITs;
+            }
+        }
+        [BizActorInputSetDefineAttribute(Order = "1")]
+        [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
+        public partial class INDATA_SPLIT : BizActorDataSetBase
+        {
+            public INDATA_SPLIT()
+            {
+                RowLoadedFlag = false;
+            }
+            private bool _RowLoadedFlag;
+            public bool RowLoadedFlag
+            {
+                get
+                {
+                    return this._RowLoadedFlag;
+                }
+                set
+                {
+                    this._RowLoadedFlag = value;
+                    this.OnPropertyChanged("_RowLoadedFlag");
+                }
+            }
+            private string _RowIndex;
+            public string RowIndex
+            {
+                get
+                {
+                    return this._RowIndex;
+                }
+                set
+                {
+                    this._RowIndex = value;
+                    this.OnPropertyChanged("RowIndex");
+                }
+            }
+            private string _RowEditSec;
+            public string RowEditSec
+            {
+                get
+                {
+                    return this._RowEditSec;
+                }
+                set
+                {
+                    this._RowEditSec = value;
+                    this.OnPropertyChanged("RowEditSec");
+                }
+            }
+            private string _MSUBLOTID;
+            [BizActorInputItemAttribute()]
+            public string MSUBLOTID
+            {
+                get
+                {
+                    return this._MSUBLOTID;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._MSUBLOTID = value;
+                        this.CheckIsOriginal("MSUBLOTID", value);
+                        this.OnPropertyChanged("MSUBLOTID");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+            private string _VESSELID;
+            [BizActorInputItemAttribute()]
+            public string VESSELID
+            {
+                get
+                {
+                    return this._VESSELID;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._VESSELID = value;
+                        this.CheckIsOriginal("VESSELID", value);
+                        this.OnPropertyChanged("VESSELID");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+            private System.Nullable<decimal> _MSUBLOTQTY;
+            [BizActorInputItemAttribute()]
+            public System.Nullable<decimal> MSUBLOTQTY
+            {
+                get
+                {
+                    return this._MSUBLOTQTY;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._MSUBLOTQTY = value;
+                        this.CheckIsOriginal("MSUBLOTQTY", value);
+                        this.OnPropertyChanged("MSUBLOTQTY");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+            private System.Nullable<decimal> _TAREWEIGHT;
+            [BizActorInputItemAttribute()]
+            public System.Nullable<decimal> TAREWEIGHT
+            {
+                get
+                {
+                    return this._TAREWEIGHT;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._TAREWEIGHT = value;
+                        this.CheckIsOriginal("TAREWEIGHT", value);
+                        this.OnPropertyChanged("TAREWEIGHT");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        public sealed partial class INDATA_MERGECollection : BufferedObservableCollection<INDATA_MERGE>
+        {
+        }
+        private INDATA_MERGECollection _INDATA_MERGEs;
+        [BizActorInputSetAttribute()]
+        public INDATA_MERGECollection INDATA_MERGEs
+        {
+            get
+            {
+                return this._INDATA_MERGEs;
+            }
+        }
+        [BizActorInputSetDefineAttribute(Order = "2")]
+        [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
+        public partial class INDATA_MERGE : BizActorDataSetBase
+        {
+            public INDATA_MERGE()
+            {
+                RowLoadedFlag = false;
+            }
+            private bool _RowLoadedFlag;
+            public bool RowLoadedFlag
+            {
+                get
+                {
+                    return this._RowLoadedFlag;
+                }
+                set
+                {
+                    this._RowLoadedFlag = value;
+                    this.OnPropertyChanged("_RowLoadedFlag");
+                }
+            }
+            private string _RowIndex;
+            public string RowIndex
+            {
+                get
+                {
+                    return this._RowIndex;
+                }
+                set
+                {
+                    this._RowIndex = value;
+                    this.OnPropertyChanged("RowIndex");
+                }
+            }
+            private string _RowEditSec;
+            public string RowEditSec
+            {
+                get
+                {
+                    return this._RowEditSec;
+                }
+                set
+                {
+                    this._RowEditSec = value;
+                    this.OnPropertyChanged("RowEditSec");
+                }
+            }
+            private string _MSUBLOTID;
+            [BizActorInputItemAttribute()]
+            public string MSUBLOTID
+            {
+                get
+                {
+                    return this._MSUBLOTID;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._MSUBLOTID = value;
+                        this.CheckIsOriginal("MSUBLOTID", value);
+                        this.OnPropertyChanged("MSUBLOTID");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+            private string _VESSELID;
+            [BizActorInputItemAttribute()]
+            public string VESSELID
+            {
+                get
+                {
+                    return this._VESSELID;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._VESSELID = value;
+                        this.CheckIsOriginal("VESSELID", value);
+                        this.OnPropertyChanged("VESSELID");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+            private System.Nullable<decimal> _MSUBLOTQTY;
+            [BizActorInputItemAttribute()]
+            public System.Nullable<decimal> MSUBLOTQTY
+            {
+                get
+                {
+                    return this._MSUBLOTQTY;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._MSUBLOTQTY = value;
+                        this.CheckIsOriginal("MSUBLOTQTY", value);
+                        this.OnPropertyChanged("MSUBLOTQTY");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+            private System.Nullable<decimal> _TAREWEIGHT;
+            [BizActorInputItemAttribute()]
+            public System.Nullable<decimal> TAREWEIGHT
+            {
+                get
+                {
+                    return this._TAREWEIGHT;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._TAREWEIGHT = value;
+                        this.CheckIsOriginal("TAREWEIGHT", value);
+                        this.OnPropertyChanged("TAREWEIGHT");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+        }
         public sealed partial class OUTDATACollection : BufferedObservableCollection<OUTDATA>
         {
         }
@@ -398,7 +586,7 @@ namespace 보령
                 return this._OUTDATAs;
             }
         }
-        [BizActorOutputSetDefineAttribute(Order="0")]
+        [BizActorOutputSetDefineAttribute(Order = "0")]
         [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
         public partial class OUTDATA : BizActorDataSetBase
         {
@@ -618,7 +806,7 @@ namespace 보령
                 return this._HISDATAs;
             }
         }
-        [BizActorOutputSetDefineAttribute(Order="1")]
+        [BizActorOutputSetDefineAttribute(Order = "1")]
         [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
         public partial class HISDATA : BizActorDataSetBase
         {
@@ -701,8 +889,9 @@ namespace 보령
         public BR_BRS_REG_MaterialSubLot_INV_Split()
         {
             RuleName = "BR_BRS_REG_MaterialSubLot_INV_Split";
-            _INDATAs = new INDATACollection();
             _INDATA_POs = new INDATA_POCollection();
+            _INDATA_SPLITs = new INDATA_SPLITCollection();
+            _INDATA_MERGEs = new INDATA_MERGECollection();
             _OUTDATAs = new OUTDATACollection();
             _HISDATAs = new HISDATACollection();
         }

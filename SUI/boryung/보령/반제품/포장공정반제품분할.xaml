@@ -11,35 +11,29 @@
     xmlns:c1="http://schemas.componentone.com/winfx/2006/xaml"
     xmlns:my="clr-namespace:보령"
     xmlns:localctrl="clr-namespace:보령.UserControls"                                   
-    x:Name="Main" Width="1200" Height="500" Title="반제품분할">
+    x:Name="Main" Width="1200" Height="650" Title="반제품분할">
     <ShopFloorUI:ShopFloorCustomWindow.Resources>
         <my:포장공정반제품분할ViewModel x:Key="ViewModel"/>
         <Style TargetType="c1:DataGridColumnHeaderPresenter">
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
         </Style>
-        <Style x:Key="txtCenterAlignment" TargetType="TextBox">
-            <Setter Property="TextAlignment" Value="Center" />
+        <Style x:Key="txtNemeric" TargetType="TextBox">
+            <Setter Property="TextAlignment" Value="Right" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="FontFamily" Value="Malgun Gothic" />
-            <Setter Property="FontSize" Value="14" />
-            <Setter Property="Margin" Value="0,2" />
-            <Setter Property="Padding" Value="0,2,0,0"/>
+            <Setter Property="FontSize" Value="23"/>
+            <Setter Property="Margin" Value="0,2"/>
         </Style>
-        <Style x:Key="txtNemeric" TargetType="TextBox">
-        <Setter Property="TextAlignment" Value="Right" />
-        <Setter Property="HorizontalContentAlignment" Value="Center" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="FontFamily" Value="Malgun Gothic" />
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="Margin" Value="0 2 0 2" />
+        <Style TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0,0,5,0"/>
         </Style>
-        <Style TargetType="ShopFloorUI:NumericKeyPadType">
-            <Setter Property="FontFamily" Value="Malgun Gothic" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="Margin" Value="0 0 0 0" />
-            <Setter Property="FontSize" Value="13" />
-            <Setter Property="ContentFontSize" Value="15"/>
+        <Style TargetType="ScrollBar" x:Key="gdScroll">
+            <Setter Property="MinHeight" Value="20"/>
+            <Setter Property="MinWidth" Value="20"/>
         </Style>
     </ShopFloorUI:ShopFloorCustomWindow.Resources>
     <toolkit:BusyIndicator x:Name="BusyIn" IsBusy="{Binding IsBusy}" DataContext="{Binding Source={StaticResource ViewModel}}">
@@ -59,128 +53,120 @@
                                           OrderList="{Binding OrderList, Mode=TwoWay}"
                                           CanSelectOrderNo="{Binding CanSelectOrder, Mode=TwoWay}"/>
             </Grid>
-            <Grid x:Name="Section" Grid.Row="1" Margin="5">
+            <Grid x:Name="MainSection" Grid.Row="1" Margin="5">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="200"/>
+                    <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Grid x:Name="SplitSpace" Grid.Row="0" Margin="0,5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <ControlsLib:FieldSet Grid.Column="0" HorizontalAlignment="Stretch" Name="Source" Margin="1,1,1,1" 
-                                      VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" 
-                                      Legend="1. 반제품 정보(A+B)" LegendFontSize="12">
-                        <Grid Margin="10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <sdk:Label Grid.Column="0" Grid.Row="0" Content="{Binding W[CUIVesselId], Source={StaticResource R}, FallbackValue=용기번호}"/>
-                            <TextBox Grid.Column="1" Grid.Row="0" IsReadOnly="False" Text="{Binding SRC_VesselID, Mode=TwoWay}" Style="{StaticResource txtCenterAlignment}" x:Name="txtSrcVessel" GotFocus="txtSrcVessel_GotFocus"/>
-                            <sdk:Label Grid.Column="0" Grid.Row="1" Content="{Binding W[CUINetWeight], Source={StaticResource R}, FallbackValue=내용물무게}"/>
-                            <TextBox Grid.Column="1" Grid.Row="1" IsReadOnly="True" Text="{Binding SourceMaterialSubLot.NET.WeightUOMString, Mode=TwoWay}" Style="{StaticResource txtNemeric}" />
-                            <sdk:Label Grid.Column="0" Grid.Row="2" Content="{Binding W[CUITareWeight], Source={StaticResource R}, FallbackValue=용기무게}"/>
-                            <TextBox Grid.Column="1" Grid.Row="2" IsReadOnly="True" Text="{Binding SourceMaterialSubLot.TARE.WeightUOMString, Mode=TwoWay}" Style="{StaticResource txtNemeric}"/>
-                            <sdk:Label Grid.Column="0" Grid.Row="3" Content="{Binding W[CUIGrossWeight], Source={StaticResource R}, FallbackValue=총무게}"/>
-                            <TextBox Grid.Column="1" Grid.Row="3" IsReadOnly="True" Text="{Binding SourceMaterialSubLot.GROSS.WeightUOMString, Mode=TwoWay}" Style="{StaticResource txtNemeric}"/>
-                        </Grid>
-                    </ControlsLib:FieldSet>
-                    <sdk:Label Grid.Column="1" Content="=" FontWeight="Bold" FontSize="20" Margin="2"/>
-                    <ControlsLib:FieldSet Grid.Column="2" HorizontalAlignment="Stretch" Name="SplitFrom" Margin="1,1,1,1" 
-                                      VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" 
-                                      Legend="2. 분할 예상결과(A : 반제품 있는 용기)" LegendFontSize="12">
-                        <Grid Margin="10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <sdk:Label Grid.Column="0" Grid.Row="0" Content="{Binding W[CUIVesselId], Source={StaticResource R}, FallbackValue=용기번호}"/>
-                            <TextBox Grid.Column="1" Grid.Row="0" IsReadOnly="True" Text="{Binding Path=Text, ElementName=txtSrcVessel}" Style="{StaticResource txtCenterAlignment}"/>
-                            <sdk:Label Grid.Column="0" Grid.Row="1" Content="{Binding W[CUINetWeight], Source={StaticResource R}, FallbackValue=내용물무게}"/>
-                            <TextBox Grid.Column="1" Grid.Row="1" IsReadOnly="True" Text="{Binding SplitMaterialSubLot_A.NET.WeightUOMString, Mode=TwoWay}" Style="{StaticResource txtNemeric}"/>
-                            <sdk:Label Grid.Column="0" Grid.Row="2" Content="{Binding W[CUITareWeight], Source={StaticResource R}, FallbackValue=용기무게}"/>
-                            <TextBox Grid.Column="1" Grid.Row="2" IsReadOnly="True" Text="{Binding SplitMaterialSubLot_A.TARE.WeightUOMString, Mode=TwoWay}" Style="{StaticResource txtNemeric}"/>
-                            <sdk:Label Grid.Column="0" Grid.Row="3" Content="{Binding W[CUIGrossWeight], Source={StaticResource R}, FallbackValue=총무게}"/>
-                            <TextBox Grid.Column="1" Grid.Row="3" IsReadOnly="True" Text="{Binding SplitMaterialSubLot_A.GROSS.WeightUOMString, Mode=TwoWay}" Style="{StaticResource txtNemeric}"/>
-                        </Grid>
-                    </ControlsLib:FieldSet>
-                    <sdk:Label Grid.Column="3" Content="+" FontWeight="Bold" FontSize="20" Margin="2"/>
-                    <ControlsLib:FieldSet Grid.Column="4" HorizontalAlignment="Stretch" Name="SplitTo" Margin="1,1,1,1" 
-                                      VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" 
-                                      Legend="3. 분할 예상결과(B : 빈 용기)" LegendFontSize="12">
-                        <Grid Margin="10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <StackPanel Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
-                                <sdk:Label Content="비닐백 사용" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                <Rectangle Width="5" Height="Auto"/>
-                                <Viewbox Width="30" Height="30" Stretch="Uniform" Margin="0">
-                                    <CheckBox x:Name="chkVINYL" IsThreeState="False" IsChecked="{Binding ISVINYL, Mode=TwoWay}" Margin="0" Padding="0"/>
-                                </Viewbox>
-                            </StackPanel>
-                            <sdk:Label Grid.Column="0" Grid.Row="1" Content="{Binding W[CUIVesselId], Source={StaticResource R}, FallbackValue=용기번호}"/>
-                            <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding EMPTY_VesselID, Mode=TwoWay}" Style="{StaticResource txtCenterAlignment}" x:Name="txtEmptyVessel" KeyDown="txtEmptyVessel_KeyDown"
-                                     IsReadOnly="{Binding ElementName=chkVINYL, Path=IsChecked}"/>
-                            <sdk:Label Grid.Column="0" Grid.Row="2" Content="{Binding W[CUINetWeight], Source={StaticResource R}, FallbackValue=내용물무게}"/>
-                            <ShopFloorUI:NumericKeyPadType Grid.Column="1" x:Name="txtToGross" Grid.Row="2" Format="{Binding PRECISION_FORMAT}" Value="{Binding EMPTY_NET, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            <sdk:Label Grid.Column="0" Grid.Row="3" Content="{Binding W[CUITareWeight], Source={StaticResource R}, FallbackValue=용기무게}"/>
-                            <ShopFloorUI:NumericKeyPadType Grid.Column="1" x:Name="txtToTare" Grid.Row="3" Format="{Binding PRECISION_FORMAT}" Value="{Binding EMPTY_TARE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            <sdk:Label Grid.Column="0" Grid.Row="4" Content="{Binding W[CUIGrossWeight], Source={StaticResource R}, FallbackValue=총무게}"/>
-                            <TextBox Grid.Column="1" x:Name="txtToTotal" Grid.Row="4" IsEnabled="False" Text="{Binding SplitMaterialSubLot_B.GROSS.WeightUOMString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource txtNemeric}"/>
-                        </Grid>
-                    </ControlsLib:FieldSet>
-                </Grid>
-                <Grid Grid.Row="1" Margin="0,5">
+                <Grid x:Name="HALBSection" Grid.Row="0" Margin="0,5">
                     <ControlsLib:FieldSet HorizontalAlignment="Stretch" Name="Result" Margin="1,1,1,1" 
                                           VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" 
-                                          Legend="4. 사용 가능한 반제품 목록" LegendFontSize="12">
-                        <c1:C1DataGrid Grid.Row="1" x:Name="availableWIPList" Margin="10" RowHeight="30"
-                                       AutoGenerateColumns="False" HeadersVisibility="Column" CanUserAddRows="False" SelectionMode="SingleRow"                                  
-                                       ItemsSource="{Binding BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATAs}"
-                                       MouseLeftButtonUp="availableWIPList_MouseLeftButtonUp">
+                                          Legend="1. 사용 가능한 반제품 목록" LegendFontSize="12">
+                        <c1:C1DataGrid Grid.Row="1" x:Name="availableWIPList" Margin="10" RowHeight="30" ScrollBarStyle="{StaticResource gdScroll}"
+                                       AutoGenerateColumns="False" HeadersVisibility="Column" SelectionMode="SingleRow"
+                                       CanUserAddRows="False" CanUserRemoveRows="False" CanUserEditRows="True"
+                                       ItemsSource="{Binding BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATAs}">
                             <c1:C1DataGrid.Columns>
-                                <c1:DataGridTemplateColumn Width="30">
-                                    <c1:DataGridTemplateColumn.Header>
-                                        <CheckBox IsThreeState="False" IsChecked="false" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                    </c1:DataGridTemplateColumn.Header>
-                                    <c1:DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <CheckBox IsThreeState="False" IsChecked="{Binding ISSELECTED, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                        </DataTemplate>
-                                    </c1:DataGridTemplateColumn.CellTemplate>
-                                </c1:DataGridTemplateColumn>
                                 <c1:DataGridTextColumn Header="{Binding W[CUIVesselId], Source={StaticResource R}, FallbackValue=용기번호}" Binding="{Binding VESSELID}"/>
                                 <c1:DataGridTextColumn Header="{Binding W[CUINetWeight], Source={StaticResource R}, FallbackValue=내용물무게}" Binding="{Binding NET.WeightUOMString}"/>
                                 <c1:DataGridTextColumn Header="{Binding W[CUITareWeight], Source={StaticResource R}, FallbackValue=용기무게}" Binding="{Binding TARE.WeightUOMString}"/>
                                 <c1:DataGridTextColumn Header="{Binding W[CUIGrossWeight], Source={StaticResource R}, FallbackValue=총무게}" Binding="{Binding GROSS.WeightUOMString}"/>
                             </c1:C1DataGrid.Columns>
                         </c1:C1DataGrid>
+                    </ControlsLib:FieldSet>
+                </Grid>
+                <Grid x:Name="SplitSection" Grid.Row="1" Margin="0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <ControlsLib:FieldSet Grid.Column="0" HorizontalAlignment="Stretch" Name="SplitInfo" Margin="1,1,1,1" 
+                                      VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" 
+                                      Legend="2. 분할정보" LegendFontSize="12">
+                        <Grid Margin="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="구분"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SPLIT_TYPE, FallbackValue=반제품분할}" IsReadOnly="True" Style="{StaticResource txtNemeric}"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="내용물 총 무게"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding oriNetWeight_sum}" IsReadOnly="True" Style="{StaticResource txtNemeric}"/>
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="분할대상 내용물무게"/>
+                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding oriSplitLotNetWeight}" IsReadOnly="True" Style="{StaticResource txtNemeric}"/>
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="병합대상 내용물무게"/>
+                            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding oriMergeLotNetWeight}" IsReadOnly="True" Style="{StaticResource txtNemeric}"/>
+                        </Grid>
+                    </ControlsLib:FieldSet>
+                    <ControlsLib:FieldSet Grid.Column="1" HorizontalAlignment="Stretch" Name="SplitHALB" Margin="1,1,1,1" 
+                                      VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" 
+                                      Legend="3. 분할대상 반제품" LegendFontSize="12">
+                        <Grid Margin="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding W[CUIVesselId], Source={StaticResource R}, FallbackValue=용기번호}"/>
+                            <TextBox Grid.Column="1" Grid.Row="0" IsReadOnly="True" Text="{Binding SplitMaterialSubLot.VESSELID, Mode=TwoWay}" Style="{StaticResource txtNemeric}"/>
+                            <TextBlock Grid.Column="0" Grid.Row="1" Text="{Binding W[CUINetWeight], Source={StaticResource R}, FallbackValue=내용물무게}"/>
+                            <TextBox Grid.Column="1" Grid.Row="1" IsReadOnly="True" Text="{Binding SplitMaterialSubLot.NET.WeightUOMString, Mode=TwoWay}" Style="{StaticResource txtNemeric}" />
+                            <TextBlock Grid.Column="0" Grid.Row="2" Text="{Binding W[CUITareWeight], Source={StaticResource R}, FallbackValue=용기무게}"/>
+                            <TextBox Grid.Column="1" Grid.Row="2" IsReadOnly="True" Text="{Binding SplitMaterialSubLot.TARE.WeightUOMString, Mode=TwoWay}" Style="{StaticResource txtNemeric}"/>
+                            <TextBlock Grid.Column="0" Grid.Row="3" Text="{Binding W[CUIGrossWeight], Source={StaticResource R}, FallbackValue=총무게}"/>
+                            <TextBox Grid.Column="1" Grid.Row="3" IsReadOnly="True" Text="{Binding SplitMaterialSubLot.GROSS.WeightUOMString, Mode=TwoWay}" Style="{StaticResource txtNemeric}"/>
+                            <StackPanel Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                <Button Grid.Column="0" x:Name="btnChangeSplitHALB" Content="반제품 선택" Width="100" Height="40" Margin="5,0"
+                                        Command="{Binding ChangeHALBCommand}" CommandParameter="{Binding ElementName=btnChangeSplitHALB}"/>
+                            </StackPanel>
+                        </Grid>
+                    </ControlsLib:FieldSet>
+                    <ControlsLib:FieldSet Grid.Column="2" HorizontalAlignment="Stretch" Name="MergeHALB" Margin="1,1,1,1" 
+                                      VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" 
+                                      Legend="4. 병합대상 반제품" LegendFontSize="12">
+                        <Grid Margin="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding W[CUIVesselId], Source={StaticResource R}, FallbackValue=용기번호}"/>
+                            <TextBox Grid.Column="1" Grid.Row="0" IsReadOnly="True" Text="{Binding MergeMaterialSubLot.VESSELID, Mode=TwoWay}" Style="{StaticResource txtNemeric}"/>
+                            <TextBlock Grid.Column="0" Grid.Row="1" Text="{Binding W[CUINetWeight], Source={StaticResource R}, FallbackValue=내용물무게}"/>
+                            <TextBox Grid.Column="1" Grid.Row="1" IsReadOnly="True" Text="{Binding MergeMaterialSubLot.NET.WeightUOMString, Mode=TwoWay}" Style="{StaticResource txtNemeric}" />
+                            <TextBlock Grid.Column="0" Grid.Row="2" Text="{Binding W[CUITareWeight], Source={StaticResource R}, FallbackValue=용기무게}"/>
+                            <TextBox Grid.Column="1" Grid.Row="2" IsReadOnly="True" Text="{Binding MergeMaterialSubLot.TARE.WeightUOMString, Mode=TwoWay}" Style="{StaticResource txtNemeric}"/>
+                            <TextBlock Grid.Column="0" Grid.Row="3" Text="{Binding W[CUIGrossWeight], Source={StaticResource R}, FallbackValue=총무게}"/>
+                            <TextBox Grid.Column="1" Grid.Row="3" IsReadOnly="True" Text="{Binding MergeMaterialSubLot.GROSS.WeightUOMString, Mode=TwoWay}" Style="{StaticResource txtNemeric}"/>
+                            <StackPanel Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                <Button x:Name="btnChangeMergeHLAB" Content="반제품 선택" Width="100" Height="40" Margin="5,0"
+                                        Command="{Binding ChangeHALBCommand}" CommandParameter="{Binding ElementName=btnChangeMergeHLAB}"/>
+                                <Button x:Name="btnNetWeightChange" Content="내용물무게변경" Width="100" Height="40" Margin="5,0" IsEnabled="{Binding CanSplitHLAB}"
+                                        Command="{Binding ChangeWeightCommand}" CommandParameter="{Binding ElementName=btnNetWeightChange}"/>
+                                <Button x:Name="btnTareWeightChange" Content="용기무게변경" Width="100" Height="40" Margin="5,0"
+                                        Command="{Binding ChangeWeightCommand}" CommandParameter="{Binding ElementName=btnTareWeightChange}"/>
+                            </StackPanel>
+                        </Grid>
                     </ControlsLib:FieldSet>
                 </Grid>
             </Grid>
@@ -190,12 +176,11 @@
                     <TextBlock Text="{Binding curPrintName, FallbackValue=N/A}"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Margin="5,0" x:Name="btnChangePrint" Width="100" Content="{Binding W[CUIChangePrintButtonText], Source={StaticResource R}}" Command="{Binding ChangePrintCommand}"/>
-                    <Button Margin="5,0" x:Name="btnSplit" Width="100" Content="{Binding W[CUISplitHLABButtonText], Source={StaticResource R}}" Command="{Binding SplictCommandAsync}" IsEnabled="{Binding CanSplitHLAB}"/>
-                    <Button Margin="5,0" x:Name="btnLabel" Width="100" Content="{Binding W[CUIPrintLabelButtonText], Source={StaticResource R}}" Command="{Binding LabelPrintCommandAsync}"/>
-                    <Button Margin="5,0" x:Name="btnSave" Width="100" Content="{Binding W[CUISelectedDataWriteToEBRButtonText], Source={StaticResource R}}" Command="{Binding SaveCommand}"/>
-                    <Button Margin="5,0" x:Name="btnNoSplit" Width="100" Content="{Binding W[CUIDefaultDataWriteToEBRButtonText], Source={StaticResource R}}" Command="{Binding NoSplitCommand}"/>
-                    <Button Margin="5,0" x:Name="btnCancel" Width="100" Content="{Binding W[CUICloseButtonText], Source={StaticResource R}}" Click="btnCancel_Click"/>
+                    <Button Margin="5,0" x:Name="btnChangePrint" Width="100" Content="{Binding W[CUIChangePrintButtonText], Source={StaticResource R}, FallbackValue=프린트변경}" Command="{Binding ChangePrintCommand}"/>
+                    <Button Margin="5,0" x:Name="btnLabel" Width="100" Content="{Binding W[CUIPrintLabelButtonText], Source={StaticResource R}, FallbackValue=라벨발행}" Command="{Binding LabelPrintCommandAsync}"/>
+                    <Button Margin="5,0" x:Name="btnSplit" Width="100" Content="{Binding W[CUISplitHLABButtonText], Source={StaticResource R}, FallbackValue=반제품분할}" Command="{Binding SplictCommandAsync}" IsEnabled="{Binding CanSplitHLAB}"/>
+                    <Button Margin="5,0" x:Name="btnSave" Width="100" Content="{Binding W[CUIDataWriteToEBRButtonText], Source={StaticResource R}, FallbackValue=저장}" Command="{Binding SaveCommand}"/>
+                    <Button Margin="5,0" x:Name="btnCancel" Width="100" Content="{Binding W[CUICloseButtonText], Source={StaticResource R}, FallbackValue=종료}" Click="btnCancel_Click"/>
                 </StackPanel>
             </Grid>
         </Grid>
