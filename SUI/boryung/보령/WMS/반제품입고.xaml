@@ -64,7 +64,7 @@
                     </i:Interaction.Triggers>
                 </Button>
             </Grid>
-            <c1:C1DataGrid Grid.Row="2" HeadersVisibility="Column" Height="150" ItemsSource="{Binding StrgOuts}" AutoGenerateColumns="False"
+            <c1:C1DataGrid Grid.Row="2" HeadersVisibility="Column" Height="150" ItemsSource="{Binding IBCList}" AutoGenerateColumns="False"
                        CanUserAddRows="False" CanUserEditRows="False" CanUserRemoveRows="False" CanUserResizeColumns="False" CanUserResizeRows="False"
                        HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
                 <c1:C1DataGrid.Columns>
