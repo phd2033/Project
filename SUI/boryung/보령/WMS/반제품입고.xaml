@@ -72,7 +72,7 @@
                     <c1:DataGridTextColumn Header="IBC ID" Binding="{Binding VesselId}"/>
                     <c1:DataGridTextColumn Header="반제품 보관기간" Binding="{Binding STRGDAY}"/>
                     <c1:DataGridTextColumn Header="반제품 유효기한" Binding="{Binding EXPIREDTTM}"/>
-                    <c1:DataGridTextColumn Header="성적번호" Binding="{Binding MLOTID}"/>
+                    <!--<c1:DataGridTextColumn Header="성적번호" Binding="{Binding MLOTID}"/> 2021.08.18 박희돈 사용안함. 최병인팀장 확인 -->
                 </c1:C1DataGrid.Columns>
             </c1:C1DataGrid>
         </Grid>

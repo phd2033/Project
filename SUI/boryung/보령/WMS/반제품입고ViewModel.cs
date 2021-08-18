@@ -145,8 +145,9 @@ namespace 보령
                                             PoId = row["POID"] != null ? row["POID"].ToString() : "",
                                             VesselId = row["IBCID"] != null ? row["IBCID"].ToString() : "",
                                             STRGDAY = row["STRGDAY"] != null ? row["STRGDAY"].ToString() : "",
-                                            EXPIREDTTM = row["EXPIREDTTM"] != null ? row["EXPIREDTTM"].ToString() : "",
-                                            MLOTID = row["MLOTID"] != null ? row["MLOTID"].ToString() : ""
+                                            EXPIREDTTM = row["EXPIREDTTM"] != null ? row["EXPIREDTTM"].ToString() : ""
+                                            // 2021.08.18 박희돈 사용안함. 최병인팀장 확인
+                                            //MLOTID = row["MLOTID"] != null ? row["MLOTID"].ToString() : ""
                                         });
                                     }
                                     OnPropertyChanged("IBCList");
@@ -270,8 +271,9 @@ namespace 보령
                                         PoId = _mainWnd.CurrentOrder.ProductionOrderID,
                                         VesselId = IBCNo,
                                         STRGDAY = _BR_BRS_REG_WMS_Request_IN.OUTDATAs[0].STRGDAY,
-                                        EXPIREDTTM = _BR_BRS_REG_WMS_Request_IN.OUTDATAs[0].EXPIREDTTM,
-                                        MLOTID = _BR_BRS_REG_WMS_Request_IN.OUTDATAs[0].MLOTID
+                                        EXPIREDTTM = _BR_BRS_REG_WMS_Request_IN.OUTDATAs[0].EXPIREDTTM
+                                        // 2021.08.18 박희돈 사용안함. 최병인팀장 확인
+                                        //MLOTID = _BR_BRS_REG_WMS_Request_IN.OUTDATAs[0].MLOTID
                                     });
                                 }
                             }
@@ -337,7 +339,8 @@ namespace 보령
                             dt.Columns.Add(new DataColumn("IBCID"));
                             dt.Columns.Add(new DataColumn("STRGDAY"));
                             dt.Columns.Add(new DataColumn("EXPIREDTTM"));
-                            dt.Columns.Add(new DataColumn("MLOTID"));
+                            // 2021.08.18 박희돈 사용안함. 최병인팀장 확인
+                            //dt.Columns.Add(new DataColumn("MLOTID"));
 
                             foreach (var item in _IBCList)
                             {
@@ -346,7 +349,8 @@ namespace 보령
                                 row["IBCID"] = item.VesselId != null ? item.VesselId : "";
                                 row["STRGDAY"] = item.STRGDAY != null ? item.STRGDAY : "";
                                 row["EXPIREDTTM"] = item.EXPIREDTTM != null ? item.EXPIREDTTM : "";
-                                row["MLOTID"] = item.MLOTID != null ? item.MLOTID : "";
+                                // 2021.08.18 박희돈 사용안함. 최병인팀장 확인
+                                //row["MLOTID"] = item.MLOTID != null ? item.MLOTID : "";
 
                                 dt.Rows.Add(row);
                             }
