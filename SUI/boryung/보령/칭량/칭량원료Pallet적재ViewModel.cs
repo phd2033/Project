@@ -489,14 +489,14 @@ namespace 보령
             {
                 return new AsyncCommandBase(async arg =>
                 {
-                    using (await AwaitableLocks["ClickCancelBinLoadCommand"].EnterAsync())
+                    using (await AwaitableLocks["ClickCancelBinLoadCommandAsync"].EnterAsync())
                     {
                         try
                         {
                             IsBusy = true;
 
-                            CommandResults["ClickCancelBinLoadCommand"] = false;
-                            CommandCanExecutes["ClickCancelBinLoadCommand"] = false;
+                            CommandResults["ClickCancelBinLoadCommandAsync"] = false;
+                            CommandCanExecutes["ClickCancelBinLoadCommandAsync"] = false;
 
                             ///
 
@@ -580,24 +580,24 @@ namespace 보령
                                 OnMessage("적재 쥐소 항목이 존재하여 기록 준비항목에서 동일 용기의 기록 준비를 취소했습니다.\r\n기록 준비를 확인 해주세요.");
                             }
 
-                            CommandResults["ClickCancelBinLoadCommand"] = true;
+                            CommandResults["ClickCancelBinLoadCommandAsync"] = true;
                         }
                         catch (Exception ex)
                         {
-                            CommandResults["ClickCancelBinLoadCommand"] = false;
+                            CommandResults["ClickCancelBinLoadCommandAsync"] = false;
                             OnException(ex.Message, ex);
                         }
                         finally
                         {
-                            CommandCanExecutes["ClickCancelBinLoadCommand"] = true;
+                            CommandCanExecutes["ClickCancelBinLoadCommandAsync"] = true;
 
                             IsBusy = false;
                         }
                     }
                 }, arg =>
                 {
-                    return CommandCanExecutes.ContainsKey("ClickCancelBinLoadCommand") ?
-                        CommandCanExecutes["ClickCancelBinLoadCommand"] : (CommandCanExecutes["ClickCancelBinLoadCommand"] = true);
+                    return CommandCanExecutes.ContainsKey("ClickCancelBinLoadCommandAsync") ?
+                        CommandCanExecutes["ClickCancelBinLoadCommandAsync"] : (CommandCanExecutes["ClickCancelBinLoadCommandAsync"] = true);
                 });
             }
         }
