@@ -745,7 +745,7 @@ namespace 보령
                         _ScaleException = false;
                         _ScaleUom = _TareWeight.Uom;
                         _ScalePrecision = _TareWeight.Precision;
-                        if(!_VesselChecked)
+                        if(_VesselChecked)
                             btnRecordEnable = true;
                     }
                     else
