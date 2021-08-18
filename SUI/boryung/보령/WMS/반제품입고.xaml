@@ -69,7 +69,7 @@
                        HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
                 <c1:C1DataGrid.Columns>
                     <c1:DataGridTextColumn Header="오더번호" Binding="{Binding PoId}"/>
-                    <c1:DataGridTextColumn Header="IBC ID" Binding="{Binding IBCID}"/>
+                    <c1:DataGridTextColumn Header="IBC ID" Binding="{Binding VesselId}"/>
                     <c1:DataGridTextColumn Header="반제품 보관기간" Binding="{Binding STRGDAY}"/>
                     <c1:DataGridTextColumn Header="반제품 유효기한" Binding="{Binding EXPIREDTTM}"/>
                     <c1:DataGridTextColumn Header="성적번호" Binding="{Binding MLOTID}"/>
