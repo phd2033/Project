@@ -79,7 +79,16 @@ namespace 보령
                     e.Cancel = true;
                     break;
             }
-        }               
+        }
+
+        private void gridPackingInfo_LoadedCellPresenter(object sender, DataGridCellEventArgs e)
+        {
+            // 짝수행만 Readonly 연구중
+            //if (e.Cell.Row.Index % 2 == 1)
+            //{
+
+            //}
+        }
 
         // 수정값 입력 완료
         private void gridPackingInfo_CommittedEdit(object sender, DataGridCellEventArgs e)

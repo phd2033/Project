@@ -86,7 +86,7 @@ namespace 보령
                                         MTRLID = item.Raw.BOMID,
                                         CHGSEQ = Convert.ToDecimal(item.Raw.EXPRESSION)
                                     });
-                                }                              
+                                }
 
                                 if (await _BR_BRS_SEL_ProductionOrderBOM_PickingInfo_New.Execute() != false)
                                 {
@@ -103,10 +103,10 @@ namespace 보령
                                             SAMPLE = 0m,
                                             REMAIN = decimal.TryParse(item.RETURNQTY, out temp) ? temp : 0m,
                                             USING = 0m,
-                                            Param = decimal.TryParse(inputValues.FirstOrDefault(x => x.Raw.BOMID.Equals(item.MTRLID)).Raw.TARGETVAL, out temp) ? temp : 1m,      
+                                            Param = decimal.TryParse(inputValues.FirstOrDefault(x => x.Raw.BOMID.Equals(item.MTRLID)).Raw.TARGETVAL, out temp) ? temp : 1m,
                                         });
                                     }
-                                }                       
+                                }
 
                                 _mainWnd.gridPackingInfo.ItemsSource = null;
                                 _mainWnd.gridPackingInfo.ItemsSource = this.PackingInfoList;
@@ -209,12 +209,12 @@ namespace 보령
                                     row["MTRLID"] = item.MTRLID != null ? item.MTRLID : "";
                                     row["MTRLNAME"] = item.MTRLNAME != null ? item.MTRLNAME : "";
                                     row["UOM"] = item.UOM != null ? item.UOM : "";
-                                    row["PICKING"] = item.PICKING.ToString("#,0");
-                                    row["ADDING"] = item.ADDING.ToString("#,0");
-                                    row["SCRAP"] = item.SCRAP.ToString("#,0");
-                                    row["SAMPLE"] = item.SAMPLE.ToString("#,0");
-                                    row["REMAIN"] = item.REMAIN.ToString("#,0");
-                                    row["USING"] = item.USING.ToString("#,0");
+                                    row["PICKING"] = item.PICKING.ToString("#0.00#");
+                                    row["ADDING"] = item.ADDING.ToString("#0.00#");
+                                    row["SCRAP"] = item.SCRAP.ToString("#0.00#");
+                                    row["SAMPLE"] = item.SAMPLE.ToString("#0.00#");
+                                    row["REMAIN"] = item.REMAIN.ToString("#0.00#");
+                                    row["USING"] = item.USING.ToString("#0.00#");
 
                                     dt.Rows.Add(row);
                                 }
@@ -234,7 +234,7 @@ namespace 보령
 
                                 if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
                                 else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
-                            
+
                             }
                             ///
 
@@ -409,9 +409,9 @@ namespace 보령
         {
             //if(IN.Param > 0)
             //{
-                //OUT.SAMPLE = IN.SAMPLE * IN.Param;
-                //OUT.USING = IN.USING * IN.Param;
-                OUT.SCRAP = OUT.PICKING + OUT.ADDING - (OUT.SAMPLE + OUT.REMAIN + OUT.USING);
+            //OUT.SAMPLE = IN.SAMPLE * IN.Param;
+            //OUT.USING = IN.USING * IN.Param;
+            OUT.SCRAP = OUT.PICKING + OUT.ADDING - (OUT.SAMPLE + OUT.REMAIN + OUT.USING);
             //}
         }
         private bool CheckDataSet()
