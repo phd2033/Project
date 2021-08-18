@@ -241,7 +241,7 @@ namespace 보령
                         CommandResults["StorageOutCommandAsync"] = false;
 
                         ///
-                        if(CheckIBCId(IBCNo))
+                        if(!CheckIBCId(IBCNo))
                         {
                             OnMessage("이미 요청한 용기입니다.");
                             return;
