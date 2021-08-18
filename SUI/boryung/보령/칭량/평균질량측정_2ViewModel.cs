@@ -671,11 +671,14 @@ namespace 보령
                                 if (popup.DialogResult.GetValueOrDefault())
                                 {
                                     eqptID = "";
-
-                                    _curWeight.SetWeight(Convert.ToDecimal(popup.txtWeight.Value), "g", 3);
-                                    calAvgWeight();
-                                    isBtnEnable = true;
-                                    OnPropertyChanged("curWeight");
+                                    decimal chk;
+                                    if(decimal.TryParse(popup.txtWeight.Value, out chk))
+                                    {
+                                        _curWeight.SetWeight(popup.txtWeight.Value, "g");
+                                        calAvgWeight();
+                                        isBtnEnable = true;
+                                        OnPropertyChanged("curWeight");
+                                    }
                                 }
                             };
 

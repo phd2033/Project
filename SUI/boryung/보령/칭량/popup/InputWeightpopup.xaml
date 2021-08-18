@@ -18,7 +18,7 @@
                 <ColumnDefinition Width="20"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <ShopFloorUI:NumericKeyPadType Name="txtWeight" Height="30" VerticalAlignment="Center" FontSize="15"/>
+            <ShopFloorUI:KeyPadType Name="txtWeight" Height="30" VerticalAlignment="Center" FontSize="15"/>
             <TextBox Name="txtUOM" Grid.Column="2" Height="30" Width="30" Text="g" IsReadOnly="True" FontSize="15" TextAlignment="Center"/>
         </Grid>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1">
