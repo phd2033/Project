@@ -236,21 +236,17 @@ namespace 보령
                             ///
                             _BR_BRS_SEL_ProductionOrderWeighingResult.INDATAs.Clear();
                             _BR_BRS_SEL_ProductionOrderWeighingResult.OUTDATAs.Clear();
-
-                            if (!string.IsNullOrWhiteSpace(_BatchNo) && !string.IsNullOrWhiteSpace(_POID))
+                            _BR_BRS_SEL_ProductionOrderWeighingResult.INDATAs.Add(new BR_BRS_SEL_ProductionOrderWeighingResult.INDATA
                             {
-                                _BR_BRS_SEL_ProductionOrderWeighingResult.INDATAs.Add(new BR_BRS_SEL_ProductionOrderWeighingResult.INDATA
-                                {
-                                    POID = _POID,
-                                    WEIGHINGMETHOD = "WH001"
-                                });
+                                POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                WEIGHINGMETHOD = "WH001"
+                            });
 
-                                await _BR_BRS_SEL_ProductionOrderWeighingResult.Execute();
+                            await _BR_BRS_SEL_ProductionOrderWeighingResult.Execute();
 
-                                if (_BR_BRS_SEL_ProductionOrderWeighingResult.OUTDATAs.Count > 0)
-                                {
-                                    await SetXMLDataTable();
-                                }
+                            if (_BR_BRS_SEL_ProductionOrderWeighingResult.OUTDATAs.Count > 0)
+                            {
+                                await SetXMLDataTable();
                             }
                             ///
 
