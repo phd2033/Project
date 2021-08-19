@@ -390,7 +390,7 @@ namespace 보령
                                 RECORDDTTM = record,
                                 INX = filteredComponents.Count > 0 ? filteredComponents.Count + 1 : 1,
                                 SCALEID = eqptID,
-                                SMPQTY = sampleCount.ToString("0 T"),
+                                SMPQTY = sampleCount.ToString("0"),
                                 CUR_WEIGHT = _curWeight.WeightUOMString,
                                 AVG_WEIGHT = avgWeighing
                             });
