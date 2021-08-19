@@ -20,10 +20,15 @@ namespace 보령
     public class 포장자재정산ViewModel : ViewModelBase
     {
         #region [Property]
+        public 포장자재정산ViewModel()
+        {
+            _BR_BRS_SEL_ProductionOrderBOM_PickingInfo_New = new BR_BRS_SEL_ProductionOrderBOM_PickingInfo_New();
+            _PackingInfoList = new ObservableCollection<PackingInfo>();
+        }
         private 포장자재정산 _mainWnd;
 
-        private List<PackingInfo> _PackingInfoList;
-        public List<PackingInfo> PackingInfoList
+        private ObservableCollection<PackingInfo> _PackingInfoList;
+        public ObservableCollection<PackingInfo> PackingInfoList
         {
             get { return _PackingInfoList; }
             set
@@ -36,15 +41,7 @@ namespace 보령
 
         #region [BizRule]
         private BR_BRS_SEL_ProductionOrderBOM_PickingInfo_New _BR_BRS_SEL_ProductionOrderBOM_PickingInfo_New;
-        public BR_BRS_SEL_ProductionOrderBOM_PickingInfo_New BR_BRS_SEL_ProductionOrderBOM_PickingInfo_New
-        {
-            get { return _BR_BRS_SEL_ProductionOrderBOM_PickingInfo_New; }
-            set
-            {
-                _BR_BRS_SEL_ProductionOrderBOM_PickingInfo_New = value;
-                NotifyPropertyChanged();
-            }
-        }
+
 
         #endregion
 
@@ -86,7 +83,7 @@ namespace 보령
                                         MTRLID = item.Raw.BOMID,
                                         CHGSEQ = Convert.ToDecimal(item.Raw.EXPRESSION)
                                     });
-                                }
+                                }                              
 
                                 if (await _BR_BRS_SEL_ProductionOrderBOM_PickingInfo_New.Execute() != false)
                                 {
@@ -94,22 +91,21 @@ namespace 보령
                                     {
                                         _PackingInfoList.Add(new PackingInfo
                                         {
-                                            MTRLID = item.MTRLID != null ? item.MTRLID : "",
-                                            MTRLNAME = item.MTRLNAME != null ? item.MTRLNAME : "",
-                                            UOM = item.UOM != null ? item.UOM : "",
-                                            PICKING = decimal.TryParse(item.TOTALPICKINGQTY, out temp) ? temp : 0m,
-                                            ADDING = decimal.TryParse(item.ADDITIONALQTY, out temp) ? temp : 0m,
-                                            SCRAP = 0m,
-                                            SAMPLE = 0m,
-                                            REMAIN = decimal.TryParse(item.RETURNQTY, out temp) ? temp : 0m,
-                                            USING = 0m,
-                                            Param = decimal.TryParse(inputValues.FirstOrDefault(x => x.Raw.BOMID.Equals(item.MTRLID)).Raw.TARGETVAL, out temp) ? temp : 1m,
+                                            MTRLID = !string.IsNullOrWhiteSpace(item.MTRLID) ? item.MTRLID : "",
+                                            MTRLNAME = !string.IsNullOrWhiteSpace(item.MTRLNAME) ? item.MTRLNAME : "",
+                                            UOM = !string.IsNullOrWhiteSpace(item.UOM) ? item.UOM : "",
+                                            PICKINGQTY = !string.IsNullOrWhiteSpace(item.TOTALPICKINGQTY) ? item.TOTALPICKINGQTY : "0",
+                                            ADDQTY = !string.IsNullOrWhiteSpace(item.ADDITIONALQTY) ? item.ADDITIONALQTY : "0",
+                                            SCRAPQTY = "0",
+                                            SAMPLEQTY = "0",
+                                            REMAINQTY = !string.IsNullOrWhiteSpace(item.RETURNQTY) ? item.RETURNQTY : "0",
+                                            USEQTY = "0",
+                                            Param = decimal.TryParse(inputValues.FirstOrDefault(x => x.Raw.BOMID.Equals(item.MTRLID)).Raw.TARGETVAL, out temp) ? temp : 1m,      
                                         });
                                     }
                                 }
 
-                                _mainWnd.gridPackingInfo.ItemsSource = null;
-                                _mainWnd.gridPackingInfo.ItemsSource = this.PackingInfoList;
+                                OnPropertyChanged("PackingInfoList");
                             }
 
                             ///
@@ -148,14 +144,17 @@ namespace 보령
                             CommandResults["ComfirmCommandAsync"] = false;
 
                             ///
-
+                            
                             if (_PackingInfoList != null && _PackingInfoList.Count > 0)
                             {
-                                if (CheckDataSet())
-                                    return;
+                                foreach (var item in _PackingInfoList)
+                                {
+                                    if (item.HaveNagativeNum())
+                                        throw new Exception(string.Format("[{0}]{1} : 입력값에 음수가 있습니다.", item.MTRLID, item.MTRLNAME));
+                                }
 
+                                // 전자서명
                                 var authHelper = new iPharmAuthCommandHelper();
-
                                 if (_mainWnd.CurrentInstruction.Raw.INSDTTM.Equals("Y") && _mainWnd.CurrentInstruction.PhaseState.Equals("COMP"))
                                 {
                                     authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
@@ -172,9 +171,7 @@ namespace 보령
                                         throw new Exception(string.Format("서명이 완료되지 않았습니다."));
                                     }
                                 }
-
                                 authHelper.InitializeAsync(Common.enumCertificationType.Function, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
-
                                 if (await authHelper.ClickAsync(
                                     Common.enumCertificationType.Function,
                                     Common.enumAccessType.Create,
@@ -187,11 +184,11 @@ namespace 보령
                                     throw new Exception(string.Format("서명이 완료되지 않았습니다."));
                                 }
 
+                                // XML 기록
                                 var ds = new DataSet();
                                 var dt = new DataTable("DATA");
 
                                 ds.Tables.Add(dt);
-
                                 dt.Columns.Add(new DataColumn("MTRLID"));
                                 dt.Columns.Add(new DataColumn("MTRLNAME"));
                                 dt.Columns.Add(new DataColumn("UOM"));
@@ -206,15 +203,15 @@ namespace 보령
                                 {
                                     var row = dt.NewRow();
 
-                                    row["MTRLID"] = item.MTRLID != null ? item.MTRLID : "";
-                                    row["MTRLNAME"] = item.MTRLNAME != null ? item.MTRLNAME : "";
-                                    row["UOM"] = item.UOM != null ? item.UOM : "";
-                                    row["PICKING"] = item.PICKING.ToString("#0.00#");
-                                    row["ADDING"] = item.ADDING.ToString("#0.00#");
-                                    row["SCRAP"] = item.SCRAP.ToString("#0.00#");
-                                    row["SAMPLE"] = item.SAMPLE.ToString("#0.00#");
-                                    row["REMAIN"] = item.REMAIN.ToString("#0.00#");
-                                    row["USING"] = item.USING.ToString("#0.00#");
+                                    row["MTRLID"] = item.MTRLID ?? "";
+                                    row["MTRLNAME"] = item.MTRLNAME ?? "";
+                                    row["UOM"] = item.UOM ?? "";
+                                    row["PICKING"] = item.PICKINGQTY ?? "";
+                                    row["ADDING"] = item.ADDQTY ?? "";
+                                    row["SCRAP"] = item.SCRAPQTY ?? "";
+                                    row["SAMPLE"] = item.SAMPLEQTY ?? "";
+                                    row["REMAIN"] = item.REMAINQTY ?? "";
+                                    row["USING"] = item.USEQTY ?? "";
 
                                     dt.Rows.Add(row);
                                 }
@@ -222,20 +219,23 @@ namespace 보령
                                 var xml = BizActorRuleBase.CreateXMLStream(ds);
                                 var bytesArray = System.Text.Encoding.UTF8.GetBytes(xml);
 
-
                                 _mainWnd.CurrentInstruction.Raw.ACTVAL = _mainWnd.TableTypeName;
                                 _mainWnd.CurrentInstruction.Raw.NOTE = bytesArray;
 
+                                // 지시문 입력 데이터 생성
                                 var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction, true);
                                 if (result != enumInstructionRegistErrorType.Ok)
                                 {
                                     throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", _mainWnd.CurrentInstruction.Raw.IRTGUID, result));
                                 }
 
+                                // 창 종료
                                 if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
                                 else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
 
                             }
+                            else
+                                OnMessage("기록할 내용이 없습니다.");
                             ///
 
                             CommandResults["ComfirmCommandAsync"] = true;
@@ -259,16 +259,8 @@ namespace 보령
         }
         #endregion
 
-        #region [Constructor]
-        public 포장자재정산ViewModel()
-        {
-            _BR_BRS_SEL_ProductionOrderBOM_PickingInfo_New = new BR_BRS_SEL_ProductionOrderBOM_PickingInfo_New();
-            _PackingInfoList = new List<PackingInfo>();
-        }
-        #endregion
-
         #region [User Define]
-        public class PackingInfo : ViewModelBase
+        public class PackingInfo : BizActorDataSetBase
         {
             private string _MTRLID;
             public string MTRLID
@@ -300,64 +292,129 @@ namespace 보령
                     OnPropertyChanged("UOM");
                 }
             }
-            private decimal _PICKING;
-            public decimal PICKING
+            private decimal _PICKINGQTY;
+            public string PICKINGQTY
             {
-                get { return _PICKING; }
+                get { return string.Format("{0:#,0}", _PICKINGQTY); }
                 set
                 {
-                    _PICKING = value;
-                    OnPropertyChanged("PICKING");
+                    decimal chk;
+                    if (decimal.TryParse(value, out chk))
+                    {
+                        if (chk < 0)
+                            OnMessage("입력한 값이 음수 입니다.");
+
+                        _PICKINGQTY = chk;
+                        CalcScrapQty();
+                    }
+                    else
+                        OnMessage("입력한 내용이 숫자형이 아닙니다.");
+
+                    OnPropertyChanged("PICKINGQTY");
                 }
             }
-            private decimal _ADDING;
-            public decimal ADDING
+            private decimal _ADDQTY;
+            public string ADDQTY
             {
-                get { return _ADDING; }
+                get { return string.Format("{0:#,0}", _ADDQTY); }
                 set
                 {
-                    _ADDING = value;
-                    OnPropertyChanged("ADDING");
+                    decimal chk;
+                    if (decimal.TryParse(value, out chk))
+                    {
+                        if (chk < 0)
+                            OnMessage("입력한 값이 음수 입니다.");
+
+                        _ADDQTY = chk;
+                        CalcScrapQty();
+                    }
+                    else
+                        OnMessage("입력한 내용이 숫자형이 아닙니다.");
+
+                    OnPropertyChanged("ADDQTY");
                 }
             }
-            private decimal _SCRAP;
-            public decimal SCRAP
+            private decimal _SCRAPQTY;
+            public string SCRAPQTY
             {
-                get { return _SCRAP; }
+                get { return string.Format("{0:#,0}", _SCRAPQTY); }
                 set
                 {
-                    _SCRAP = value;
-                    OnPropertyChanged("SCRAP");
+                    decimal chk;
+                    if (decimal.TryParse(value, out chk))
+                    {
+                        if (chk < 0)
+                            OnMessage("입력한 값이 음수 입니다.");
+
+                        _SCRAPQTY = chk;
+                    }
+                    else
+                        OnMessage("입력한 내용이 숫자형이 아닙니다.");
+
+                    OnPropertyChanged("SCRAPQTY");
                 }
             }
-            private decimal _SAMPLE;
-            public decimal SAMPLE
+            private decimal _SAMPLEQTY;
+            public string SAMPLEQTY
             {
-                get { return _SAMPLE; }
+                get { return string.Format("{0:#,0}", _SAMPLEQTY); }
                 set
                 {
-                    _SAMPLE = value;
-                    OnPropertyChanged("SAMPLE");
+                    decimal chk;
+                    if (decimal.TryParse(value, out chk))
+                    {
+                        if (chk < 0)
+                            OnMessage("입력한 값이 음수 입니다.");
+
+                        _SAMPLEQTY = chk;
+                        CalcScrapQty();
+                    }
+                    else
+                        OnMessage("입력한 내용이 숫자형이 아닙니다.");
+
+                    OnPropertyChanged("SAMPLEQTY");
                 }
             }
-            private decimal _REMAIN;
-            public decimal REMAIN
+            private decimal _REMAINQTY;
+            public string REMAINQTY
             {
-                get { return _REMAIN; }
+                get { return string.Format("{0:#,0}", _REMAINQTY); }
                 set
                 {
-                    _REMAIN = value;
-                    OnPropertyChanged("REMAIN");
+                    decimal chk;
+                    if (decimal.TryParse(value, out chk))
+                    {
+                        if (chk < 0)
+                            OnMessage("입력한 값이 음수 입니다.");
+
+                        _REMAINQTY = chk;
+                        CalcScrapQty();
+                    }
+                    else
+                        OnMessage("입력한 내용이 숫자형이 아닙니다.");
+
+                    OnPropertyChanged("REMAINQTY");
                 }
             }
-            private decimal _USING;
-            public decimal USING
+            private decimal _USEQTY;
+            public string USEQTY
             {
-                get { return _USING; }
+                get { return string.Format("{0:#,0}", _USEQTY); }
                 set
                 {
-                    _USING = value;
-                    OnPropertyChanged("USING");
+                    decimal chk;
+                    if (decimal.TryParse(value, out chk))
+                    {
+                        if (chk < 0)
+                            OnMessage("입력한 값이 음수 입니다.");
+
+                        _USEQTY = chk;
+                        CalcScrapQty();
+                    }
+                    else
+                        OnMessage("입력한 내용이 숫자형이 아닙니다.");
+
+                    OnPropertyChanged("USEQTY");
                 }
             }
             private decimal _Param;
@@ -370,70 +427,22 @@ namespace 보령
                     OnPropertyChanged("Param");
                 }
             }
-        }
 
-        public void ConvertResult()
-        {
-
-            PackingInfo output = new PackingInfo();
-
-            foreach (var item in _PackingInfoList)
+            private void CalcScrapQty()
             {
-                output = item;
-                Calculation(null, output);
-            }
-            //int inx = 0;
-            //PackingInfo input = new PackingInfo();
-            //PackingInfo output = new PackingInfo();
+                decimal scrap = this._PICKINGQTY + this._ADDQTY
+                    - this._SAMPLEQTY - this._REMAINQTY - this._USEQTY;
 
-            //Calculation(input, output);
-
-            //if (_PackingInfoList.Count % 2 == 0)
-            //{
-            //    foreach (var item in _PackingInfoList)
-            //    {
-            //        if (inx % 2 == 1)
-            //        {
-            //            output = item;
-
-            //            Calculation(input, output);
-            //        }
-            //        else
-            //            input = item;
-
-            //        inx++;
-            //    }
-            //}
-        }
-        public void Calculation(PackingInfo IN, PackingInfo OUT)
-        {
-            //if(IN.Param > 0)
-            //{
-            //OUT.SAMPLE = IN.SAMPLE * IN.Param;
-            //OUT.USING = IN.USING * IN.Param;
-            OUT.SCRAP = OUT.PICKING + OUT.ADDING - (OUT.SAMPLE + OUT.REMAIN + OUT.USING);
-            //}
-        }
-        private bool CheckDataSet()
-        {
-            //int idx = 1;
-            foreach (var item in _PackingInfoList)
-            {
-                //if (idx % 2 == 0)
-                //{
-                //    if (item.SCRAP != item.PICKING + item.ADDING - (item.SAMPLE + item.REMAIN + item.USING))
-                //        return true;
-                //}
-                if (item.SCRAP != item.PICKING + item.ADDING - (item.SAMPLE + item.REMAIN + item.USING))
-                    return true;
-
-                if (item.PICKING < 0 || item.ADDING < 0 || item.SCRAP < 0 || item.SAMPLE < 0 || item.SAMPLE < 0 || item.REMAIN < 0 || item.USING < 0)
-                    return true;
-
-                //idx++;
+                SCRAPQTY = scrap.ToString();
             }
 
-            return false;
+            public bool HaveNagativeNum()
+            {
+                if (this._PICKINGQTY < 0 || this._ADDQTY < 0 || this._SCRAPQTY < 0 || this._SAMPLEQTY < 0 || this._REMAINQTY < 0 || this._USEQTY < 0)
+                    return true;
+                else
+                    return false;
+            }
         }
         #endregion
     }

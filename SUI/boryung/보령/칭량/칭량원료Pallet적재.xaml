@@ -128,7 +128,7 @@
                         Command="{Binding ConfirmReadyCancelCommand}"/>
                 </StackPanel>
                 <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" Style="{Binding Source={StaticResource btnStyle}}"
-                    HorizontalAlignment="Right" Content="BIN(Pallet) 적재 취소" Command="{Binding ClickCancelBinLoadCommandAsync}"/>
+                    HorizontalAlignment="Right" Content="BIN(Pallet) 적재 취소"/>
 
                 <TextBlock Grid.Row="4" Grid.Column="0" Text="자재 바코드" Style="{Binding Source={StaticResource lblStyle}}"/>
                 <TextBox Grid.Row="4" Grid.Column="1" x:Name="txtMaterial" Style="{Binding Source={StaticResource txtStyle}}"
@@ -159,7 +159,7 @@
                            CanUserAddRows="False" CanUserRemoveRows="False" SelectionMode="SingleRow"
                            ItemsSource="{Binding ListContainer}">
                     <c1:C1DataGrid.Columns>
-                        <c1:DataGridTextColumn Header="오더번호" Binding="{Binding Path=PoId}"/>
+                        <c1:DataGridTextColumn Header="오더번호" Binding="{Binding Path=POID}"/>
                         <c1:DataGridTextColumn Header="용기번호" Binding="{Binding Path=VESSELID}" IsSelectable="True" IsReadOnly="False"/>
                         <c1:DataGridTextColumn Header="제조번호" Binding="{Binding Path=BATCHNO}"/>
                         <c1:DataGridTextColumn Header="공정" Binding="{Binding Path=OPSGNAME}"/>
