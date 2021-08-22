@@ -161,7 +161,8 @@ namespace 보령
                                 var dt = new DataTable("DATA");
                                 ds.Tables.Add(dt);
 
-                                dt.Columns.Add(new DataColumn("순번"));
+                                // 2021.08.20 박희돈 순번 ebr에 안나오도록 변경
+                                //dt.Columns.Add(new DataColumn("순번"));
                                 dt.Columns.Add(new DataColumn("점검사항"));
                                 dt.Columns.Add(new DataColumn("결과"));
 
@@ -169,7 +170,8 @@ namespace 보령
                                 {
                                     var row = dt.NewRow();
 
-                                    row["순번"] = item.NO != null ? item.NO : "";
+                                    // 2021.08.20 박희돈 순번 ebr에 안나오도록 변경
+                                    //row["순번"] = item.NO != null ? item.NO : "";
                                     row["점검사항"] = item.ITEMNAME != null ? item.ITEMNAME : "";
                                     row["결과"] = item.RESULT != null ? item.RESULT : "";
 

@@ -34,9 +34,9 @@
                                AutoGenerateColumns="False" CanUserAddRows="False" CanUserEditRows="False" CanUserRemoveRows="False" CanUserResizeRows="False"
                                ItemsSource="{Binding BR_BRS_GET_Equipment_LineClearance.OUTDATAs}">
                     <c1:C1DataGrid.Columns>
-                        <c1:DataGridTextColumn Header="순번" Binding="{Binding Path=NO}" HeaderStyle="{StaticResource HeaderStyle}" HorizontalAlignment="Center" Width="0.5*"/>
-                        <c1:DataGridTextColumn Header="점검사항" Binding="{Binding Path=ITEMNAME}" HeaderStyle="{StaticResource HeaderStyle}" HorizontalAlignment="Center" Width="2*"/>
-                        <c1:DataGridTextColumn Header="결과" Binding="{Binding Path=RESULT}" HeaderStyle="{StaticResource HeaderStyle}" HorizontalAlignment="Center" Width="1.5*"/>
+                        <!--<c1:DataGridTextColumn Header="순번" Binding="{Binding Path=NO}" HeaderStyle="{StaticResource HeaderStyle}" HorizontalAlignment="Center" Width="0.5*"/>-->
+                        <c1:DataGridTextColumn Header="점검사항" Binding="{Binding Path=ITEMNAME}" HeaderStyle="{StaticResource HeaderStyle}" HorizontalAlignment="Center" Width="3*"/>
+                        <c1:DataGridTextColumn Header="결과" Binding="{Binding Path=RESULT}" HeaderStyle="{StaticResource HeaderStyle}" HorizontalAlignment="Center" Width="1*"/>
                     </c1:C1DataGrid.Columns>
                 </c1:C1DataGrid>
             </Grid>

@@ -342,11 +342,13 @@ namespace 보령
                             var dt = new DataTable("DATA");
                             ds.Tables.Add(dt);
 
-                            dt.Columns.Add(new DataColumn("자재ID"));
+                            // 2021.08.22 박희돈 자재ID 기록 삭제(EBR 수정 항목)
+                            //dt.Columns.Add(new DataColumn("자재ID"));
                             dt.Columns.Add(new DataColumn("자재명"));
                             dt.Columns.Add(new DataColumn("OUTPUTID"));
                             dt.Columns.Add(new DataColumn("현재수량"));
-                            dt.Columns.Add(new DataColumn("IBC관리번호"));
+                            // 2021.08.22 박희돈 IBC관리번호 - > 용기번호 로 변경
+                            dt.Columns.Add(new DataColumn("용기번호"));
                             dt.Columns.Add(new DataColumn("투입일자"));
                             dt.Columns.Add(new DataColumn("작업자"));
 
@@ -380,11 +382,13 @@ namespace 보령
                                 });
 
                                 var row = dt.NewRow();
-                                row["자재ID"] = o.MTRLID != null ? o.MTRLID.ToString() : "";
+                                // 2021.08.22 박희돈 자재ID 기록 삭제(EBR 수정 항목)
+                                //row["자재ID"] = o.MTRLID != null ? o.MTRLID.ToString() : "";
                                 row["자재명"] = o.MTRLNAME != null ? o.MTRLNAME.ToString() : "";
                                 row["OUTPUTID"] = o.OUTPUTID != null ? o.OUTPUTID.ToString() : "";
                                 row["현재수량"] = o.MSUBLOTQTY != null ? o.MSUBLOTQTY.GetValueOrDefault().ToString("0") : "";
-                                row["IBC관리번호"] = o.VESSELID != null ? o.VESSELID.ToString() : "";
+                                // 2021.08.22 박희돈 IBC관리번호 - > 용기번호 로 변경
+                                row["용기번호"] = o.VESSELID != null ? o.VESSELID.ToString() : "";
                                 row["투입일자"] = chargingdttm.ToString();
                                 row["작업자"] = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_Charging");
 

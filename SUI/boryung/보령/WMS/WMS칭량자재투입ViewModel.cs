@@ -390,7 +390,8 @@ namespace 보령
                         dt.Columns.Add(new DataColumn("피킹순번")); // 수정 필요
                         dt.Columns.Add(new DataColumn("자재바코드"));
                         dt.Columns.Add(new DataColumn("출고량"));
-                        dt.Columns.Add(new DataColumn("투입준비여부"));
+                        // 2021.08.20 박희돈 투입준비여부 ebr에 안나오도록 변경
+                        //dt.Columns.Add(new DataColumn("투입준비여부"));
 
 
                         foreach (var rowdata in chargingItem)
@@ -402,7 +403,8 @@ namespace 보령
                             row["피킹순번"] = rowdata.QCT_NO_SEQ != null ? rowdata.QCT_NO_SEQ : "";
                             row["자재바코드"] = rowdata.MSUBLOTBCD != null ? rowdata.MSUBLOTBCD : "";
                             row["출고량"] = rowdata.DSP != null ? rowdata.DSP + rowdata.UOM : "";
-                            row["투입준비여부"] = rowdata.ISAVAIL;
+                            // 2021.08.20 박희돈 투입준비여부 ebr에 안나오도록 변경
+                            //row["투입준비여부"] = rowdata.ISAVAIL;
 
                             dt.Rows.Add(row);
                         }
