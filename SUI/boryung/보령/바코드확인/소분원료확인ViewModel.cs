@@ -246,7 +246,7 @@ namespace 보령
                             dt.Columns.Add(new DataColumn("원료배치번호"));
                             dt.Columns.Add(new DataColumn("바코드"));
                             dt.Columns.Add(new DataColumn("전체무게"));
-                            dt.Columns.Add(new DataColumn("단위"));
+                            //dt.Columns.Add(new DataColumn("단위"));
 
                           
                             chargingItem.ForEach(o =>
@@ -256,13 +256,12 @@ namespace 보령
                                 row["자재명"] = o.MTRLNAME;
                                 row["원료배치번호"] = o.MLOTID;
                                 row["바코드"] = o.SCANNED_BARCODE;
-                                row["전체무게"] = o.DSP;
-                                row["단위"] = o.UOM;
+                                // 2021.08.22 박희돈 단위 컬럼 제거. 전체무게에 더해 단위 표시하도록 변경.
+                                row["전체무게"] =  o.DSP + " " + o.UOM;
+                                //row["단위"] = o.UOM;
                                 dt.Rows.Add(row);
                             });
-
-   
-
+                            
                             var xml = BizActorRuleBase.CreateXMLStream(ds);
                             var bytesArray = System.Text.Encoding.UTF8.GetBytes(xml);
 
