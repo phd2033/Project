@@ -279,7 +279,10 @@ namespace 보령
 
                                                 _ScaleInfo = _BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.OUTDATAs[0];
                                                 _ScaleUom = _ScaleInfo.NOTATION;
-                                                _ScalePrecision = int.TryParse(_ScaleInfo.PRECISION.ToString(), out chk) ? chk : 3;
+
+                                                // 2021.08.22 박희돈. EBR수정요청 내용. 빈용기는 소수점이 없어야함.
+                                                //_ScalePrecision = int.TryParse(_ScaleInfo.PRECISION.ToString(), out chk) ? chk : 3;
+                                                _ScalePrecision = 0;
 
                                                 _TareWeight.SetWeight(0, _ScaleUom, _ScalePrecision);
                                                 OnPropertyChanged("TareWeight");
