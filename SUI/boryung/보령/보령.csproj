@@ -262,7 +262,6 @@
     <Compile Include="Model.Access\칭량\BR_BRS_SEL_Charging_Solvent_History.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_BRS_SEL_ProductionOrderAllocation_AreaWeighing.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_BRS_SEL_ProductionOrderDispense_Result.Access.cs" />
-    <Compile Include="Model.Access\칭량\BR_BRS_SEL_ProductionOrderOutputSubLot.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_PHR_GET_MaterialSubLot_VESSID_ISNULL.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_PHR_UPD_MaterialSubLot_ChangeVesselID_MULTI.Access.cs" />
@@ -355,9 +354,13 @@
     <Compile Include="WMS\Popup\반제품출고Popup.xaml.cs">
       <DependentUpon>반제품출고Popup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WMS\WMS일반자재환입처리.xaml.cs">
+      <DependentUpon>WMS일반자재환입처리.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WMS\WMS자재환입처리.xaml.cs">
       <DependentUpon>WMS자재환입처리.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WMS\WMS일반자재환입처리ViewModel.cs" />
     <Compile Include="WMS\WMS자재환입처리ViewModel.cs" />
     <Compile Include="WMS\WMS칭량자재투입.xaml.cs">
       <DependentUpon>WMS칭량자재투입.xaml</DependentUpon>
@@ -910,6 +913,10 @@
     <Page Include="WMS\Popup\반제품출고Popup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WMS\WMS일반자재환입처리.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="WMS\WMS자재환입처리.xaml">
       <SubType>Designer</SubType>
