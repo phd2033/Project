@@ -659,8 +659,9 @@ namespace 보령
                                 var dt = new DataTable("DATA");
                                 ds.Tables.Add(dt);
 
-                                dt.Columns.Add(new DataColumn("설비코드"));
-                                dt.Columns.Add(new DataColumn("설비명"));
+                                //2021.08.24 박희돈 EBR작업으로 인한 설비명 -> 장비 명, 설비코드 -> 장비 번호 로 변경.
+                                dt.Columns.Add(new DataColumn("장비번호"));
+                                dt.Columns.Add(new DataColumn("장비명"));
                                 dt.Columns.Add(new DataColumn("교정일자"));
                                 dt.Columns.Add(new DataColumn("차기교정일자"));
                                 dt.Columns.Add(new DataColumn("점검상태"));
@@ -670,8 +671,8 @@ namespace 보령
                                 {
                                     var row = dt.NewRow();
 
-                                    row["설비코드"] = item.EQPTID != null ? item.EQPTID : "";
-                                    row["설비명"] = item.EQPTNAME != null ? item.EQPTNAME : "";
+                                    row["장비번호"] = item.EQPTID != null ? item.EQPTID : "";
+                                    row["장비명"] = item.EQPTNAME != null ? item.EQPTNAME : "";
                                     row["교정일자"] = item.CALIBATIONDTTM != null ? item.CALIBATIONDTTM : "";
                                     row["차기교정일자"] = item.NEXTCALIBATIONDTTM != null ? item.NEXTCALIBATIONDTTM : "";
                                     row["점검상태"] = item.SCALEDAILYSTATUS != null ? item.SCALEDAILYSTATUS : "";

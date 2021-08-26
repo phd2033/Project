@@ -262,6 +262,7 @@
     <Compile Include="Model.Access\칭량\BR_BRS_SEL_Charging_Solvent_History.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_BRS_SEL_ProductionOrderAllocation_AreaWeighing.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_BRS_SEL_ProductionOrderDispense_Result.Access.cs" />
+    <Compile Include="Model.Access\칭량\BR_BRS_SEL_ProductionOrderOutputSubLot.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_PHR_GET_MaterialSubLot_VESSID_ISNULL.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_PHR_UPD_MaterialSubLot_ChangeVesselID_MULTI.Access.cs" />

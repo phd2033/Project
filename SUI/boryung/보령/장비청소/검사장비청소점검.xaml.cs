@@ -24,7 +24,7 @@ namespace 보령
         }
         public override string TableTypeName
         {
-            get { return "TABLE,검사장비청소점검"; }
+            get { return "TABLE,장비교정점검"; }
         }
 
         private void btnCacel_Click(object sender, RoutedEventArgs e)

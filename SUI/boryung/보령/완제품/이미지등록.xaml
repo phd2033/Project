@@ -15,7 +15,7 @@
     xmlns:my="clr-namespace:보령"
     x:Name="Main"
     mc:Ignorable="d"
-    Title="포장자재 사진 등록"
+    Title="사진 등록"
     Height="600" Width="600">
     <ShopFloorUI:ShopFloorCustomWindow.Resources>
         <ResourceDictionary>

@@ -368,9 +368,9 @@ namespace 보령
                                 var ds = new DataSet();
                                 var dt = new DataTable("DATA");
                                 ds.Tables.Add(dt);
-
-                                dt.Columns.Add(new DataColumn("설비코드"));
-                                dt.Columns.Add(new DataColumn("설비명"));
+                                //2021.08.24 박희돈 EBR작업으로 인한 설비명 -> 장비 명, 설비코드 -> 장비 번호 로 변경.
+                                dt.Columns.Add(new DataColumn("장비번호"));
+                                dt.Columns.Add(new DataColumn("장비명"));
                                 dt.Columns.Add(new DataColumn("이전제품명"));
                                 dt.Columns.Add(new DataColumn("이전제조번호"));
                                 dt.Columns.Add(new DataColumn("점검상태"));
@@ -383,9 +383,9 @@ namespace 보령
                                 foreach (var item in BR_BRS_SEL_EquipmentStatus_PROCEQPT.OUTDATAs)
                                 {
                                     var row = dt.NewRow();
-
-                                    row["설비코드"] = item.EQPTID != null ? item.EQPTID : "";
-                                    row["설비명"] = item.EQPTNAME != null ? item.EQPTNAME : "";
+                                    //2021.08.24 박희돈 EBR작업으로 인한 설비명 -> 장비 명, 설비코드 -> 장비 번호 로 변경.
+                                    row["장비번호"] = item.EQPTID != null ? item.EQPTID : "";
+                                    row["장비명"] = item.EQPTNAME != null ? item.EQPTNAME : "";
                                     row["이전제품명"] = item.MTRLNAME != null ? item.MTRLNAME : "";
                                     row["이전제조번호"] = item.BATCHNO != null ? item.BATCHNO : "";
                                     row["점검상태"] = item.SCALEDAILYSTATUS != null ? item.SCALEDAILYSTATUS : "";
