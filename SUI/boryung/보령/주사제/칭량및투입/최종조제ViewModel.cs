@@ -249,6 +249,20 @@ namespace 보령
             }
         }
 
+        private bool _LabelPrintbtnEnable;
+        /// <summary>
+        /// 할당정보 선택 버튼 Enable
+        /// </summary>
+        public bool LabelPrintbtnEnable
+        {
+            get { return _LabelPrintbtnEnable; }
+            set
+            {
+                _LabelPrintbtnEnable = value;
+                OnPropertyChanged("LabelPrintbtnEnable");
+            }
+        }
+
         private bool _ConfirmbtnEnable;
         /// <summary>
         /// 할당정보 선택 버튼 Enable
@@ -347,17 +361,17 @@ namespace 보령
                                     throw new Exception("공정중제품 정보를 조회하지 못했습니다.");
 
                                 //최종조제 정보 조회
-                                //최종조제 정보가 있으면 소분버튼 비활성화.
                                 _BR_BRS_SEL_ProductionOrderOutputSubLot.INDATAs.Add(new BR_BRS_SEL_ProductionOrderOutputSubLot.INDATA
                                 {
                                     POID = _mainWnd.CurrentOrder.ProductionOrderID,
                                     OPSGGUID = new Guid(_mainWnd.CurrentOrder.OrderProcessSegmentID)
                                 });
+                                //최종조제 정보가 있으면 소분버튼 비활성화.
                                 if (await _BR_BRS_SEL_ProductionOrderOutputSubLot.Execute() == _BR_BRS_SEL_ProductionOrderOutputSubLot.OUTDATAs.Count > 0)
                                     DispensingbtnEnable = false;
                                 else
                                     DispensingbtnEnable = true;
-
+                                
                                 // 화면 열리면 기록 버튼 비활성화
                                 ConfirmbtnEnable = false;
 
@@ -890,33 +904,35 @@ namespace 보령
                                 WEIGHINGMETHOD = "WH007"
                             });
 
-                            if (await _BR_BRS_REG_ProductionOrderOutput_LastSoluction.Execute())
-                            {
-                                if (_BR_BRS_REG_ProductionOrderOutput_LastSoluction.OUTDATAs.Count > 0 && curPrintName != "N/A")
-                                {
-                                    _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Clear();
-                                    _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Clear();
+                            //if (await _BR_BRS_REG_ProductionOrderOutput_LastSoluction.Execute())
+                            //{
+                            //    if (_BR_BRS_REG_ProductionOrderOutput_LastSoluction.OUTDATAs.Count > 0 && curPrintName != "N/A")
+                            //    {
+                            //        _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Clear();
+                            //        _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Clear();
 
-                                    _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Add(new BR_PHR_SEL_PRINT_LabelImage.INDATA
-                                    {
-                                        ReportPath = "/Reports/Label/LABEL_C0402_018_10",
-                                        PrintName = _selectedPrint.PRINTERNAME,
-                                        USERID = AuthRepositoryViewModel.Instance.LoginedUserID
-                                    });
-                                    _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
-                                    {
-                                        ParamName = "MSUBLOTID",
-                                        ParamValue = _BR_BRS_REG_ProductionOrderOutput_LastSoluction.OUTDATAs[0].MSUBLOTID
-                                    });
-                                    _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
-                                    {
-                                        ParamName = "GUBUN",
-                                        ParamValue = "최종 조제량"
-                                    });
+                            //        _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Add(new BR_PHR_SEL_PRINT_LabelImage.INDATA
+                            //        {
+                            //            ReportPath = "/Reports/Label/LABEL_C0402_018_10",
+                            //            PrintName = _selectedPrint.PRINTERNAME,
+                            //            USERID = AuthRepositoryViewModel.Instance.LoginedUserID
+                            //        });
+                            //        _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
+                            //        {
+                            //            ParamName = "MSUBLOTID",
+                            //            ParamValue = _BR_BRS_REG_ProductionOrderOutput_LastSoluction.OUTDATAs[0].MSUBLOTID
+                            //        });
+                            //        _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
+                            //        {
+                            //            ParamName = "GUBUN",
+                            //            ParamValue = "최종 조제량"
+                            //        });
 
-                                    await _BR_PHR_SEL_PRINT_LabelImage.Execute(Common.enumBizRuleOutputClearMode.Always, Common.enumBizRuleXceptionHandleType.FailEvent);
-                                }
-                            }
+                            //        await _BR_PHR_SEL_PRINT_LabelImage.Execute(Common.enumBizRuleOutputClearMode.Always, Common.enumBizRuleXceptionHandleType.FailEvent);
+                            //    }
+                            //}
+
+                            await _BR_BRS_REG_ProductionOrderOutput_LastSoluction.Execute();
 
                             DispensingbtnEnable = false;
                             ConfirmbtnEnable = true;
@@ -944,6 +960,140 @@ namespace 보령
                 });
             }
         }
+
+        public ICommand PrintLabelCommandAsync
+        {
+            get
+            {
+                return new AsyncCommandBase(async arg =>
+                {
+                    using (await AwaitableLocks["PrintLabelCommandAsync"].EnterAsync())
+                    {
+                        try
+                        {
+                            IsBusy = true;
+
+                            CommandResults["PrintLabelCommandAsync"] = false;
+                            CommandCanExecutes["PrintLabelCommandAsync"] = false;
+
+
+                            //최종조제 정보 조회
+                            //2021.08.26 박희돈 처음 소분 진행힐 경우는 데이터 없어서 라벨 출력 시 재조회 해서 확인하도록 변경.
+                            _BR_BRS_SEL_ProductionOrderOutputSubLot.INDATAs.Add(new BR_BRS_SEL_ProductionOrderOutputSubLot.INDATA
+                            {
+                                POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                OPSGGUID = new Guid(_mainWnd.CurrentOrder.OrderProcessSegmentID)
+                            });
+                            await _BR_BRS_SEL_ProductionOrderOutputSubLot.Execute();
+
+                            var authHelper = new iPharmAuthCommandHelper();
+                            authHelper.InitializeAsync(Common.enumCertificationType.Function, Common.enumAccessType.Create, "OM_ProductionOrder_Charging");
+                            if (await authHelper.ClickAsync(
+                                Common.enumCertificationType.Function,
+                                Common.enumAccessType.Create,
+                                "최종조제라벨",
+                                "최종조제라벨",
+                                true,
+                                "OM_ProductionOrder_Charging",
+                                "", null, null) == false)
+                            {
+                                throw new Exception(string.Format("서명이 완료되지 않았습니다."));
+                            }
+
+                            //2021.08.26 박희돈 최종조제는 1개의 정보만 나오지만 혹시 여러개의 정보가 있을까봐 Loop로 라벨 다 출력하도록 변경.
+                            if (_BR_BRS_SEL_ProductionOrderOutputSubLot.OUTDATAs.Count > 0 && curPrintName != "N/A")
+                            {
+                                foreach (var item in _BR_BRS_SEL_ProductionOrderOutputSubLot.OUTDATAs)
+                                {
+                                    _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Clear();
+                                    _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Clear();
+
+                                    _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Add(new BR_PHR_SEL_PRINT_LabelImage.INDATA
+                                    {
+                                        ReportPath = "/Reports/Label/LABEL_C0402_018_10",
+                                        PrintName = _selectedPrint.PRINTERNAME,
+                                        USERID = AuthRepositoryViewModel.Instance.LoginedUserID
+                                    });
+                                    _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
+                                    {
+                                        ParamName = "MSUBLOTID",
+                                        ParamValue = item.MSUBLOTID
+                                    });
+                                    _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
+                                    {
+                                        ParamName = "GUBUN",
+                                        ParamValue = "최종 조제량"
+                                    });
+
+                                    await _BR_PHR_SEL_PRINT_LabelImage.Execute(Common.enumBizRuleOutputClearMode.Always, Common.enumBizRuleXceptionHandleType.FailEvent);
+                                }
+                            }
+                            else
+                            {
+                                if(curPrintName == "N/A")
+                                {
+                                    throw new Exception(string.Format("프린터 설정이 되어있지 않습니다."));
+                                }
+                                else
+                                {
+                                    throw new Exception(string.Format("최종투입을 하지 않았습니다."));
+                                }                                
+                            }
+
+                            #region 기존 라벨출력 로직주석 처리
+                            //if (_BR_BRS_REG_ProductionOrderOutput_LastSoluction.OUTDATAs.Count > 0 && curPrintName != "N/A")
+                            //{
+                            //    _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Clear();
+                            //    _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Clear();
+
+                            //    _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Add(new BR_PHR_SEL_PRINT_LabelImage.INDATA
+                            //    {
+                            //        ReportPath = "/Reports/Label/LABEL_C0402_018_10",
+                            //        PrintName = _selectedPrint.PRINTERNAME,
+                            //        USERID = AuthRepositoryViewModel.Instance.LoginedUserID
+                            //    });
+                            //    _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
+                            //    {
+                            //        ParamName = "MSUBLOTID",
+                            //        ParamValue = _BR_BRS_REG_ProductionOrderOutput_LastSoluction.OUTDATAs[0].MSUBLOTID
+                            //    });
+                            //    _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
+                            //    {
+                            //        ParamName = "GUBUN",
+                            //        ParamValue = "최종 조제량"
+                            //    });
+
+                            //    await _BR_PHR_SEL_PRINT_LabelImage.Execute(Common.enumBizRuleOutputClearMode.Always, Common.enumBizRuleXceptionHandleType.FailEvent);
+                            //}
+                            //else
+                            //{
+                            //    throw new Exception(string.Format("최종투입을 하지 않았습니다."));
+                            //}
+
+                            # endregion 기존 라벨출력 로직 주석 처리
+
+                            CommandResults["PrintLabelCommandAsync"] = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            CommandResults["PrintLabelCommandAsync"] = false;
+                            OnException(ex.Message, ex);
+                        }
+                        finally
+                        {
+                            CommandCanExecutes["PrintLabelCommandAsync"] = true;
+
+                            IsBusy = false;
+                        }
+                    }
+                }, arg =>
+                {
+                    return CommandCanExecutes.ContainsKey("PrintLabelCommandAsync") ?
+                        CommandCanExecutes["PrintLabelCommandAsync"] : (CommandCanExecutes["PrintLabelCommandAsync"] = true);
+                });
+            }
+        }
+
         public ICommand ConfirmCommandAsync
         {
             get
@@ -1179,6 +1329,7 @@ namespace 보령
                 OnException(ex.Message, ex);
             }
         }
+        
         #endregion        
     }
 }

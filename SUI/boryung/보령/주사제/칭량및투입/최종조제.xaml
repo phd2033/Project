@@ -142,7 +142,8 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Button Margin="5,0" x:Name="btnChangePrint" Width="100" Content="{Binding W[CUIChangePrintButtonText], Source={StaticResource R}, FallbackValue=프린터변경}" Command="{Binding ChangePrintCommand}"/>
-                    <Button Margin="5,0" x:Name="btnDispensing" Width="100" Content="{Binding W[CUIDispensingButtonText], Source={StaticResource R}, FallbackValue='최종투입'}"  Command="{Binding DispensingCommandAsync}" IsEnabled="{Binding DispensingbtnEnable}"/>
+                    <Button Margin="5,0" x:Name="btnLastCharging" Width="100" Content="{Binding W[CUILastChargText], Source={StaticResource R}, FallbackValue='최종투입'}"  Command="{Binding DispensingCommandAsync}" IsEnabled="{Binding DispensingbtnEnable}"/>
+                    <Button Margin="5,0" x:Name="btnLabelPrint" Width="100" Content="{Binding W[CUILabelPrint], Source={StaticResource R}, FallbackValue='라벨출력'}"  Command="{Binding PrintLabelCommandAsync}" />
                     <Button Margin="5,0" x:Name="btnConfirm" Width="100" Content="{Binding W[CUIDataWriteToEBRButtonText], Source={StaticResource R}, FallbackValue=기록}" Command="{Binding ConfirmCommandAsync}" IsEnabled="{Binding ConfirmbtnEnable}"/>
                     <Button Margin="5,0" x:Name="btnClose" Width="100" Content="{Binding W[CUICloseButtonText], Source={StaticResource R}, FallbackValue=종료}" Click="btnCansel_Click"/>
                 </StackPanel>
