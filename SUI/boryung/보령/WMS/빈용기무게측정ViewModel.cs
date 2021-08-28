@@ -537,7 +537,7 @@ namespace 보령
                                 row["POID"] = item.PoId != null ? item.PoId : "";
                                 row["IBCID"] = item.VesselId != null ? item.VesselId : "";
                                 row["SCALEID"] = item.ScaleId != null ? item.ScaleId : "";
-                                row["TAREWEIGHT"] = item.TareWeightStr != null ? item.TareWeightStr : "";
+                                row["TAREWEIGHT"] = item.TareWeightStr != null ? item.TareWeightStr + item.Uom : "";
 
                                 dt.Rows.Add(row);
                             }

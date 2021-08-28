@@ -86,7 +86,7 @@
                         <c1:DataGridTextColumn Header="공정중제품" Binding="{Binding Path=OUTPUTID}"/>
                         <c1:DataGridTextColumn Header="투입공정명" Binding="{Binding Path=OPSGNAME}"/>
                         <c1:DataGridTextColumn Header="세척일시" Binding="{Binding Path=WASHINGDTTM}"/>
-                        <c1:DataGridTextColumn Header="세척유효기간" Binding="{Binding Path=CLEANEXPIREDTTM}"/>
+                        <c1:DataGridTextColumn Header="세척유효일시" Binding="{Binding Path=CLEANEXPIREDTTM}"/>
                         <c1:DataGridTextColumn Header="상태" Binding="{Binding Path=STATUS}"/>
                     </c1:C1DataGrid.Columns>
                 </c1:C1DataGrid>

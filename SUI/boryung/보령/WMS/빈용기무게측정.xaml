@@ -74,7 +74,7 @@
                         <c1:DataGridTextColumn Header="{Binding W[CUIOrderNo], Source={StaticResource R}, FallbackValue='오더번호'}" Binding="{Binding PoId}"/>
                         <c1:DataGridTextColumn Header="{Binding W[CUIVesselId], Source={StaticResource R}, FallbackValue='용기 번호'}" Binding="{Binding VesselId}"/>
                         <c1:DataGridTextColumn Header="{Binding W[CUIScaleID], Source={StaticResource R}, FallbackValue='저울 ID'}" Binding="{Binding ScaleId}"/>
-                        <c1:DataGridTextColumn Header="{Binding W[CUITareWeight], Source={StaticResource R}, FallbackValue='용기 중량'}" Binding="{Binding TareWeightStr}"/>
+                        <c1:DataGridTextColumn Header="{Binding W[CUITareWeight], Source={StaticResource R}, FallbackValue='용기 무게'}" Binding="{Binding TareWeightStr}"/>
                     </c1:C1DataGrid.Columns>
                 </c1:C1DataGrid>
             </Grid>

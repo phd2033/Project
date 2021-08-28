@@ -90,7 +90,7 @@
                 <c1:C1DataGrid.Columns>
                     <c1:DataGridRowHeaderColumn Width="100" Header="[,원료코드]" Binding="{Binding MTRLID}" HeaderStyle="{StaticResource HeaderStyle}" />
                     <c1:DataGridRowHeaderColumn Width="400" Header="[,원료명]" Binding="{Binding MTRLNAME}" HeaderStyle="{StaticResource HeaderStyle}" />
-                    <c1:DataGridTextColumn Header="[원료배치번호, 원료배치번호]" Binding="{Binding MLOTID}" Width="Auto" HorizontalAlignment="Stretch" MinWidth="100" HeaderStyle="{StaticResource HeaderStyle}" />
+                    <c1:DataGridTextColumn Header="[원료시험번호, 원료시험번호]" Binding="{Binding MLOTID}" Width="Auto" HorizontalAlignment="Stretch" MinWidth="100" HeaderStyle="{StaticResource HeaderStyle}" />
                     <c1:DataGridTemplateColumn Header="[기준량, 기준량]" Width="Auto" HorizontalAlignment="Stretch" MinWidth="100" HeaderStyle="{StaticResource HeaderStyle}">
                         <c1:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>

@@ -557,7 +557,7 @@ namespace 보령
                             dt.Columns.Add(new DataColumn("공정중제품"));
                             dt.Columns.Add(new DataColumn("공정명"));
                             dt.Columns.Add(new DataColumn("세척일시"));
-                            dt.Columns.Add(new DataColumn("세척유효기간"));
+                            dt.Columns.Add(new DataColumn("세척유효일시"));
 
                             foreach (var item in _RequestOutContainerList)
                             {
@@ -571,7 +571,7 @@ namespace 보령
                                     row["공정중제품"] = item.OUTPUTID != null ? item.OUTPUTID : "";
                                     row["공정명"] = item.OPSGNAME != null ? item.OPSGNAME : "";
                                     row["세척일시"] = item.WASHINGDTTM != null ? item.WASHINGDTTM : "";
-                                    row["세척유효기간"] = item.CLEANEXPIREDTTM != null ? item.CLEANEXPIREDTTM : "";
+                                    row["세척유효일시"] = item.CLEANEXPIREDTTM != null ? item.CLEANEXPIREDTTM : "";
 
                                     dt.Rows.Add(row);
                                 }

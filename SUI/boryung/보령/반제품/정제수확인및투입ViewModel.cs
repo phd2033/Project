@@ -548,15 +548,15 @@ namespace 보령
                             var ds = new DataSet();
                             var dt = new DataTable("DATA");
                             ds.Tables.Add(dt);
-                            dt.Columns.Add(new DataColumn("자재ID"));
-                            dt.Columns.Add(new DataColumn("자재명"));
-                            dt.Columns.Add(new DataColumn("원료배치번호"));
+                            dt.Columns.Add(new DataColumn("원료코드"));
+                            dt.Columns.Add(new DataColumn("원료명"));
+                            dt.Columns.Add(new DataColumn("저울번호"));
+                            dt.Columns.Add(new DataColumn("원료시험번호"));
                             dt.Columns.Add(new DataColumn("바코드"));
+                            dt.Columns.Add(new DataColumn("하한"));
+                            dt.Columns.Add(new DataColumn("기준"));
+                            dt.Columns.Add(new DataColumn("상한"));
                             dt.Columns.Add(new DataColumn("무게"));
-                            dt.Columns.Add(new DataColumn("단위"));
-                            dt.Columns.Add(new DataColumn("저울ID"));
-                            dt.Columns.Add(new DataColumn("상한값"));
-                            dt.Columns.Add(new DataColumn("하한값"));
 
                             // 정제수 소분및투입
                             _BR_RHR_REG_MaterialSubLot_Dispense_Charging_NEW.INDATAs.Clear();
@@ -589,15 +589,15 @@ namespace 보령
                             if (await _BR_RHR_REG_MaterialSubLot_Dispense_Charging_NEW.Execute() == true)
                             {
                                 var row = dt.NewRow();
-                                row["자재ID"] = lastWeighingInfo.MTRLID != null ? lastWeighingInfo.MTRLID : "";
-                                row["자재명"] = lastWeighingInfo.MTRLNAME != null ? lastWeighingInfo.MTRLNAME : "";
-                                row["원료배치번호"] = lastWeighingInfo.MSUBLOTID != null ? lastWeighingInfo.MSUBLOTID : "";
+                                row["원료코드"] = lastWeighingInfo.MTRLID != null ? lastWeighingInfo.MTRLID : "";
+                                row["원료명"] = lastWeighingInfo.MTRLNAME != null ? lastWeighingInfo.MTRLNAME : "";
+                                row["저울번호"] = _ScaleInfo.EQPTID;
+                                row["원료시험번호"] = lastWeighingInfo.MSUBLOTID != null ? lastWeighingInfo.MSUBLOTID : "";
                                 row["바코드"] = lastWeighingInfo.MSUBLOTBCD != null ? lastWeighingInfo.MSUBLOTBCD : "";
-                                row["무게"] = string.Format(("{0:N" + _scalePrecision + "}"), lastWeighingInfo.TOTALQTY);
-                                row["단위"] = _TotalWeight.Uom;
-                                row["저울ID"] = _ScaleInfo.EQPTID;
-                                row["상한값"] = _UpperWeight.WeightUOMString;
-                                row["하한값"] = _LowerWeight.WeightUOMString;
+                                row["하한"] = _LowerWeight.WeightUOMString;
+                                row["기준"] = _stdQty;
+                                row["상한"] = _UpperWeight.WeightUOMString;
+                                row["무게"] = string.Format(("{0:N" + _scalePrecision + "}"), lastWeighingInfo.TOTALQTY) + _TotalWeight.Uom;
                                 dt.Rows.Add(row);
 
                                 var xml = BizActorRuleBase.CreateXMLStream(ds);

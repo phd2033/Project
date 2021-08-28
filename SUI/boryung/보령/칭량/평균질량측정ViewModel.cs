@@ -505,7 +505,7 @@ namespace 보령
 
                                 dt.Columns.Add(new DataColumn("순번"));
                                 dt.Columns.Add(new DataColumn("장비번호"));
-                                dt.Columns.Add(new DataColumn("샘플수량"));
+                                dt.Columns.Add(new DataColumn("수량"));
                                 dt.Columns.Add(new DataColumn("현재무게"));
                                 dt.Columns.Add(new DataColumn("평균무게"));
 
@@ -514,7 +514,7 @@ namespace 보령
                                     var row = dt.NewRow();
                                     row["순번"] = rowdata.INX.ToString();
                                     row["장비번호"] = rowdata.SCALEID != null ? rowdata.SCALEID : "";
-                                    row["샘플수량"] = rowdata.SMPQTY != null ? rowdata.SMPQTY : "";
+                                    row["수량"] = rowdata.SMPQTY != null ? rowdata.SMPQTY : "";
                                     row["현재무게"] = rowdata.CUR_WEIGHT != null ? rowdata.CUR_WEIGHT : "";
                                     row["평균무게"] = rowdata.AVG_WEIGHT != null ? rowdata.AVG_WEIGHT : "";
                                     dt.Rows.Add(row);

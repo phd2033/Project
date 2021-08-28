@@ -200,15 +200,15 @@ namespace 보령
 
                                 dt.Columns.Add(new DataColumn("시작시각"));
                                 dt.Columns.Add(new DataColumn("종료시각"));
-                                dt.Columns.Add(new DataColumn("가동시각"));
                                 dt.Columns.Add(new DataColumn("필수가동시간"));
+                                dt.Columns.Add(new DataColumn("가동시각"));
                                 ds.Tables.Add(dt);
 
                                 var row = dt.NewRow();
                                 row["시작시각"] = _STRTDTTM != null ? _STRTDTTM.ToString("yyyy-MM-dd HH:mm") : "";
                                 row["종료시각"] = _CURDTTM != null ? _CURDTTM.ToString("yyyy-MM-dd HH:mm") : "";
-                                row["가동시각"] = _WORKTIME ?? "";
                                 row["필수가동시간"] = _BASELINE ?? "";
+                                row["가동시각"] = _WORKTIME ?? "";
 
                                 dt.Rows.Add(row);
 
