@@ -273,7 +273,7 @@ namespace 보령
 
                                     MtrlId = item.MTRLID;
                                     MtrlName = item.MTRLNAME;
-                                    StdQty = item.STDQTY + item.NOTATION;
+                                    StdQty = string.Format("{0:#,0}", Convert.ToDecimal(item.STDQTY)) + " " + item.NOTATION;
                                 }
 
                                 if (_BR_BRS_SEL_Charging_Solvent.OUTDATAs.Count > 0)
