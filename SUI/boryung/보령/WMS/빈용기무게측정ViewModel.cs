@@ -537,7 +537,7 @@ namespace 보령
                                 row["POID"] = item.PoId != null ? item.PoId : "";
                                 row["IBCID"] = item.VesselId != null ? item.VesselId : "";
                                 row["SCALEID"] = item.ScaleId != null ? item.ScaleId : "";
-                                row["TAREWEIGHT"] = item.TareWeightStr != null ? item.TareWeightStr + item.Uom : "";
+                                row["TAREWEIGHT"] = !string.IsNullOrWhiteSpace(item.TareWeightStr) ? item.TareWeightStr : "";
 
                                 dt.Rows.Add(row);
                             }
@@ -805,64 +805,12 @@ namespace 보령
 
             public string TareWeightStr
             {
-                get { return TareWeight.ToString("F" + Precision); }
-            }
-        }
-
-        public class IBCInfo : ViewModelBase
-        {
-            private string _VesselId;
-            public string VesselId
-            {
-                get { return this._VesselId; }
-                set
+                get
                 {
-                    this._VesselId = value;
-                    this.OnPropertyChanged("VesselId");
-                }
-            }
+                    Weight tare = new Weight();
+                    tare.SetWeight(TareWeight, Uom, Precision);
 
-            private string _ScaleId;
-            public string ScaleId
-            {
-                get { return this._ScaleId; }
-                set
-                {
-                    this._ScaleId = value;
-                    this.OnPropertyChanged("VesselId");
-                }
-            }
-
-            private string _TotalWeight;
-            public string TotalWeight
-            {
-                get { return this._TotalWeight; }
-                set
-                {
-                    this._TotalWeight = value;
-                    this.OnPropertyChanged("TotalWeight");
-                }
-            }
-
-            private string _TareWeight;
-            public string TareWeight
-            {
-                get { return this._TareWeight; }
-                set
-                {
-                    this._TareWeight = value;
-                    this.OnPropertyChanged("TareWeight");
-                }
-            }
-
-            private string _RawWeight;
-            public string RawWeight
-            {
-                get { return this._RawWeight; }
-                set
-                {
-                    this._RawWeight = value;
-                    this.OnPropertyChanged("RawWeighit");
+                    return tare.WeightUOMString;
                 }
             }
         }

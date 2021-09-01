@@ -2,9 +2,9 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace LGCNS.iPharmMES.Common
+namespace 보령
 {
-    
+
     /// <summary>
     /// summary of BR_PHR_UPD_MaterialSubLot_ChangeVesselID_MULTI
     /// </summary>
@@ -22,7 +22,7 @@ namespace LGCNS.iPharmMES.Common
                 return this._INDATA_MLOTs;
             }
         }
-        [BizActorInputSetDefineAttribute(Order="0")]
+        [BizActorInputSetDefineAttribute(Order = "0")]
         [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
         public partial class INDATA_MLOT : BizActorDataSetBase
         {
@@ -229,9 +229,9 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
-            private System.Nullable<float> _MLOTVER;
+            private System.Nullable<decimal> _MLOTVER;
             [BizActorInputItemAttribute()]
-            public System.Nullable<float> MLOTVER
+            public System.Nullable<decimal> MLOTVER
             {
                 get
                 {
@@ -402,7 +402,7 @@ namespace LGCNS.iPharmMES.Common
                 return this._INDATA_MSUBLOTs;
             }
         }
-        [BizActorInputSetDefineAttribute(Order="1")]
+        [BizActorInputSetDefineAttribute(Order = "1")]
         [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
         public partial class INDATA_MSUBLOT : BizActorDataSetBase
         {
@@ -513,9 +513,9 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
-            private System.Nullable<float> _MSUBLOTVER;
+            private System.Nullable<decimal> _MSUBLOTVER;
             [BizActorInputItemAttribute()]
-            public System.Nullable<float> MSUBLOTVER
+            public System.Nullable<decimal> MSUBLOTVER
             {
                 get
                 {
@@ -654,7 +654,7 @@ namespace LGCNS.iPharmMES.Common
                 return this._HISDATAs;
             }
         }
-        [BizActorOutputSetDefineAttribute(Order="0")]
+        [BizActorOutputSetDefineAttribute(Order = "0")]
         [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
         public partial class HISDATA : BizActorDataSetBase
         {

@@ -84,7 +84,7 @@
                 <c1:C1DataGrid.Columns>
                     <c1:DataGridTextColumn Header="자재코드" Binding="{Binding MTRLID}" HeaderStyle="{StaticResource HeaderStyle}" HorizontalAlignment="Center" />
                     <c1:DataGridTextColumn Header="자재명" Binding="{Binding MTRLNAME}" HeaderStyle="{StaticResource HeaderStyle}" HorizontalAlignment="Right"/>
-                    <c1:DataGridTextColumn Header="원료성적번호" Binding="{Binding MLOTID}" HeaderStyle="{StaticResource HeaderStyle}" HorizontalAlignment="Center"/>
+                    <c1:DataGridTextColumn Header="원료시험번호" Binding="{Binding MLOTID}" HeaderStyle="{StaticResource HeaderStyle}" HorizontalAlignment="Center"/>
                     <!--<c1:DataGridTextColumn Header="피킹순번" Binding="{Binding QCT_NO_SEQ}" HeaderStyle="{StaticResource HeaderStyle}"/>-->
                     <c1:DataGridTextColumn Header="자재바코드" Binding="{Binding MSUBLOTBCD}" HeaderStyle="{StaticResource HeaderStyle}" HorizontalAlignment="Center"/>
                     <c1:DataGridTemplateColumn Header="출고량" HeaderStyle="{StaticResource HeaderStyle}" HorizontalAlignment="Center">

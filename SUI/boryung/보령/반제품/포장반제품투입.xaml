@@ -77,7 +77,7 @@
                     <c1:C1DataGrid.Columns>
                         <c1:DataGridTextColumn  Header="OUTPUT ID" Width="120" Binding="{Binding Path=OUTPUTID}" IsReadOnly="True" HorizontalAlignment="Center"  HeaderStyle="{StaticResource HeaderStyle}"/>
                         <c1:DataGridTextColumn  Header="용기번호" Width="120" Binding="{Binding Path=VESSELID}" IsReadOnly="True" HorizontalAlignment="Center"  HeaderStyle="{StaticResource HeaderStyle}"/>
-                        <c1:DataGridTextColumn  Header="현재수량" Width="90" Binding="{Binding Path=MSUBLOTQTY, StringFormat='0'}" IsReadOnly="True" HorizontalAlignment="Center"  HeaderStyle="{StaticResource HeaderStyle}"/>
+                        <c1:DataGridTextColumn  Header="현재수량" Width="90" Binding="{Binding Path=NET.WeightUOMStringWithSeperator}" IsReadOnly="True" HorizontalAlignment="Center"  HeaderStyle="{StaticResource HeaderStyle}"/>
                         <!--<c1:DataGridTextColumn  Header="생성자" Width="110" Binding="{Binding Path=INSUSER_PO}" IsReadOnly="True" HorizontalAlignment="Center"  HeaderStyle="{StaticResource HeaderStyle}"/>
                 <c1:DataGridTextColumn  Header="생성일시" Width="150" Binding="{Binding Path=INSDTTM_PO}" IsReadOnly="True" HorizontalAlignment="Center"  HeaderStyle="{StaticResource HeaderStyle}"/>-->
                         <c1:DataGridTextColumn  Header="작업자" Width="110" Binding="{Binding Path=INSUSER_MS}" IsReadOnly="True" HorizontalAlignment="Center"  HeaderStyle="{StaticResource HeaderStyle}"/>

@@ -19,9 +19,6 @@ namespace 보령
         public 칭량반제품투입()
         {
             InitializeComponent();
-
-            System.Text.StringBuilder empty = new System.Text.StringBuilder();
-            LGCNS.iPharmMES.Common.UIObject.SetObjectLang(this, ref empty, LGCNS.EZMES.Common.LogInInfo.LangID);
         }
         
         public override string TableTypeName

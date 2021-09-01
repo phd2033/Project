@@ -206,16 +206,16 @@ namespace 보령
 
                                 dt.Columns.Add(new DataColumn("원료코드"));
                                 dt.Columns.Add(new DataColumn("원료명"));
-                                dt.Columns.Add(new DataColumn("원료배치번호"));
-                                dt.Columns.Add(new DataColumn("소분량"));
+                                dt.Columns.Add(new DataColumn("원료시험번호"));
+                                dt.Columns.Add(new DataColumn("무게"));
 
                                 foreach (var item in BR_BRS_SEL_ProductionOrderDispenseOutput.OUTDATAs)
                                 {
                                     var row = dt.NewRow();
                                     row["원료코드"] = item.MTRLID != null ? item.MTRLID : "";
                                     row["원료명"] = item.MTRLNAME != null ? item.MTRLNAME : "";
-                                    row["원료배치번호"] = item.MLOTID != null ? item.MLOTID : "";
-                                    row["소분량"] = item.MSUBLOTQTYUOM != null ? item.MSUBLOTQTYUOM : "";
+                                    row["원료시험번호"] = item.TST_REQ_NO != null ? item.TST_REQ_NO : "";
+                                    row["무게"] = item.MSUBLOTQTYUOM != null ? item.MSUBLOTQTYUOM : "";
 
                                     dt.Rows.Add(row);
                                 }

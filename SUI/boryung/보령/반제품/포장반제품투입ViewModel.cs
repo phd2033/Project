@@ -196,8 +196,6 @@ namespace 보령
                             {
                                 POID = _mainWnd.CurrentOrder.ProductionOrderID,
                                 OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
-                                //OUTPUTTYPE = "WIP",
-                                //ISUSEFLAG = true
                             });
 
                             if (await _BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.Execute() == false) throw _BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.Exception;
@@ -205,19 +203,10 @@ namespace 보령
                             OutputSubLotInfo.Clear();
 
                             foreach (var item in _BR_BRS_SEL_ProductionOrderOutputSubLot_OPSG_FERT.OUTDATAs)
+                            {
+                                item.NET.SetWeight(item.MSUBLOTQTY.GetValueOrDefault(), item.UOM, 0);
                                 OutputSubLotInfo.Add(item);
-
-                            //참조Instruction
-                            //instruction1 = (equipmentName: VTS관리번호, Tag :BIN관리번호)
-                            //instruction2 = (equipmentName: VTS관리번호, Tag :현재중량)
-
-                            var inputValues = InstructionModel.GetParameterSender(_mainWnd.CurrentInstruction, _mainWnd.Instructions);
-
-                            //if (inputValues.Count < 2)
-                            //{
-                            //    OnMessage("BIN No.와 현재 중량이 참조되어야 합니다.");
-                            //    return;
-                            //}
+                            }
                                                        
                             CommandResults["LoadedCommand"] = true;
                         }
@@ -364,7 +353,7 @@ namespace 보령
                                     LANGID = AuthRepositoryViewModel.Instance.LangID,
                                     MSUBLOTBCD = o.MSUBLOTBCD,
                                     MSUBLOTID = o.MSUBLOTID,
-                                    MSUBLOTQTY = float.Parse(o.MSUBLOTQTY.ToString()),
+                                    MSUBLOTQTY = o.NET.Value,
                                     POID = _mainWnd.CurrentOrder.ProductionOrderID,
                                     OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
                                     IS_NEED_CHKWEIGHT = "N",
@@ -386,7 +375,7 @@ namespace 보령
                                 //row["자재ID"] = o.MTRLID != null ? o.MTRLID.ToString() : "";
                                 row["자재명"] = o.MTRLNAME != null ? o.MTRLNAME.ToString() : "";
                                 row["OUTPUTID"] = o.OUTPUTID != null ? o.OUTPUTID.ToString() : "";
-                                row["현재수량"] = o.MSUBLOTQTY != null ? o.MSUBLOTQTY.GetValueOrDefault().ToString("0") : "";
+                                row["현재수량"] = o.NET.WeightUOMStringWithSeperator;
                                 // 2021.08.22 박희돈 IBC관리번호 - > 용기번호 로 변경
                                 row["용기번호"] = o.VESSELID != null ? o.VESSELID.ToString() : "";
                                 row["투입일자"] = chargingdttm.ToString();

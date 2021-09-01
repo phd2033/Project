@@ -43,8 +43,8 @@
             <c1:C1DataGrid.Columns>
                 <c1:DataGridTextColumn Header="원료코드" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding MTRLID}"/>
                 <c1:DataGridTextColumn Header="원료명" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding MTRLNAME}"/>
-                <c1:DataGridTextColumn Header="원료시험번호" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding MLOTID}"/>
-                <c1:DataGridTextColumn Header="Dispensing Qty" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding MSUBLOTQTYUOM}"/>
+                <c1:DataGridTextColumn Header="원료시험번호" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding TST_REQ_NO}"/>
+                <c1:DataGridTextColumn Header="무게" HeaderStyle="{StaticResource HeaderStyle}" Binding="{Binding MSUBLOTQTYUOM}"/>
             </c1:C1DataGrid.Columns>
         </c1:C1DataGrid>
         <Grid Grid.Row="2">

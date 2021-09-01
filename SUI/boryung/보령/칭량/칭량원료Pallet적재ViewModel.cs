@@ -89,13 +89,13 @@ namespace 보령
             }
         }
 
-        private BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging _BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging;
-        public BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging
+        private BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging _BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging;
+        public BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging
         {
-            get { return _BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging; }
+            get { return _BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging; }
             set
             {
-                _BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging = value;
+                _BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging = value;
                 NotifyPropertyChanged();
             }
         }
@@ -168,7 +168,7 @@ namespace 보령
 
         public 칭량원료Pallet적재ViewModel()
         {
-            _BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging = new BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging();
+            _BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging = new BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging();
             _BR_PHR_UPD_MaterialSubLot_ChangeVesselID_MULTI = new BR_PHR_UPD_MaterialSubLot_ChangeVesselID_MULTI();
             _BR_UDB_REG_PMS_FILLED_BIN_IN = new BR_UDB_REG_PMS_FILLED_BIN_IN();
             _BR_BRS_GET_DispenseSubLot_VESSID_ISNULL = new BR_BRS_GET_DispenseSubLot_VESSID_ISNULL();
@@ -209,9 +209,8 @@ namespace 보령
 
                                 _mainWnd.txtContainer.Focus();
                             }
-                            
-                            //HeaderTextComponentName = string.Concat(_mainWnd.CurrentOrder.ProductionOrderID, " / ", _mainWnd.CurrentOrder.BatchNo, " / ", _mainWnd.CurrentOrder.MaterialID, " / ", _mainWnd.CurrentOrder.MaterialName);
 
+                            HeaderTextComponentName = string.Concat(_mainWnd.CurrentOrder.ProductionOrderID, " / ", _mainWnd.CurrentOrder.BatchNo, " / ", _mainWnd.CurrentOrder.MaterialID, " / ", _mainWnd.CurrentOrder.MaterialName);
                             ///
 
                             CommandResults["LoadedCommand"] = true;
@@ -434,7 +433,7 @@ namespace 보령
                                         COMPONENTGUID = outdata.COMPONENTGUID,
                                         MTRLID = outdata.MTRLID,
                                         MLOTID = outdata.MLOTID,
-                                        MLOTVER = (float?)outdata.MLOTVER,
+                                        MLOTVER = outdata.MLOTVER,
                                         REASON = AuthRepositoryViewModel.GetCommentByFunctionCode("WM_mgtWeighing_UI") ?? "",
                                         INDUSER = operatorID,
                                         VESSELID = lblEqptID,
@@ -445,7 +444,7 @@ namespace 보령
                                     {
                                         MLOTID = outdata.MLOTID,
                                         MSUBLOTID = outdata.MSUBLOTID,
-                                        MSUBLOTVER = (float?)outdata.MSUBLOTVER,
+                                        MSUBLOTVER = outdata.MSUBLOTVER,
                                         MSUBLOTSEQ = outdata.MSUBLOTSEQ,
                                         MSUBLOTBCD = outdata.MSUBLOTBCD,
                                         COMPONENTGUID = outdata.COMPONENTGUID
@@ -500,7 +499,7 @@ namespace 보령
 
                             ///
 
-                            if (BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging.OUTDATAs.Where(o => o.CHK == "Y").Count() <= 0)
+                            if (BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging.OUTDATAs.Where(o => o.CHK == "Y").Count() <= 0)
                             {
                                 throw new Exception(string.Format("대상이 선택되지 않았습니다."));
                             }
@@ -530,7 +529,7 @@ namespace 보령
                             BR_PHR_UPD_MaterialSubLot_ChangeVesselID_MULTI.INDATA_MLOTs.Clear();
                             BR_PHR_UPD_MaterialSubLot_ChangeVesselID_MULTI.INDATA_MSUBLOTs.Clear();
 
-                            foreach (var outdata in BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging.OUTDATAs)
+                            foreach (var outdata in BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging.OUTDATAs)
                             {
                                 if (outdata.CHK == "Y")
                                 {
@@ -541,7 +540,7 @@ namespace 보령
                                         COMPONENTGUID = outdata.COMPONENTGUID,
                                         MTRLID = outdata.MTRLID,
                                         MLOTID = outdata.MLOTID,
-                                        MLOTVER = outdata.MLOTVER,
+                                        MLOTVER = outdata.MLOTVER.GetValueOrDefault(),
                                         REASON = null,
                                         INDUSER = operatorID,
                                         VESSELID = null,
@@ -619,9 +618,9 @@ namespace 보령
                             CommandResults["ConfirmReadyCommand"] = false;
                             CommandCanExecutes["ConfirmReadyCommand"] = false;
 
-                            if (BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging.OUTDATAs.Count > 0 && !string.IsNullOrEmpty(lblEqptID))
+                            if (BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging.OUTDATAs.Count > 0 && !string.IsNullOrEmpty(lblEqptID))
                             {
-                                foreach (var item in BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging.OUTDATAs)
+                                foreach (var item in BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging.OUTDATAs)
                                 {
                                     ListContainer.Add(new LayerCharging
                                     {
@@ -631,7 +630,7 @@ namespace 보령
                                         OPSGNAME = item.OPSGNAME ?? "",
                                         MTRLID = item.MTRLID ?? "",
                                         MTRLNAME = item.MTRLNAME ?? "",
-                                        MLOTID = item.MLOTID ?? "",
+                                        TSTREQNO = item.TSTREQNO ?? "",
                                         MSUBLOTQTY = item.MSUBLOTQTY.ToString() ?? "",
                                         UOMNAME = item.UOMNAME ?? ""
                                     });
@@ -730,9 +729,8 @@ namespace 보령
                                 dt.Columns.Add(new DataColumn("용기번호"));
                                 dt.Columns.Add(new DataColumn("원료코드"));
                                 dt.Columns.Add(new DataColumn("원료명"));
-                                dt.Columns.Add(new DataColumn("성적번호"));
+                                dt.Columns.Add(new DataColumn("원료시험번호"));
                                 dt.Columns.Add(new DataColumn("칭량결과"));
-                                dt.Columns.Add(new DataColumn("단위"));
 
                                 foreach (var item in ListContainer)
                                 {
@@ -741,9 +739,8 @@ namespace 보령
                                     row["용기번호"] = item.VESSELID ?? "";
                                     row["원료코드"] = item.MTRLID ?? "";
                                     row["원료명"] = item.MTRLNAME ?? "";
-                                    row["성적번호"] = item.MLOTID ?? "";
-                                    row["칭량결과"] = item.MSUBLOTQTY.ToString() ?? "";
-                                    row["단위"] = item.UOMNAME ?? "";
+                                    row["원료시험번호"] = item.TSTREQNO ?? "";
+                                    row["칭량결과"] = item.MSUBLOTQTYSTR ?? "";
                                     dt.Rows.Add(row);
                                 }
 
@@ -830,265 +827,20 @@ namespace 보령
                });
             }
         }
-
-        #region 주석처리
-        //public ICommand ClickStockCommand
-        //{
-        //    get
-        //    {
-        //        return new AsyncCommandBase(async arg =>
-        //        {
-        //            using (await AwaitableLocks["ClickStockCommand"].EnterAsync())
-        //            {
-        //                try
-        //                {
-        //                    IsBusy = true;
-
-        //                    CommandResults["ClickStockCommand"] = false;
-        //                    CommandCanExecutes["ClickStockCommand"] = false;
-
-        //                    ///
-
-        //                    var authHelper = new iPharmAuthCommandHelper();
-        //                    authHelper.InitializeAsync(Common.enumCertificationType.Function, Common.enumAccessType.Create, "WM_mgtWeighing_UI");
-
-        //                    if (await authHelper.ClickAsync(
-        //                        Common.enumCertificationType.Function,
-        //                        Common.enumAccessType.Create,
-        //                        "",
-        //                        "완료입고",
-        //                        false,
-        //                        "WM_mgtWeighing_UI",
-        //                        "", null, null) == false)
-        //                    {
-        //                        throw new Exception(string.Format("서명이 완료되지 않았습니다."));
-        //                    }
-
-        //                    var operatorID = AuthRepositoryViewModel.GetUserIDByFunctionCode("WM_mgtWeighing_UI");
-
-        //                    _BR_UDB_REG_PMS_FILLED_BIN_IN.INDATAs.Clear();
-        //                    _BR_UDB_REG_PMS_FILLED_BIN_IN.INDATAs.Add(new BR_UDB_REG_PMS_FILLED_BIN_IN.INDATA()
-        //                    {
-        //                        VESSELID = _mainWnd.txtContainer.Text,
-        //                        FROM_ROOMID = AuthRepositoryViewModel.Instance.RoomID,
-        //                        TO_STATION = null,
-        //                        USERID = operatorID,
-        //                    });
-
-        //                    await _BR_UDB_REG_PMS_FILLED_BIN_IN.Execute();
-
-        //                    if (_BR_UDB_REG_PMS_FILLED_BIN_IN.OUTDATAs.Count > 0)
-        //                    {
-        //                        if (_BR_UDB_REG_PMS_FILLED_BIN_IN.OUTDATAs[0].RESULT_CODE == "OK")
-        //                            OnMessage(_BR_UDB_REG_PMS_FILLED_BIN_IN.OUTDATAs[0].ERR_MSG);
-        //                        else
-        //                        {
-        //                            OnMessage(_BR_UDB_REG_PMS_FILLED_BIN_IN.OUTDATAs[0].ERR_MSG);
-        //                            return;
-        //                        }
-        //                    }
-        //                    ///
-
-        //                    CommandResults["ClickStockCommand"] = true;
-        //                }
-        //                catch (Exception ex)
-        //                {
-        //                    CommandResults["ClickStockCommand"] = false;
-        //                    OnException(ex.Message, ex);
-        //                }
-        //                finally
-        //                {
-        //                    CommandCanExecutes["ClickStockCommand"] = true;
-
-        //                    IsBusy = false;
-        //                }
-        //            }
-        //        }, arg =>
-        //        {
-        //            return CommandCanExecutes.ContainsKey("ClickStockCommand") ?
-        //                CommandCanExecutes["ClickStockCommand"] : (CommandCanExecutes["ClickStockCommand"] = true);
-        //        });
-        //    }
-        //}
-        //public ICommand ClickPrintCommand
-        //{
-        //    get
-        //    {
-        //        return new AsyncCommandBase(async arg =>
-        //        {
-        //            using (await AwaitableLocks["ClickPrintCommand"].EnterAsync())
-        //            {
-        //                try
-        //                {
-        //                    IsBusy = true;
-
-        //                    CommandResults["ClickPrintCommand"] = false;
-        //                    CommandCanExecutes["ClickPrintCommand"] = false;
-
-        //                    if (lblEqptID == null && lblEqptID.Length == 0)
-        //                    {
-        //                        throw new Exception(string.Format("용기번호가 없습니다."));
-        //                    }
-
-        //                    var authHelper = new iPharmAuthCommandHelper();
-        //                    authHelper.InitializeAsync(Common.enumCertificationType.Function, Common.enumAccessType.Create, "WM_mgtWeighing_UI");
-
-        //                    if (await authHelper.ClickAsync(
-        //                        Common.enumCertificationType.Function,
-        //                        Common.enumAccessType.Create,
-        //                        "",
-        //                        "용기라벨 발행",
-        //                        false,
-        //                        "WM_mgtWeighing_UI",
-        //                        "", null, null) == false)
-        //                    {
-        //                        throw new Exception(string.Format("서명이 완료되지 않았습니다."));
-        //                    }
-
-        //                    var operatorID = AuthRepositoryViewModel.GetUserIDByFunctionCode("WM_mgtWeighing_UI");
-
-        //                    ///
-        //                    var labelType = (from e in _BR_PHR_SEL_System_Option_OPTIONTYPE.OUTDATAs
-        //                                     where e.OPTIONITEM.Equals("LABEL_DISPENSE_LIST_PER_CONTAINER")
-        //                                     select e).FirstOrDefault();
-
-        //                    BR_PHR_SEL_PRINT_LabelImage _BR_PHR_SEL_PRINT_LabelImage = new BR_PHR_SEL_PRINT_LabelImage();
-
-        //                    _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Clear();
-        //                    _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Clear();
-        //                    _BR_PHR_SEL_PRINT_LabelImage.OUTDATAs.Clear();
-
-        //                    _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Add(new BR_PHR_SEL_PRINT_LabelImage.INDATA()
-        //                    {
-        //                        ReportPath = labelType == null ? "/Reports/Label/LABEL_REMAINEDQTY_BY_WEIGHT" : labelType.OPTIONVALUE,
-        //                        PrintName = System.Windows.Browser.HttpUtility.UrlEncode(SelectedPrinter.PRINTERNAME),
-        //                        USERID = operatorID
-        //                    });
-
-        //                    _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters()
-        //                    {
-        //                        ParamName = "CONTAINER_NO",
-        //                        ParamValue = lblEqptID
-        //                    });
-
-        //                    await _BR_PHR_SEL_PRINT_LabelImage.Execute();
-
-        //                    CommandResults["ClickPrintCommand"] = true;
-        //                }
-        //                catch (Exception ex)
-        //                {
-        //                    CommandResults["ClickPrintCommand"] = false;
-        //                    OnException(ex.Message, ex);
-        //                }
-        //                finally
-        //                {
-        //                    CommandCanExecutes["ClickPrintCommand"] = true;
-
-        //                    IsBusy = false;
-        //                }
-        //            }
-        //        }, arg =>
-        //        {
-        //            return CommandCanExecutes.ContainsKey("ClickPrintCommand") ?
-        //                CommandCanExecutes["ClickPrintCommand"] : (CommandCanExecutes["ClickPrintCommand"] = true);
-        //        });
-        //    }
-        //}
-
-        //public ICommand ConfirmCommand
-        //{
-        //    get
-        //    {
-        //        return new AsyncCommandBase(async arg =>
-        //        {
-        //            using (await AwaitableLocks["ConfirmCommand"].EnterAsync())
-        //            {
-        //                try
-        //                {
-        //                    IsBusy = true;
-
-        //                    CommandResults["ConfirmCommand"] = false;
-        //                    CommandCanExecutes["ConfirmCommand"] = false;
-
-        //                    if (BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging.OUTDATAs.Count > 0 && !string.IsNullOrEmpty(lblEqptID))
-        //                    {
-        //                        DataSet ds = new DataSet();
-        //                        DataTable dt = new DataTable("DATA");
-        //                        ds.Tables.Add(dt);
-
-        //                        dt.Columns.Add(new DataColumn("용기번호"));
-        //                        dt.Columns.Add(new DataColumn("원료코드"));
-        //                        dt.Columns.Add(new DataColumn("원료명"));
-        //                        dt.Columns.Add(new DataColumn("성적번호"));
-        //                        dt.Columns.Add(new DataColumn("칭량결과"));
-        //                        dt.Columns.Add(new DataColumn("단위"));
-
-        //                        foreach (var item in BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging.OUTDATAs)
-        //                        {
-        //                            var row = dt.NewRow();
-        //                            row["용기번호"] = lblEqptID ?? "";
-        //                            row["원료코드"] = item.MTRLID ?? "";
-        //                            row["원료명"] = item.MTRLNAME ?? "";
-        //                            row["성적번호"] = item.MLOTID ?? "";
-        //                            row["칭량결과"] = item.MSUBLOTQTY.ToString() ?? "";
-        //                            row["단위"] = item.UOMNAME ?? "";
-        //                            dt.Rows.Add(row);
-        //                        }
-
-        //                        var xml = BizActorRuleBase.CreateXMLStream(ds);
-        //                        var bytesArray = System.Text.Encoding.UTF8.GetBytes(xml);
-
-        //                        _mainWnd.CurrentInstruction.Raw.ACTVAL = _mainWnd.TableTypeName;
-        //                        _mainWnd.CurrentInstruction.Raw.NOTE = bytesArray;
-
-        //                        var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction);
-
-        //                        if (result != enumInstructionRegistErrorType.Ok)
-        //                        {
-        //                            throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", _mainWnd.CurrentInstruction.Raw.IRTGUID, result));
-        //                        }
-
-        //                        if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
-        //                        else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
-        //                    }
-
-        //                    CommandResults["ConfirmCommand"] = true;
-
-        //                    IsBusy = false;
-        //                }
-        //                catch (Exception ex)
-        //                {
-        //                    CommandResults["ConfirmCommand"] = false;
-        //                    OnException(ex.Message, ex);
-        //                    IsBusy = false;
-        //                }
-        //                finally
-        //                {
-        //                    CommandCanExecutes["ConfirmCommand"] = true;
-        //                }
-        //            }
-        //        }, arg =>
-        //        {
-        //            return CommandCanExecutes.ContainsKey("ConfirmCommand") ?
-        //                CommandCanExecutes["ConfirmCommand"] : (CommandCanExecutes["ConfirmCommand"] = true);
-        //        });
-        //    }
-        //}
-        #endregion
         #endregion
 
-        private void SetDtCol()
-        {
-            _DtLayerCharging = new DataTable();
-            _DtLayerCharging.Columns.Add(new DataColumn("VESSELID"));
-            _DtLayerCharging.Columns.Add(new DataColumn("BATCHNO"));
-            _DtLayerCharging.Columns.Add(new DataColumn("OPSGNAME"));
-            _DtLayerCharging.Columns.Add(new DataColumn("MTRLID"));
-            _DtLayerCharging.Columns.Add(new DataColumn("MTRLNAME"));
-            _DtLayerCharging.Columns.Add(new DataColumn("MLOTID"));
-            _DtLayerCharging.Columns.Add(new DataColumn("MSUBLOTQTY"));
-            _DtLayerCharging.Columns.Add(new DataColumn("UOMNAME"));
-        }
+        //private void SetDtCol()
+        //{
+        //    _DtLayerCharging = new DataTable();
+        //    _DtLayerCharging.Columns.Add(new DataColumn("VESSELID"));
+        //    _DtLayerCharging.Columns.Add(new DataColumn("BATCHNO"));
+        //    _DtLayerCharging.Columns.Add(new DataColumn("OPSGNAME"));
+        //    _DtLayerCharging.Columns.Add(new DataColumn("MTRLID"));
+        //    _DtLayerCharging.Columns.Add(new DataColumn("MTRLNAME"));
+        //    _DtLayerCharging.Columns.Add(new DataColumn("MLOTID"));
+        //    _DtLayerCharging.Columns.Add(new DataColumn("MSUBLOTQTY"));
+        //    _DtLayerCharging.Columns.Add(new DataColumn("UOMNAME"));
+        //}
 
         private async Task RetrieveMaterialSublotWithVessel()
         {
@@ -1097,9 +849,9 @@ namespace 보령
                 if (!string.IsNullOrEmpty(lblEqptID))
                 {
                     // 적재된 원료 조회
-                    BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging.INDATAs.Clear();
-                    BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging.OUTDATAs.Clear();
-                    BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging.INDATAs.Add(new BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging.INDATA()
+                    BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging.INDATAs.Clear();
+                    BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging.OUTDATAs.Clear();
+                    BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging.INDATAs.Add(new BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging.INDATA()
                     {
                         POID = _mainWnd.CurrentOrder.ProductionOrderID,
                         MSUBLOTID = null,
@@ -1107,7 +859,7 @@ namespace 보령
                         VESSELID = lblEqptID
                     });
 
-                    await BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging.Execute();
+                    await BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging.Execute();
 
                     // 소분된 원료 조회
                     BR_BRS_GET_DispenseSubLot_VESSID_ISNULL.INDATAs.Clear();
@@ -1198,14 +950,14 @@ namespace 보령
                     OnPropertyChanged("MTRLNAME");
                 }
             }
-            private string _MLOTID;
-            public string MLOTID
+            private string _TSTREQNO;
+            public string TSTREQNO
             {
-                get { return _MLOTID; }
+                get { return _TSTREQNO; }
                 set
                 {
-                    _MLOTID = value;
-                    OnPropertyChanged("MLOTID");
+                    _TSTREQNO = value;
+                    OnPropertyChanged("TSTREQNO");
                 }
             }
             
@@ -1228,6 +980,19 @@ namespace 보령
                 {
                     _UOMNAME = value;
                     OnPropertyChanged("UOMNAME");
+                }
+            }
+
+            public string MSUBLOTQTYSTR
+            {
+                get
+                {
+                    if (_MSUBLOTQTY != null && _UOMNAME != null)
+                    {
+                        return string.Format("{0} {1}", _MSUBLOTQTY, _UOMNAME);
+                    }
+                    else
+                        return "N/A";
                 }
             }
         }

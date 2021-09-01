@@ -1,8 +1,8 @@
-﻿﻿using LGCNS.iPharmMES.Common;
+﻿using LGCNS.iPharmMES.Common;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace LGCNS.iPharmMES.Common
+namespace 보령
 {
 
     /// <summary>
@@ -165,9 +165,9 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
-            private System.Nullable<float> _MSUBLOTQTY;
+            private System.Nullable<decimal> _MSUBLOTQTY;
             [BizActorInputItemAttribute()]
-            public System.Nullable<float> MSUBLOTQTY
+            public System.Nullable<decimal> MSUBLOTQTY
             {
                 get
                 {
@@ -705,7 +705,6 @@ namespace LGCNS.iPharmMES.Common
         public BR_BRS_REG_MaterialSubLot_Dispense_Charging_FERT()
         {
             RuleName = "BR_BRS_REG_MaterialSubLot_Dispense_Charging_FERT";
-            BizName = "포장VTS 반제품 투입 및 Dispensing";
             _INDATAs = new INDATACollection();
             _INDATA_INVs = new INDATA_INVCollection();
             _HISDATAs = new HISDATACollection();

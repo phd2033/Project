@@ -386,6 +386,7 @@ namespace 보령
                                             dt.Columns.Add(new DataColumn("SCALEID"));
                                             dt.Columns.Add(new DataColumn("TOTALWEIGHT"));
                                             dt.Columns.Add(new DataColumn("MAXQTY"));
+                                            dt.Columns.Add(new DataColumn("STANDARD"));
                                             dt.Columns.Add(new DataColumn("MINQTY"));
 
                                             if (_ListRequestOut.Count(x => x.STATUS.Equals("완료")) > 0)
@@ -398,6 +399,7 @@ namespace 보령
                                                     row["SCALEID"] = scaleid != null ? scaleid : "";
                                                     row["TOTALWEIGHT"] = Vessel.WIPs[0].REALQTY.HasValue ? Vessel.WIPs[0].REALQTY.Value.ToString() : "";
                                                     row["MAXQTY"] = Vessel.WIPs[0].TOTALQTY_UPPER.HasValue ? Vessel.WIPs[0].TOTALQTY_UPPER.Value.ToString() : "";
+                                                    row["STANDARD"] = Vessel.WIPs[0].TOTALQTY.HasValue ? Vessel.WIPs[0].TOTALQTY.Value.ToString() : "";
                                                     row["MINQTY"] = Vessel.WIPs[0].TOTALQTY_LOWER.HasValue ? Vessel.WIPs[0].TOTALQTY_LOWER.Value.ToString() : "";
 
                                                     dt.Rows.Add(row);
@@ -435,7 +437,7 @@ namespace 보령
                             {
                                 var authHelper = new iPharmAuthCommandHelper();
 
-                                if (_mainWnd.CurrentInstruction.Raw.INSDTTM.Equals("Y") && _mainWnd.CurrentInstruction.PhaseState.Equals("COMP"))
+                                if (_mainWnd.CurrentInstruction.Raw.INSERTEDYN.Equals("Y") && _mainWnd.CurrentInstruction.PhaseState.Equals("COMP"))
                                 {
                                     authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
 
@@ -522,8 +524,8 @@ namespace 보령
                                     dt.Columns.Add(new DataColumn("VESSELID"));
                                     dt.Columns.Add(new DataColumn("SCALEID"));
                                     dt.Columns.Add(new DataColumn("TOTALWEIGHT"));
-                                    dt.Columns.Add(new DataColumn("VESSELID"));
                                     dt.Columns.Add(new DataColumn("MAXQTY"));
+                                    dt.Columns.Add(new DataColumn("STANDARD"));
                                     dt.Columns.Add(new DataColumn("MINQTY"));
 
                                     if (_ListRequestOut.Count(x => x.STATUS.Equals("완료")) > 0)
@@ -536,6 +538,7 @@ namespace 보령
                                             row["SCALEID"] = scaleid != null ? scaleid : "";
                                             row["TOTALWEIGHT"] = Vessel.WIPs[0].REALQTY.HasValue ? Vessel.WIPs[0].REALQTY.Value.ToString() : "";
                                             row["MAXQTY"] = Vessel.WIPs[0].TOTALQTY_UPPER.HasValue ? Vessel.WIPs[0].TOTALQTY_UPPER.Value.ToString() : "";
+                                            row["STANDARD"] = Vessel.WIPs[0].TOTALQTY.HasValue ? Vessel.WIPs[0].TOTALQTY.Value.ToString() : "";
                                             row["MINQTY"] = Vessel.WIPs[0].TOTALQTY_LOWER.HasValue ? Vessel.WIPs[0].TOTALQTY_LOWER.Value.ToString() : "";
 
                                             dt.Rows.Add(row);

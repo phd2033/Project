@@ -107,14 +107,14 @@
                 <TextBox Grid.Row="1" Grid.Column="2" IsReadOnly="True" Text="{Binding lblEqptID, Mode=OneWay}" Style="{Binding Source={StaticResource txtStyle}}"/>
 
                 <controlLib:CNSDataGrid x:Name="LayerChargedContainer" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" IsRowNumber="False"
-                                        ItemsSource="{Binding BR_PHR_GET_MaterialSubLot_ContainerInfo_LayerCharging.OUTDATAs, Mode=TwoWay}">
+                                        ItemsSource="{Binding BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging.OUTDATAs, Mode=TwoWay}">
                     <controlLib:CNSDataGrid.DataColumns>
                         <controlLib:DataColumn DataField="CHK" HeadName="" HeaderWidth="30"   ColumnType="CheckBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="False" />
                         <controlLib:DataColumn DataField="BATCHNO" HeadName="제조번호" HeaderWidth="120" ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="False"/>
                         <controlLib:DataColumn DataField="OPSGNAME" HeadName="공정" HeaderWidth="80" ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="False"/>
                         <controlLib:DataColumn DataField="MTRLID" HeadName="자재 ID" HeaderWidth="130"   ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />
                         <controlLib:DataColumn DataField="MTRLNAME" HeadName="자재명" HeaderWidth="180"   ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />
-                        <controlLib:DataColumn DataField="MLOTID" HeadName="성적번호" HeaderWidth="120"   ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />
+                        <controlLib:DataColumn DataField="TSTREQNO" HeadName="원료시험번호" HeaderWidth="120"   ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True"/>
                         <controlLib:DataColumn DataField="MSUBLOTQTY" HeadName="무게" HeaderWidth="90"   ColumnType="TextBox" HorizontalAlignment="Right" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />
                         <controlLib:DataColumn DataField="UOMNAME" HeadName="단위" HeaderWidth="70"   ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />
                     </controlLib:CNSDataGrid.DataColumns>
@@ -148,7 +148,7 @@
                         <controlLib:DataColumn DataField="OPSGNAME" HeadName="공정" HeaderWidth="80" ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="False"/>
                         <controlLib:DataColumn DataField="MTRLID" HeadName="자재 ID" HeaderWidth="80"   ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />
                         <controlLib:DataColumn DataField="MTRLNAME" HeadName="자재명" HeaderWidth="200"   ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />
-                        <controlLib:DataColumn DataField="MLOTID" HeadName="성적번호" HeaderWidth="140"   ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />
+                        <controlLib:DataColumn DataField="TSTREQNO" HeadName="원료시험번호" HeaderWidth="140"   ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />
                         <controlLib:DataColumn DataField="MSUBLOTQTY" HeadName="무게" HeaderWidth="70"   ColumnType="TextBox" HorizontalAlignment="Right" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />
                         <controlLib:DataColumn DataField="UOMNAME" HeadName="단위" HeaderWidth="35"   ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />
                         <controlLib:DataColumn DataField="MSUBLOTBCD" HeadName="자재바코드" HeaderWidth="110"   ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />
@@ -165,28 +165,11 @@
                         <c1:DataGridTextColumn Header="공정" Binding="{Binding Path=OPSGNAME}"/>
                         <c1:DataGridTextColumn Header="자재 ID" Binding="{Binding Path=MTRLID}"/>
                         <c1:DataGridTextColumn Header="자재명" Binding="{Binding Path=MTRLNAME}"/>
-                        <c1:DataGridTextColumn Header="성적번호" Binding="{Binding Path=MLOTID}"/>
-                        <c1:DataGridTextColumn Header="CV무게" Binding="{Binding Path=MSUBLOTQTY}"/>
-                        <c1:DataGridTextColumn Header="단위" Binding="{Binding Path=UOMNAME}"/>
+                        <c1:DataGridTextColumn Header="원료시험번호" Binding="{Binding Path=TSTREQNO}"/>
+                        <c1:DataGridTextColumn Header="CV무게" Binding="{Binding Path=MSUBLOTQTYSTR}"/>
                     </c1:C1DataGrid.Columns>
                 </c1:C1DataGrid>
             </Grid>
-
-            <!--<controlLib:CNSDataGrid Name="GridData" Grid.Row="14" Grid.Column="1" Grid.ColumnSpan="5"
-                                IsRowNumber="False"
-                                ItemsSource="{Binding DtLayerCharging, Mode=TwoWay}">
-            <controlLib:CNSDataGrid.DataColumns>
-                <controlLib:DataColumn DataField="EQPTID" HeadName="용기번호" HeaderWidth="120" ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True"/>
-                <controlLib:DataColumn DataField="BATCHNO" HeadName="제조번호" HeaderWidth="120" ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True"/>
-                <controlLib:DataColumn DataField="OPSGNAME" HeadName="공정" HeaderWidth="80" ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True"/>
-                <controlLib:DataColumn DataField="MTRLID" HeadName="자재 ID" HeaderWidth="130"   ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />
-                <controlLib:DataColumn DataField="MTRLNAME" HeadName="자재명" HeaderWidth="180"   ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />
-                <controlLib:DataColumn DataField="MLOTID" HeadName="성적번호" HeaderWidth="120"   ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />
-                <controlLib:DataColumn DataField="MSUBLOTQTY" HeadName="무게" HeaderWidth="90"   ColumnType="TextBox" HorizontalAlignment="Right" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />
-                <controlLib:DataColumn DataField="UOMNAME" HeadName="단위" HeaderWidth="70"   ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />
-            </controlLib:CNSDataGrid.DataColumns>
-        </controlLib:CNSDataGrid>-->
-            
             <Grid Grid.Row="3" x:Name="Footer">
                 <StackPanel Style="{Binding Source={StaticResource stkStyle}}">
                     <Button Content="BIN(Pallet) 적재" Style="{Binding Source={StaticResource btnStyle}}"

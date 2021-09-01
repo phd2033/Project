@@ -13,7 +13,7 @@ using System.Windows.Shapes;
 namespace 보령
 {
     public class Weight : ViewModelBase
-    {       
+    {
         #region Property
         private decimal _Value = 0;
         public decimal Value
@@ -78,6 +78,34 @@ namespace 보령
         public string WeightUOMString
         {
             get { return WeightString + " " + Uom; }
+        }
+        /// <summary>
+        /// 천단위 구분자 포함
+        /// </summary>
+        public string WeightStringWithSeperator
+        {
+            get
+            {
+                if (_Precision > 0)
+                {
+                    string val = WeightString;
+                    int idx = val.IndexOf(".");
+
+                    string intval = Convert.ToDecimal(val.Substring(0, idx - 1)).ToString("#,0");
+                    string decimalval = val.Substring(idx);
+
+                    return intval + decimalval;
+                }
+                else
+                    return _Value.ToString("#,0");
+            }
+        }
+        /// <summary>
+        /// 천단위 구분자, 단위 포함
+        /// </summary>
+        public string WeightUOMStringWithSeperator
+        {
+            get { return WeightStringWithSeperator + " " + Uom; }
         }
         /// <summary>
         /// 전달받은 저울값과 단위로 ScaleWeight 세팅
@@ -231,7 +259,7 @@ namespace 보령
             if (uA == 0 || uB == 0) return weightA - weightB;
 
             return weightA - (weightB * (uA / uB));
-        } 
+        }
 
         static decimal GetConvertIndex(string uom)
         {

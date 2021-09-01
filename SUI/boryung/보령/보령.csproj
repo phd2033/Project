@@ -256,6 +256,7 @@
     <Compile Include="Model.Access\장비청소\BR_BRS_SEL_EquipmentStatus_ROOM.Access.cs" />
     <Compile Include="Model.Access\정제체크마스터\BR_BRS_REG_IPC_CHECKMASTER_MULTI.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_BRS_GET_DispenseSubLot_VESSID_ISNULL.Access.cs" />
+    <Compile Include="Model.Access\칭량\BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_BRS_ProductionOrderDispense_VesselInfo.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_BRS_REG_Dispense_Charging_Solvent_Add.Access.cs" />
     <Compile Include="Model.Access\칭량\BR_BRS_SEL_AreaWeighing_SourceContainer.Access.cs" />
