@@ -91,7 +91,7 @@ namespace 보령
                     string val = WeightString;
                     int idx = val.IndexOf(".");
 
-                    string intval = Convert.ToDecimal(val.Substring(0, idx - 1)).ToString("#,0");
+                    string intval = Convert.ToDecimal(val.Substring(0, idx)).ToString("#,0");
                     string decimalval = val.Substring(idx);
 
                     return intval + decimalval;
