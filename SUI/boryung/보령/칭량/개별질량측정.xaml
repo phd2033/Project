@@ -13,13 +13,11 @@
     xmlns:icontrol="clr-namespace:LGCNS.iPharmMES.Controls;assembly=LGCNS.iPharmMES.Controls"
     xmlns:ControlsLib="clr-namespace:LGCNS.EZMES.ControlsLib;assembly=LGCNS.EZMES.ControlsLib" 
     xmlns:ShopFloorUI="clr-namespace:ShopFloorUI;assembly=ShopFloorUI.Common"
-    xmlns:my="clr-namespace:보령"
-    x:Name="Main"
-    mc:Ignorable="d"
-    Title="개별질량 측정 화면"
+    xmlns:local="clr-namespace:보령"
+    x:Name="Main" Title="개별질량 측정 화면"
     Height="400" Width="600">
     <ShopFloorUI:ShopFloorCustomWindow.Resources>
-        <my:개별질량측정ViewModel x:Key="viewModel"/>
+        <local:개별질량측정ViewModel x:Key="VM"/>
         <Style x:Key="LabelStyle" TargetType="sdk:Label">
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -28,162 +26,130 @@
             <Setter Property="HorizontalContentAlignment" Value="Right" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="FontFamily" Value="Malgun Gothic" />
-            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontSize" Value="15" />
             <Setter Property="Margin" Value="0 2 0 2" />
         </Style>
-        <Style x:Key="TextStyle2" TargetType="TextBox">
-            <Setter Property="HorizontalContentAlignment" Value="Center" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="FontFamily" Value="Malgun Gothic" />
-            <Setter Property="FontSize" Value="12" />
-            <Setter Property="Margin" Value="0 2 0 2" />
-        </Style>
-        <Style x:Key="NumericStyle" TargetType="toolkit:NumericUpDown">
-            <Setter Property="FontFamily" Value="Malgun Gothic" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="Margin" Value="0 0 0 0" />
-            <Setter Property="Height" Value="Auto" />
-            <Setter Property="FontSize" Value="12" />
+        <Style TargetType="ScrollBar" x:Key="gdScroll">
+            <Setter Property="MinHeight" Value="25"/>
+            <Setter Property="MinWidth" Value="25"/>
         </Style>
     </ShopFloorUI:ShopFloorCustomWindow.Resources>
-
-    <Grid x:Name="LayoutRoot" Background="White" DataContext="{Binding Source={StaticResource viewModel}}">
+    <toolkit:BusyIndicator Background="White" IsBusy="{Binding IsBusy}" DataContext="{Binding Source={StaticResource VM}}">
         <i:Interaction.Triggers>
             <i:EventTrigger EventName="Loaded">
                 <i:InvokeCommandAction Command="{Binding LoadedCommand}"
-                                               CommandParameter="{Binding ElementName=Main}" />
+                                       CommandParameter="{Binding ElementName=Main}" />
             </i:EventTrigger>
         </i:Interaction.Triggers>
+        <Grid x:Name="LayoutRoot">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="2"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="2"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="2"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="2"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="4"/>
-            <RowDefinition Height="4.3*"/>
-            <RowDefinition Height="2"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="2"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="2" />
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="2" />
-            <ColumnDefinition Width="0.5*" />
-            <ColumnDefinition Width="2" />
-        </Grid.ColumnDefinitions>
+            <Grid Grid.Row="1" x:Name="MainSection">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="2"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="2"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="2"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="4"/>
+                    <RowDefinition Height="4.3*"/>
+                    <RowDefinition Height="2"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="2" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2" />
+                    <ColumnDefinition Width="0.5*" />
+                    <ColumnDefinition Width="2" />
+                </Grid.ColumnDefinitions>
 
-        <sdk:Label Grid.Column="1" Grid.Row="1" Content="저울 장비 번호" Style="{Binding Source={StaticResource LabelStyle}}"/>
-        <TextBox Grid.Column="3" Grid.Row="1" x:Name="txtEQPTID" Text="{Binding Path=eqptID, Mode=TwoWay}" Style="{Binding Source={StaticResource TextStyle}}" IsReadOnly="{Binding isEqptReadonly}" >
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="KeyDown">
-                    <icommon:EditBoxKeyDownAction Command="{Binding BarcodeChangedCommand}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-        </TextBox>
-        <Button Grid.Column="5" Grid.Row="1"  Content="TARE" IsEnabled="{Binding isBtnEnable}" Margin="1 3 1 3">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="Click">
-                    <i:InvokeCommandAction Command="{Binding SetTareCommand}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-        </Button>
+                <sdk:Label Grid.Column="1" Grid.Row="1" Content="저울 장비 번호" Style="{Binding Source={StaticResource LabelStyle}}"/>
+                <TextBox Grid.Column="3" Grid.Row="1" x:Name="txtEQPTID" Text="{Binding Path=SCALEID, Mode=OneWay}" Style="{Binding Source={StaticResource TextStyle}}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="KeyDown">
+                            <icommon:EditBoxKeyDownAction Command="{Binding BarcodeChangedCommand}" CommandParameter="{Binding ElementName=txtEQPTID, Path=Text}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+                <Button Grid.Column="5" Grid.Row="1" Content="{Binding W[CUIScaleTareButtonText], Source={StaticResource R}, FallbackValue='TARE'}"
+                        Command="{Binding SetTareCommand}" IsEnabled="{Binding IsBtnEnable}" Margin="1,3"/>
 
-        <!--<sdk:Label Grid.Column="1" Grid.Row="3" Content="샘플 수량" Style="{Binding Source={StaticResource LabelStyle}}" />
-        <toolkit:NumericUpDown Grid.Column="3" Grid.ColumnSpan="3" VerticalAlignment="Center" Grid.Row="3" x:Name="txtSample" Minimum="1" Maximum="{Binding maxValue}" Style="{Binding Source={StaticResource NumericStyle}}"
-                               IsEnabled="False" Value="1"/>-->
+                <sdk:Label Grid.Column="1" Grid.Row="3" Content="무게" Style="{Binding Source={StaticResource LabelStyle}}"/>
+                <Grid Grid.Column="3" Grid.ColumnSpan="3" Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*" />
+                        <ColumnDefinition Width="2" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="2" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0" IsReadOnly="True" Text="{Binding Path=CURWEIGHT}" Style="{Binding Source={StaticResource TextStyle}}"/>
+                    <Button Grid.Column="2" Content="기록" IsEnabled="{Binding IsBtnEnable}" Command="{Binding RecordCommand}" Margin="1,3"/>
+                    <Button Grid.Column="4" Content="삭제" IsEnabled="{Binding IsBtnEnable}" Command="{Binding RowDeleteCommand}" Margin="1,3"/>
+                </Grid>
 
-        <sdk:Label Grid.Column="1" Grid.Row="3" Content="무게" Style="{Binding Source={StaticResource LabelStyle}}" />
+                <TextBlock Name="txtConnectionAlarm" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="5" VerticalAlignment="Center" HorizontalAlignment="Center"
+                   Text="{Binding SCALE_ALERT}"/>
 
-        <Grid Grid.Column="3" Grid.ColumnSpan="3" Grid.Row="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="4*" />
-                <ColumnDefinition Width="2" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="2" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <TextBox Grid.Column="0" IsReadOnly="True" Text="{Binding Path=curWeighing, Mode=OneWay}" Style="{Binding Source={StaticResource TextStyle}}"/>
-            <!--<TextBox Grid.Column="0" IsReadOnly="True" Text="{Binding Path=avgWeighing, Mode=OneWay}" Style="{Binding Source={StaticResource TextStyle}}"/>-->
-            <Button Grid.Column="2" Content="기록" IsEnabled="{Binding isBtnEnable}" Margin="1 3 1 3">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="Click">
-                        <i:InvokeCommandAction Command="{Binding RecordCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </Button>
-            <Button Grid.Column="4" Content="삭제" IsEnabled="{Binding isBtnEnable}" Margin="1 3 1 3">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="Click">
-                        <i:InvokeCommandAction Command="{Binding RowDeleteCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </Button>
+                <Grid Grid.Row="7" Grid.ColumnSpan="7">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <sdk:Label Grid.Column="0" Content="최소값" Style="{Binding Source={StaticResource LabelStyle}}"/>
+                    <TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding Path=MINWEIGHT}" Style="{Binding Source={StaticResource TextStyle}}"/>
+                    <sdk:Label Grid.Column="2" Content="최대값" Style="{Binding Source={StaticResource LabelStyle}}"/>
+                    <TextBox Grid.Column="3" IsReadOnly="True" Text="{Binding Path=MAXWEIGHT}" Style="{Binding Source={StaticResource TextStyle}}"/>
+                    <sdk:Label Grid.Column="4" Content="평균값" Style="{Binding Source={StaticResource LabelStyle}}"/>
+                    <TextBox Grid.Column="5" IsReadOnly="True" Text="{Binding Path=AVGWEIGHT}" Style="{Binding Source={StaticResource TextStyle}}"/>
+                </Grid>
+
+                <c1:C1DataGrid Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="9" HeadersVisibility="Column" AutoGenerateColumns="False"
+                               x:Name="dgWeighing" CanUserAddRows="False" CanUserEditRows="False" CanUserRemoveRows="False" ScrollBarStyle="{Binding Source={StaticResource gdScroll}}"
+                               ItemsSource="{Binding IPC_RESULTS}">
+                    <c1:C1DataGrid.Columns>
+                        <c1:DataGridTemplateColumn Width="30">
+                            <c1:DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Viewbox Width="30" Height="30">
+                                        <CheckBox IsThreeState="False" IsChecked="{Binding CHK, Mode=TwoWay}"/>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </c1:DataGridTemplateColumn.CellTemplate>
+                        </c1:DataGridTemplateColumn>
+                        <c1:DataGridTextColumn Binding="{Binding INX}" Width="50" Header="순번"/>
+                        <c1:DataGridTextColumn Binding="{Binding SMPQTY}" Width="70" Header="샘플 수량"/>
+                        <c1:DataGridTextColumn Binding="{Binding RESULTSTR}" Width="160" Header="무게"/>
+                    </c1:C1DataGrid.Columns>
+                </c1:C1DataGrid>
+            </Grid>
+
+            <Grid Grid.Row="2" x:Name="Footer">
+                <StackPanel Orientation="Horizontal" Grid.Row="11" Grid.Column="1" Grid.ColumnSpan="5" HorizontalAlignment="Center">
+                    <Button Content="{Binding W[CUIDataWriteToEBRButtonText], Source={StaticResource R}, FallbackValue='저장'}" Margin="5,1" Width="100" Height="40" 
+                            IsEnabled="{Binding IsSaveEnable}" Command="{Binding ClickConfirmCommand}"/>
+                    <Button Content="{Binding W[CUIDefaultDataWriteToEBRButtonText], Source={StaticResource R}, FallbackValue='저장(기록없음)'}" Margin="5,1" Width="100" Height="40"
+                            Command="{Binding NoRecordConfirmCommand}"/>
+                    <Button Content="{Binding W[CUICloseButtonText], Source={StaticResource R}, FallbackValue='닫기'}" Margin="5,1" Width="100" Height="40"
+                            Click="Button_Click"/>
+                </StackPanel>
+            </Grid>
+            
+            
         </Grid>
-        
-        <TextBlock Name="txtConnectionAlarm" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-
-        <Grid Grid.Row="7" Grid.ColumnSpan="7">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <sdk:Label Grid.Column="0" Content="최소값" Style="{Binding Source={StaticResource LabelStyle}}"/>
-            <TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding Path=MINValue, Mode=OneWay}" Style="{Binding Source={StaticResource TextStyle2}}"/>
-            <sdk:Label Grid.Column="2" Content="평균값" Style="{Binding Source={StaticResource LabelStyle}}"/>
-            <TextBox Grid.Column="3" IsReadOnly="True" Text="{Binding Path=AVGValue, Mode=OneWay}" Style="{Binding Source={StaticResource TextStyle2}}"/>
-            <sdk:Label Grid.Column="4" Content="최대값" Style="{Binding Source={StaticResource LabelStyle}}"/>
-            <TextBox Grid.Column="5" IsReadOnly="True" Text="{Binding Path=MAXValue, Mode=OneWay}" Style="{Binding Source={StaticResource TextStyle2}}"/>
-        </Grid>
-
-        <ScrollViewer Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="9" Height="auto" Width="auto">
-            <ControlsLib:CNSDataGrid 
-                x:Name="dgWeighing"
-                IsRowNumber="False"
-                ItemsSource="{Binding Path=filteredComponents, Mode=TwoWay}">
-                <ControlsLib:CNSDataGrid.DataColumns>
-                    <ControlsLib:DataColumn DataField="CHK"   HeadName="" HeaderWidth="50"  ColumnType="CheckBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="False" />
-                    <ControlsLib:DataColumn DataField="INX" HeadName="순번" HeaderWidth="50"   ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />
-                    <!--<ControlsLib:DataColumn DataField="SCALEID"   HeadName="장비번호"     HeaderWidth="100"   ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />-->
-                    <ControlsLib:DataColumn DataField="SMPQTY" HeadName="샘플 수량" HeaderWidth="70"   ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />
-                    <ControlsLib:DataColumn DataField="CUR_WEIGHT" HeadName="무게" HeaderWidth="160"   ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />
-                    <!--<ControlsLib:DataColumn DataField="AVG_WEIGHT" HeadName="평균 무게" HeaderWidth="145"   ColumnType="TextBox" HorizontalAlignment="Center" Excel="False" ColumnVisibility="Visible" ReadOnly="True" />-->
-                </ControlsLib:CNSDataGrid.DataColumns>
-            </ControlsLib:CNSDataGrid>
-        </ScrollViewer>
-        <StackPanel Orientation="Horizontal" Grid.Row="11" Grid.Column="1" Grid.ColumnSpan="5" HorizontalAlignment="Center">
-            <Button Content="저장" Margin="0 1 5 1" Width="100" IsEnabled="{Binding isSaveEnable}">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="Click">
-                        <i:InvokeCommandAction Command="{Binding ClickConfirmCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </Button>
-            <Button Content="저장(기록없음)" Margin="5 1 5 1" Width="100">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="Click">
-                        <i:InvokeCommandAction Command="{Binding NoRecordConfirmCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </Button>
-            <Button Content="취소" Margin="5 1 0 1" Width="100">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="Click">
-                        <i:InvokeCommandAction Command="{Binding ClickCancelCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </Button>
-        </StackPanel>
-    </Grid>
+    </toolkit:BusyIndicator>
+    
 </ShopFloorUI:ShopFloorCustomWindow>

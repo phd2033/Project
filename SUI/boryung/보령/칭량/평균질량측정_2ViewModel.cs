@@ -19,7 +19,6 @@ namespace 보령
         {
             _ScaleInfo = new BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID();
             _BR_BRS_SEL_CurrentWeight = new BR_BRS_SEL_CurrentWeight();
-            _BR_BRS_REG_IPC_AVG_WEIGHT_MULTI = new BR_BRS_REG_IPC_AVG_WEIGHT_MULTI();
             _BR_PHR_REG_ScaleSetTare = new BR_PHR_REG_ScaleSetTare();
             _filteredComponents = new ObservableCollection<AVG_INDATA>();
 
@@ -172,8 +171,7 @@ namespace 보령
         #region BizRule
         private BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID _ScaleInfo;
         private BR_PHR_REG_ScaleSetTare _BR_PHR_REG_ScaleSetTare;
-        private BR_BRS_SEL_CurrentWeight _BR_BRS_SEL_CurrentWeight;
-        private BR_BRS_REG_IPC_AVG_WEIGHT_MULTI _BR_BRS_REG_IPC_AVG_WEIGHT_MULTI;
+        private BR_BRS_SEL_CurrentWeight _BR_BRS_SEL_CurrentWeight;        
         #endregion
 
         #region Command
@@ -267,7 +265,7 @@ namespace 보령
                                     _curWeight.SetWeight(0, ScaleUom, ScalePrecision);
 
                                     avgWeighing = "";
-                                    eqptID = eqpt;
+                                    eqptID = _ScaleInfo.OUTDATAs[0].EQPTID;
                                     _repeater.Start();
                                 }
                                 else
@@ -496,7 +494,39 @@ namespace 보령
                             ///
                             if (filteredComponents.Count > 0)
                             {
-                                _BR_BRS_REG_IPC_AVG_WEIGHT_MULTI.INDATAs.Clear();
+                                // 전자서명
+                                iPharmAuthCommandHelper authHelper = new iPharmAuthCommandHelper();
+
+                                if (_mainWnd.CurrentInstruction.Raw.INSERTEDYN.Equals("Y") && _mainWnd.Phase.CurrentPhase.STATE.Equals("COMP")) // 값 수정
+                                {
+                                    authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
+
+                                    if (await authHelper.ClickAsync(
+                                        Common.enumCertificationType.Function,
+                                        Common.enumAccessType.Create,
+                                        string.Format("기록값을 변경합니다."),
+                                        string.Format("기록값 변경"),
+                                        true,
+                                        "OM_ProductionOrder_SUI",
+                                        "", _mainWnd.CurrentInstruction.Raw.RECIPEISTGUID, null) == false)
+                                    {
+                                        throw new Exception(string.Format("서명이 완료되지 않았습니다."));
+                                    }
+                                }
+
+                                authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
+                                if (await authHelper.ClickAsync(
+                                    Common.enumCertificationType.Role,
+                                    Common.enumAccessType.Create,
+                                    "평균질량측정",
+                                    "평균질량측정",
+                                    false,
+                                    "OM_ProductionOrder_SUI",
+                                    "",
+                                    null, null) == false)
+                                {
+                                    throw new Exception(string.Format("서명이 완료되지 않았습니다."));
+                                }
 
                                 //XML 형식으로 저장
                                 DataSet ds = new DataSet();
@@ -519,18 +549,6 @@ namespace 보령
                                     row["평균무게"] = rowdata.AVG_WEIGHT != null ? rowdata.AVG_WEIGHT : "";
                                     dt.Rows.Add(row);
 
-                                    _BR_BRS_REG_IPC_AVG_WEIGHT_MULTI.INDATAs.Add(new BR_BRS_REG_IPC_AVG_WEIGHT_MULTI.INDATA()
-                                    {
-                                        SCALEID = rowdata.SCALEID,
-                                        POID = ProductionOrderInfo.OrderID,
-                                        OPSGGUID = ProductionOrderInfo.OrderProcessSegmentID,
-                                        SMPQTY = short.Parse(rowdata.SMPQTY.Replace(" T", "")),
-                                        AVG_WEIGHT = (rowdata.AVG_WEIGHT.Substring(0, rowdata.AVG_WEIGHT.Length - 2)).Replace(",", ""),
-                                        SMPQTYUOMID = "",
-                                        USERID = ProductionOrderInfo.UserID,
-                                        LOCATIONID = "",
-                                        STRTDTTM = rowdata.RECORDDTTM
-                                    });
                                 }
 
                                 var xml = BizActorRuleBase.CreateXMLStream(ds);
@@ -592,6 +610,40 @@ namespace 보령
                             CommandCanExecutes["NoRecordConfirmCommand"] = false;
 
                             ///
+
+                            // 전자서명
+                            iPharmAuthCommandHelper authHelper = new iPharmAuthCommandHelper();
+
+                            if (_mainWnd.CurrentInstruction.Raw.INSERTEDYN.Equals("Y") && _mainWnd.Phase.CurrentPhase.STATE.Equals("COMP")) // 값 수정
+                            {
+                                authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
+
+                                if (await authHelper.ClickAsync(
+                                    Common.enumCertificationType.Function,
+                                    Common.enumAccessType.Create,
+                                    string.Format("기록값을 변경합니다."),
+                                    string.Format("기록값 변경"),
+                                    true,
+                                    "OM_ProductionOrder_SUI",
+                                    "", _mainWnd.CurrentInstruction.Raw.RECIPEISTGUID, null) == false)
+                                {
+                                    throw new Exception(string.Format("서명이 완료되지 않았습니다."));
+                                }
+                            }
+
+                            authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
+                            if (await authHelper.ClickAsync(
+                                Common.enumCertificationType.Role,
+                                Common.enumAccessType.Create,
+                                "평균질량측정",
+                                "평균질량측정",
+                                false,
+                                "OM_ProductionOrder_SUI",
+                                "",
+                                null, null) == false)
+                            {
+                                throw new Exception(string.Format("서명이 완료되지 않았습니다."));
+                            }
 
                             //XML 형식으로 저장
                             DataSet ds = new DataSet();

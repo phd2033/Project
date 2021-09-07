@@ -1,8 +1,8 @@
-﻿﻿using LGCNS.iPharmMES.Common;
+﻿using LGCNS.iPharmMES.Common;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace LGCNS.iPharmMES.Common
+namespace 보령
 {
 
     /// <summary>
@@ -193,13 +193,13 @@ namespace LGCNS.iPharmMES.Common
                     this.OnPropertyChanged("RowEditSec");
                 }
             }
-            private string _OUTPUTID;
+            private string _OPSGNAME;
             [BizActorOutputItemAttribute()]
-            public string OUTPUTID
+            public string OPSGNAME
             {
                 get
                 {
-                    return this._OUTPUTID;
+                    return this._OPSGNAME;
                 }
                 set
                 {
@@ -208,9 +208,9 @@ namespace LGCNS.iPharmMES.Common
                     }
                     else
                     {
-                        this._OUTPUTID = value;
-                        this.CheckIsOriginal("OUTPUTID", value);
-                        this.OnPropertyChanged("OUTPUTID");
+                        this._OPSGNAME = value;
+                        this.CheckIsOriginal("OPSGNAME", value);
+                        this.OnPropertyChanged("OPSGNAME");
                         if (RowLoadedFlag)
                         {
                             if (this.CheckIsOriginalRow())
@@ -225,13 +225,13 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
-            private string _VESSELID;
+            private string _VESSELNAME;
             [BizActorOutputItemAttribute()]
-            public string VESSELID
+            public string VESSELNAME
             {
                 get
                 {
-                    return this._VESSELID;
+                    return this._VESSELNAME;
                 }
                 set
                 {
@@ -240,9 +240,9 @@ namespace LGCNS.iPharmMES.Common
                     }
                     else
                     {
-                        this._VESSELID = value;
-                        this.CheckIsOriginal("VESSELID", value);
-                        this.OnPropertyChanged("VESSELID");
+                        this._VESSELNAME = value;
+                        this.CheckIsOriginal("VESSELNAME", value);
+                        this.OnPropertyChanged("VESSELNAME");
                         if (RowLoadedFlag)
                         {
                             if (this.CheckIsOriginalRow())
@@ -257,13 +257,13 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
-            private string _STDSTGTIME;
+            private string _STRGSTANDARD;
             [BizActorOutputItemAttribute()]
-            public string STDSTGTIME
+            public string STRGSTANDARD
             {
                 get
                 {
-                    return this._STDSTGTIME;
+                    return this._STRGSTANDARD;
                 }
                 set
                 {
@@ -272,9 +272,9 @@ namespace LGCNS.iPharmMES.Common
                     }
                     else
                     {
-                        this._STDSTGTIME = value;
-                        this.CheckIsOriginal("STDSTGTIME", value);
-                        this.OnPropertyChanged("STDSTGTIME");
+                        this._STRGSTANDARD = value;
+                        this.CheckIsOriginal("STRGSTANDARD", value);
+                        this.OnPropertyChanged("STRGSTANDARD");
                         if (RowLoadedFlag)
                         {
                             if (this.CheckIsOriginalRow())
@@ -289,13 +289,13 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
-            private string _STGTIME;
+            private string _STRGDATE;
             [BizActorOutputItemAttribute()]
-            public string STGTIME
+            public string STRGDATE
             {
                 get
                 {
-                    return this._STGTIME;
+                    return this._STRGDATE;
                 }
                 set
                 {
@@ -304,9 +304,9 @@ namespace LGCNS.iPharmMES.Common
                     }
                     else
                     {
-                        this._STGTIME = value;
-                        this.CheckIsOriginal("STGTIME", value);
-                        this.OnPropertyChanged("STGTIME");
+                        this._STRGDATE = value;
+                        this.CheckIsOriginal("STRGDATE", value);
+                        this.OnPropertyChanged("STRGDATE");
                         if (RowLoadedFlag)
                         {
                             if (this.CheckIsOriginalRow())
@@ -321,13 +321,13 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
-            private string _EXPIRYDTTM;
+            private string _DEVIATIONYN;
             [BizActorOutputItemAttribute()]
-            public string EXPIRYDTTM
+            public string DEVIATIONYN
             {
                 get
                 {
-                    return this._EXPIRYDTTM;
+                    return this._DEVIATIONYN;
                 }
                 set
                 {
@@ -336,137 +336,9 @@ namespace LGCNS.iPharmMES.Common
                     }
                     else
                     {
-                        this._EXPIRYDTTM = value;
-                        this.CheckIsOriginal("EXPIRYDTTM", value);
-                        this.OnPropertyChanged("EXPIRYDTTM");
-                        if (RowLoadedFlag)
-                        {
-                            if (this.CheckIsOriginalRow())
-                            {
-                                RowEditSec = "SEL";
-                            }
-                            else
-                            {
-                                RowEditSec = "UPD";
-                            }
-                        }
-                    }
-                }
-            }
-            private string _STD_TEMPERATURE;
-            [BizActorOutputItemAttribute()]
-            public string STD_TEMPERATURE
-            {
-                get
-                {
-                    return this._STD_TEMPERATURE;
-                }
-                set
-                {
-                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
-                    {
-                    }
-                    else
-                    {
-                        this._STD_TEMPERATURE = value;
-                        this.CheckIsOriginal("STD_TEMPERATURE", value);
-                        this.OnPropertyChanged("STD_TEMPERATURE");
-                        if (RowLoadedFlag)
-                        {
-                            if (this.CheckIsOriginalRow())
-                            {
-                                RowEditSec = "SEL";
-                            }
-                            else
-                            {
-                                RowEditSec = "UPD";
-                            }
-                        }
-                    }
-                }
-            }
-            private string _STD_MOISTURE;
-            [BizActorOutputItemAttribute()]
-            public string STD_MOISTURE
-            {
-                get
-                {
-                    return this._STD_MOISTURE;
-                }
-                set
-                {
-                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
-                    {
-                    }
-                    else
-                    {
-                        this._STD_MOISTURE = value;
-                        this.CheckIsOriginal("STD_MOISTURE", value);
-                        this.OnPropertyChanged("STD_MOISTURE");
-                        if (RowLoadedFlag)
-                        {
-                            if (this.CheckIsOriginalRow())
-                            {
-                                RowEditSec = "SEL";
-                            }
-                            else
-                            {
-                                RowEditSec = "UPD";
-                            }
-                        }
-                    }
-                }
-            }
-            private string _DEVIATION_YN;
-            [BizActorOutputItemAttribute()]
-            public string DEVIATION_YN
-            {
-                get
-                {
-                    return this._DEVIATION_YN;
-                }
-                set
-                {
-                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
-                    {
-                    }
-                    else
-                    {
-                        this._DEVIATION_YN = value;
-                        this.CheckIsOriginal("DEVIATION_YN", value);
-                        this.OnPropertyChanged("DEVIATION_YN");
-                        if (RowLoadedFlag)
-                        {
-                            if (this.CheckIsOriginalRow())
-                            {
-                                RowEditSec = "SEL";
-                            }
-                            else
-                            {
-                                RowEditSec = "UPD";
-                            }
-                        }
-                    }
-                }
-            }
-            private string _USERID;
-            [BizActorOutputItemAttribute()]
-            public string USERID
-            {
-                get
-                {
-                    return this._USERID;
-                }
-                set
-                {
-                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
-                    {
-                    }
-                    else
-                    {
-                        this._USERID = value;
-                        this.CheckIsOriginal("USERID", value);
-                        this.OnPropertyChanged("USERID");
+                        this._DEVIATIONYN = value;
+                        this.CheckIsOriginal("DEVIATIONYN", value);
+                        this.OnPropertyChanged("DEVIATIONYN");
                         if (RowLoadedFlag)
                         {
                             if (this.CheckIsOriginalRow())
@@ -485,7 +357,6 @@ namespace LGCNS.iPharmMES.Common
         public BR_BRS_SEL_ProductionOrderOutput_State()
         {
             RuleName = "BR_BRS_SEL_ProductionOrderOutput_State";
-            BizName = "BR_BRS_SEL_ProductionOrderOutput_State";
             _INDATAs = new INDATACollection();
             _OUTDATAs = new OUTDATACollection();
         }

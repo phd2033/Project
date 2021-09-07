@@ -12,57 +12,49 @@
     xmlns:icommon="clr-namespace:LGCNS.iPharmMES.Common;assembly=LGCNS.iPharmMES.Common"    
     xmlns:icontrol="clr-namespace:LGCNS.iPharmMES.Controls;assembly=LGCNS.iPharmMES.Controls"
     xmlns:ShopFloorUI="clr-namespace:ShopFloorUI;assembly=ShopFloorUI.Common"
-    xmlns:my="clr-namespace:보령"
-    x:Name="Main"
-    mc:Ignorable="d"
-    Width="800" Height="300" 
-    Title="반제품보관상태확인">
+    xmlns:local="clr-namespace:보령"
+    x:Name="Main" Width="800" Height="300" Title="반제품보관상태확인">
     <ShopFloorUI:ShopFloorCustomWindow.Resources>
-        <my:반제품보관상태확인ViewModel x:Key="viewModel"/>
+        <local:반제품보관상태확인ViewModel x:Key="VM"/>
         <Style x:Key="HeaderStyle" TargetType="c1:DataGridColumnHeaderPresenter">
-            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
         </Style>
     </ShopFloorUI:ShopFloorCustomWindow.Resources>
-    <Grid x:Name="LayoutRoot" Margin="2" DataContext="{Binding Source={StaticResource viewModel}}">
+    <toolkit:BusyIndicator IsBusy="{Binding IsBusy}" DataContext="{Binding Source={StaticResource VM}}">
         <i:Interaction.Triggers>
             <i:EventTrigger EventName="Loaded">
                 <i:InvokeCommandAction Command="{Binding LoadedCommand}" CommandParameter="{Binding ElementName=Main}"/>
             </i:EventTrigger>
         </i:Interaction.Triggers>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <c1:C1DataGrid Grid.Row="0"  Grid.Column="0" Grid.ColumnSpan="2"
-                        x:Name="dgProductionOutput" 
-                        AutoGenerateColumns="False" 
-                        Margin="10,0,10,10"
-                        CanUserAddRows="False"
-                        RowHeaderWidth="0"
-                        RowHeight="30"
-                        GridLinesVisibility="All"   
-                        AlternatingRowBackground="White"
-                        RowBackground="White"
-                        ItemsSource="{Binding BR_BRS_SEL_ProductionOrderOutput_State.OUTDATAs}" CanUserEditRows="False" CanUserRemoveRows="False" CanUserReorderColumns="False" >
+        <Grid x:Name="LayoutRoot" Margin="2" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-            <c1:C1DataGrid.Columns>
-                <c1:DataGridTextColumn  Header="반제품 명" Width="145" Binding="{Binding Path=OUTPUTID}" IsReadOnly="True" HorizontalAlignment="Center"  HeaderStyle="{StaticResource HeaderStyle}"/>
-                <c1:DataGridTextColumn  Header="IBC ID" Width="145" Binding="{Binding Path=VESSELID}" IsReadOnly="True" HorizontalAlignment="Center"  HeaderStyle="{StaticResource HeaderStyle}"/>
-                <c1:DataGridTextColumn  Header="보관 기간(기준)" Width="120" Binding="{Binding Path=STDSTGTIME}" IsReadOnly="True" HorizontalAlignment="Center"  HeaderStyle="{StaticResource HeaderStyle}"/>
-                <c1:DataGridTextColumn  Header="보관 기간" Width="120" Binding="{Binding Path=STGTIME}" IsReadOnly="True" HorizontalAlignment="Center"  HeaderStyle="{StaticResource HeaderStyle}"/>
-                <c1:DataGridTextColumn  Header="보관 기한" Width="145" Binding="{Binding Path=EXPIRYDTTM}" IsReadOnly="True" HorizontalAlignment="Center"  HeaderStyle="{StaticResource HeaderStyle}"/>
-                <c1:DataGridTextColumn  Header="보관 조건(온도 기준)" Width="145" Binding="{Binding Path=STD_TEMPERATURE}" IsReadOnly="True" HorizontalAlignment="Center"  HeaderStyle="{StaticResource HeaderStyle}"/>
-                <c1:DataGridTextColumn  Header="보관 조건(습도 기준)" Width="120" Binding="{Binding Path=STD_MOISTURE}" IsReadOnly="True" HorizontalAlignment="Center"  HeaderStyle="{StaticResource HeaderStyle}"/>
-                <c1:DataGridTextColumn  Header="일탈여부" Width="120" Binding="{Binding Path=DEVIATION_YN}" IsReadOnly="True" HorizontalAlignment="Center"  HeaderStyle="{StaticResource HeaderStyle}"/>
-                <c1:DataGridTextColumn  Header="작업자" Width="120" Binding="{Binding Path=USERID}" IsReadOnly="True" HorizontalAlignment="Center"  HeaderStyle="{StaticResource HeaderStyle}"/>
-            </c1:C1DataGrid.Columns>
-        </c1:C1DataGrid>
+            <Grid Grid.Row="1" x:Name="MainSection">
+                <c1:C1DataGrid Grid.Row="0"  Grid.Column="0" Grid.ColumnSpan="2" x:Name="dgProductionOutput"
+                       GridLinesVisibility="All" AutoGenerateColumns="False" HeadersVisibility="Column"
+                       CanUserAddRows="False" CanUserEditRows="False" CanUserRemoveRows="False" CanUserReorderColumns="False"
+                       RowHeight="30" AlternatingRowBackground="White" RowBackground="White"
+                       ItemsSource="{Binding BR_BRS_SEL_ProductionOrderOutput_State.OUTDATAs}">
+                    <c1:C1DataGrid.Columns>
+                        <c1:DataGridTextColumn Header="공정명" Width="145" Binding="{Binding Path=OPSGNAME}" HorizontalAlignment="Center" HeaderStyle="{StaticResource HeaderStyle}"/>
+                        <c1:DataGridTextColumn Header="관리번호" Width="145" Binding="{Binding Path=VESSELNAME}" HorizontalAlignment="Center" HeaderStyle="{StaticResource HeaderStyle}"/>
+                        <c1:DataGridTextColumn Header="보관기간(기준)" Width="120" Binding="{Binding Path=STRGSTANDARD}" HorizontalAlignment="Center" HeaderStyle="{StaticResource HeaderStyle}"/>
+                        <c1:DataGridTextColumn Header="보관기간" Width="120" Binding="{Binding Path=STRGDATE}" HorizontalAlignment="Center" HeaderStyle="{StaticResource HeaderStyle}"/>
+                        <c1:DataGridTextColumn Header="일탈여부" Width="120" Binding="{Binding Path=DEVIATIONYN}" HorizontalAlignment="Center" HeaderStyle="{StaticResource HeaderStyle}"/>
+                    </c1:C1DataGrid.Columns>
+                </c1:C1DataGrid>
+            </Grid>
 
-        <Button x:Name="OKButton" Content="기록" Command="{Binding Path=ConfirmCommand}"  Width="120" Height="35" HorizontalAlignment="Center" Grid.Row="1" Grid.Column="0" />
-        <Button x:Name="CancelButton" Content="취소" Click="CancelButton_Click" Width="120" Height="35" HorizontalAlignment="Center" Grid.Row="1" Grid.Column="1" />
-    </Grid>
-    </ShopFloorUI:ShopFloorCustomWindow>
+            <Grid Grid.Row="2" x:Name="Footer">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Button x:Name="OKButton" Content="{Binding W[CUIDataWriteToEBRButtonText], Source={StaticResource R}, FallbackValue='기록'}" Command="{Binding Path=ConfirmCommand}" Width="120" Height="35" Margin="10,0"/>
+                    <Button x:Name="CancelButton" Content="{Binding W[CUICloseButtonText], Source={StaticResource R}, FallbackValue='취소'}" Click="CancelButton_Click" Width="120" Height="35" Margin="10,0"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </toolkit:BusyIndicator>
+</ShopFloorUI:ShopFloorCustomWindow>

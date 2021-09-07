@@ -27,6 +27,8 @@ namespace 보령
                     OnPropertyChanged("Value");
                     OnPropertyChanged("WeightString");
                     OnPropertyChanged("WeightUOMString");
+                    OnPropertyChanged("WeightStringWithSeperator");
+                    OnPropertyChanged("WeightUOMStringWithSeperator");
                 }
             }
         }
@@ -37,14 +39,13 @@ namespace 보령
             set
             {
                 if (_Uom != value)
-                {
-                    string oldUOM = _Uom;
+                {                    
                     _Uom = value;
-                    Value = Add(0m, _Uom, _Value, oldUOM);
-
                     OnPropertyChanged("Uom");
                     OnPropertyChanged("WeightString");
                     OnPropertyChanged("WeightUOMString");
+                    OnPropertyChanged("WeightStringWithSeperator");
+                    OnPropertyChanged("WeightUOMStringWithSeperator");
                 }
             }
         }
@@ -60,6 +61,8 @@ namespace 보령
                     OnPropertyChanged("Precision");
                     OnPropertyChanged("WeightString");
                     OnPropertyChanged("WeightUOMString");
+                    OnPropertyChanged("WeightStringWithSeperator");
+                    OnPropertyChanged("WeightUOMStringWithSeperator");
                 }
 
             }

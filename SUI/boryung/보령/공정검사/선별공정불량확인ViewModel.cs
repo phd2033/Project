@@ -4,6 +4,8 @@ using ShopFloorUI;
 using System;
 using System.Net;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -32,7 +34,7 @@ namespace 보령
             set
             {
                 _BR_BRS_GET_AutoInspection_Reject_Ratio = value;
-                NotifyPropertyChanged();
+                OnPropertyChanged("BR_BRS_GET_AutoInspection_Reject_Ratio");
             }
         }
         #endregion
@@ -49,6 +51,7 @@ namespace 보령
                         {
                             CommandResults["LoadedCommandAsync"] = false;
                             CommandCanExecutes["LoadedCommandAsync"] = false;
+
                             ///
                             IsBusy = true;
 
@@ -56,7 +59,7 @@ namespace 보령
                             {
                                 _mainWnd = arg as 선별공정불량확인;
 
-                                SelectTagValue();
+                                await SelectTagValue();
                             }
                             ///
 
@@ -80,39 +83,46 @@ namespace 보령
                 });
             }
         }
+
+
         public ICommand RequestCommand
         {
             get
             {
-                return new CommandBase(arg =>
+                return new AsyncCommandBase(async arg =>
                 {
-                    try
+                    using (await AwaitableLocks["RequestCommand"].EnterAsync())
                     {
-                        CommandResults["RequestCommand"] = false;
-                        CommandCanExecutes["RequestCommand"] = false;
+                        try
+                        {
+                            IsBusy = true;
 
-                        ///
-                        IsBusy = true;
-                        SelectTagValue(true);
-                        ///
-                        CommandResults["RequestCommand"] = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        CommandResults["RequestCommand"] = false;
-                        OnException(ex.Message, ex);
-                    }
-                    finally
-                    {
-                        IsBusy = false;
-                        CommandCanExecutes["RequestCommand"] = true;
+                            CommandResults["RequestCommand"] = false;
+                            CommandCanExecutes["RequestCommand"] = false;
+
+                            ///
+                            await SelectTagValue(true);
+                            ///
+
+                            CommandResults["RequestCommand"] = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            CommandResults["RequestCommand"] = false;
+                            OnException(ex.Message, ex);
+                        }
+                        finally
+                        {
+                            CommandCanExecutes["RequestCommand"] = true;
+
+                            IsBusy = false;
+                        }
                     }
                 }, arg =>
-                {
-                    return CommandCanExecutes.ContainsKey("RequestCommand") ?
-                        CommandCanExecutes["RequestCommand"] : (CommandCanExecutes["RequestCommand"] = true);
-                }
-                    );
+               {
+                   return CommandCanExecutes.ContainsKey("RequestCommand") ?
+                       CommandCanExecutes["RequestCommand"] : (CommandCanExecutes["RequestCommand"] = true);
+               });
             }
         }
         public ICommand ConfirmCommandAsync
@@ -132,10 +142,12 @@ namespace 보령
                             IsBusy = true;
 
                             var authHelper = new iPharmAuthCommandHelper();
-                            // Phase 종료 후 기록 수정 시 전자서명
-                            if (_mainWnd.CurrentInstruction.Raw.INSERTEDYN.Equals("Y") && _mainWnd.Phase.CurrentPhase.STATE.Equals("COMP"))
+                            // 전자서명 요청
+                            if (_mainWnd.CurrentInstruction.Raw.INSERTEDYN.Equals("Y") && _mainWnd.Phase.CurrentPhase.STATE.Equals("COMP")) // 값 수정
                             {
+                                // 전자서명 요청
                                 authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
+
                                 if (await authHelper.ClickAsync(
                                     Common.enumCertificationType.Function,
                                     Common.enumAccessType.Create,
@@ -148,16 +160,17 @@ namespace 보령
                                     throw new Exception(string.Format("서명이 완료되지 않았습니다."));
                                 }
                             }
-                            // 기록 시 전자서명
-                            authHelper.InitializeAsync(Common.enumCertificationType.Function, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
+
+                            authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
                             if (await authHelper.ClickAsync(
-                                Common.enumCertificationType.Function,
+                                Common.enumCertificationType.Role,
                                 Common.enumAccessType.Create,
                                 "선별공정불량확인",
                                 "선별공정불량확인",
                                 false,
                                 "OM_ProductionOrder_SUI",
-                                "", null, null) == false)
+                                "",
+                                null, null) == false)
                             {
                                 throw new Exception(string.Format("서명이 완료되지 않았습니다."));
                             }
@@ -219,7 +232,7 @@ namespace 보령
         }
         #endregion
         #region [User Define]
-        private async void SelectTagValue(bool RequestFlag = false)
+        private async Task SelectTagValue(bool RequestFlag = false)
         {
             try
             {

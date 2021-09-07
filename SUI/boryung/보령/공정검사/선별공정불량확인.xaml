@@ -17,8 +17,12 @@
         <Style TargetType="c1:DataGridColumnHeaderPresenter" x:Key="HeaderStyle">
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
         </Style>
+        <Style TargetType="ScrollBar" x:Key="gdscroll">
+            <Setter Property="MinWidth" Value="25"/>
+            <Setter Property="MinHeight" Value="25"/>
+        </Style>
     </ShopFloorUI:ShopFloorCustomWindow.Resources>
-    <toolkit:BusyIndicator x:Name="BusyIn" DataContext="{Binding Source={StaticResource ViewModel}}">
+    <toolkit:BusyIndicator x:Name="BusyIn" IsBusy="{Binding IsBusy}" DataContext="{Binding Source={StaticResource ViewModel}}">
         <i:Interaction.Triggers>
             <i:EventTrigger EventName="Loaded">
                 <i:InvokeCommandAction Command="{Binding LoadedCommandAsync}" CommandParameter="{Binding ElementName=Main}"/>
@@ -30,7 +34,7 @@
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0" x:Name="MainSection">
-                <c1:C1DataGrid x:Name="MainDataGrid" HeadersVisibility="Column"
+                <c1:C1DataGrid x:Name="MainDataGrid" HeadersVisibility="Column" ScrollBarStyle="{Binding Source={StaticResource gdscroll}}"
                                AutoGenerateColumns="False" CanUserAddRows="False" CanUserEditRows="False" CanUserRemoveRows="False"
                                ItemsSource="{Binding BR_BRS_GET_AutoInspection_Reject_Ratio.OUTDATAs}">
                     <c1:C1DataGrid.Columns>

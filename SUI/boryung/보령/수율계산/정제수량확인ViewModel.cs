@@ -14,6 +14,7 @@ using ShopFloorUI;
 using C1.Silverlight.Data;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace 보령
 {
@@ -23,6 +24,7 @@ namespace 보령
         private 정제수량확인 _mainWnd;
         public 정제수량확인ViewModel()
         {
+            _BR_PHR_SEL_ProductionOrder_OrderSummary = new BR_PHR_SEL_ProductionOrder_OrderSummary();
             _BR_BRS_REG_Compress_GoodQty = new BR_BRS_REG_Compress_GoodQty();
             _BR_BRS_SEL_TabletPressGoodCount = new BR_BRS_SEL_TabletPressGoodCount();
         }
@@ -37,8 +39,20 @@ namespace 보령
                 OnPropertyChanged("IsEditable");
             }
         }
+        private string _PRODUCTUOM;
+        public string PRODUCTUOM
+        {
+            get { return _PRODUCTUOM; }
+            set
+            {
+                _PRODUCTUOM = value;
+                OnPropertyChanged("PRODUCTUOM");
+            }
+        }
+
         #endregion
         #region [BizRule]
+        private BR_PHR_SEL_ProductionOrder_OrderSummary _BR_PHR_SEL_ProductionOrder_OrderSummary;
         private BR_BRS_SEL_TabletPressGoodCount _BR_BRS_SEL_TabletPressGoodCount;
         public BR_BRS_SEL_TabletPressGoodCount BR_BRS_SEL_TabletPressGoodCount
         {
@@ -46,88 +60,106 @@ namespace 보령
             set { _BR_BRS_SEL_TabletPressGoodCount = value; }
         }
         private BR_BRS_REG_Compress_GoodQty _BR_BRS_REG_Compress_GoodQty;
-        public BR_BRS_REG_Compress_GoodQty BR_BRS_REG_Compress_GoodQty
-        {
-            get { return _BR_BRS_REG_Compress_GoodQty; }
-            set { _BR_BRS_REG_Compress_GoodQty = value; }
-        }
         #endregion
         #region [Command]
-        public ICommand LoadedCommand
+
+        public ICommand LoadedCommandAsync
         {
             get
             {
-                return new CommandBase(arg =>
+                return new AsyncCommandBase(async arg =>
                 {
-                    try
+                    using (await AwaitableLocks["LoadedCommandAsync"].EnterAsync())
                     {
-                        CommandResults["LoadedCommand"] = false;
-                        CommandCanExecutes["LoadedCommand"] = false;
-
-                        ///
-                        IsBusy = true;
-
-                        if(arg != null && arg is 정제수량확인)
+                        try
                         {
-                            _mainWnd = arg as 정제수량확인;
+                            IsBusy = true;
 
-                            GetGoodQuantity();
+                            CommandResults["LoadedCommandAsync"] = false;
+                            CommandCanExecutes["LoadedCommandAsync"] = false;
+
+                            ///
+                            if (arg != null && arg is 정제수량확인)
+                            {
+                                _mainWnd = arg as 정제수량확인;
+
+                                _BR_PHR_SEL_ProductionOrder_OrderSummary.INDATEs.Add(new BR_PHR_SEL_ProductionOrder_OrderSummary.INDATE
+                                {
+                                    POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                    ISUSE = "Y"
+                                });
+
+                                if(await _BR_PHR_SEL_ProductionOrder_OrderSummary.Execute())
+                                {
+                                    PRODUCTUOM = _BR_PHR_SEL_ProductionOrder_OrderSummary.OUTDATAs[0].NOTATION;
+                                }
+
+                                await GetGoodQuantity();
+                            }
+                            ///
+
+                            CommandResults["LoadedCommandAsync"] = true;
                         }
-                        ///
-                        CommandResults["LoadedCommand"] = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        CommandResults["LoadedCommand"] = false;
-                        OnException(ex.Message, ex);
-                    }
-                    finally
-                    {
-                        IsBusy = false;
-                        CommandCanExecutes["LoadedCommand"] = true;
+                        catch (Exception ex)
+                        {
+                            CommandResults["LoadedCommandAsync"] = false;
+                            OnException(ex.Message, ex);
+                        }
+                        finally
+                        {
+                            CommandCanExecutes["LoadedCommandAsync"] = true;
+
+                            IsBusy = false;
+                        }
                     }
                 }, arg =>
-                {
-                    return CommandCanExecutes.ContainsKey("LoadedCommand") ?
-                        CommandCanExecutes["LoadedCommand"] : (CommandCanExecutes["LoadedCommand"] = true);
-                }
-                    );
-
+               {
+                   return CommandCanExecutes.ContainsKey("LoadedCommandAsync") ?
+                       CommandCanExecutes["LoadedCommandAsync"] : (CommandCanExecutes["LoadedCommandAsync"] = true);
+               });
             }
         }
+
         public ICommand RequestCommand
         {
             get
             {
-                return new CommandBase(arg =>
+                return new AsyncCommandBase(async arg =>
                 {
-                    try
+                    using (await AwaitableLocks["RequestCommand"].EnterAsync())
                     {
-                        CommandResults["RequestCommand"] = false;
-                        CommandCanExecutes["RequestCommand"] = false;
+                        try
+                        {
+                            IsBusy = true;
 
-                        ///
-                        IsBusy = true;
-                        GetGoodQuantity(true);
-                        ///
-                        CommandResults["RequestCommand"] = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        CommandResults["RequestCommand"] = false;
-                        OnException(ex.Message, ex);
-                    }
-                    finally
-                    {
-                        IsBusy = false;
-                        CommandCanExecutes["RequestCommand"] = true;
+                            CommandResults["RequestCommand"] = false;
+                            CommandCanExecutes["RequestCommand"] = false;
+
+                            ///
+
+                            await GetGoodQuantity(true);
+
+                            ///
+
+                            CommandResults["RequestCommand"] = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            CommandResults["RequestCommand"] = false;
+                            OnException(ex.Message, ex);
+                        }
+                        finally
+                        {
+                            CommandCanExecutes["RequestCommand"] = true;
+
+                            IsBusy = false;
+                        }
                     }
                 }, arg =>
-                {
-                    return CommandCanExecutes.ContainsKey("RequestCommand") ?
-                        CommandCanExecutes["RequestCommand"] : (CommandCanExecutes["RequestCommand"] = true);
-                }
-                    );
+               {
+                   return CommandCanExecutes.ContainsKey("RequestCommand") ?
+                       CommandCanExecutes["RequestCommand"] : (CommandCanExecutes["RequestCommand"] = true);
+               });
             }
         }
         public ICommand ChageCommandAsync
@@ -142,30 +174,25 @@ namespace 보령
                         CommandCanExecutes["ChageCommandAsync"] = false;
 
                         ///
-                        // 로그인 유저의 권한 확인
-                        if (AuthRepositoryViewModel.HaveFunctionCodeAuthority("OM_ProductionOrder_ForceExecution", Common.enumAccessType.Create))
-                        {
-                            // 전자서명
-                            var authHelper = new iPharmAuthCommandHelper();
-                            authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_ForceExecution");
-                            if (await authHelper.ClickAsync(
-                                Common.enumCertificationType.Role,
-                                Common.enumAccessType.Create,
-                                "정제수량변경",
-                                "정제수량변경",
-                                false,
-                                "OM_ProductionOrder_ForceExecution",
-                                "",
-                                null, null) == false)
-                            {
-                                throw new Exception(string.Format("서명이 완료되지 않았습니다."));
-                            }
 
-                            IsEditable = true;
+                        // 강제진행 권한이 있는 유저가 서명 시 기능활성화
+                        var authHelper = new iPharmAuthCommandHelper();
+                        authHelper.InitializeAsync(Common.enumCertificationType.Function, Common.enumAccessType.Create, "OM_ProductionOrder_ForceExecution");
+                        if (await authHelper.ClickAsync(
+                            Common.enumCertificationType.Function,
+                            Common.enumAccessType.Create,
+                            "정제수량변경",
+                            "정제수량변경",
+                            false,
+                            "OM_ProductionOrder_ForceExecution",
+                            "",
+                            null, null) == false)
+                        {
+                            throw new Exception(string.Format("서명이 완료되지 않았습니다."));
                         }
-                        else
-                            OnMessage("권한이 없습니다.");
-                       
+
+                        IsEditable = true;
+
                         ///
                         CommandResults["ChageCommandAsync"] = true;
                     }
@@ -251,9 +278,10 @@ namespace 보령
 
                         foreach (var item in BR_BRS_SEL_TabletPressGoodCount.OUTDATAs)
                         {
-                            if(item.TAGDESC == "양품 수량")
+                            decimal chk = 0;
+
+                            if (item.TAGDESC == "양품 수량")
                             {
-                                decimal chk;
                                 if (decimal.TryParse(item.TAGVALUE, out chk))
                                     _totalCount += chk;
                             }
@@ -261,15 +289,15 @@ namespace 보령
                             var row = dt.NewRow();
 
                             row["설비코드"] = string.IsNullOrWhiteSpace(item.EQPTID) ? "" : item.EQPTID;
-                            row["태그종류"] = item.TAGDESC ?? "";
-                            row["수량"] = item.TAGVALUE ?? "";
+                            row["태그종류"] = string.IsNullOrWhiteSpace(item.TAGDESC) ? "" : item.TAGDESC;
+                            row["수량"] = string.Format("{0:#,0} {1}", chk, _PRODUCTUOM);
 
                             dt.Rows.Add(row);
                         }
 
                         // 정제 양품 수량 기록 비즈룰, 수율계산에 사용됨
-                        BR_BRS_REG_Compress_GoodQty.INDATAs.Clear();
-                        BR_BRS_REG_Compress_GoodQty.INDATAs.Add(new BR_BRS_REG_Compress_GoodQty.INDATA
+                        _BR_BRS_REG_Compress_GoodQty.INDATAs.Clear();
+                        _BR_BRS_REG_Compress_GoodQty.INDATAs.Add(new BR_BRS_REG_Compress_GoodQty.INDATA
                         {
                             POID = _mainWnd.CurrentOrder.ProductionOrderID,
                             OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
@@ -277,23 +305,24 @@ namespace 보령
                             USERID = userid
                         });
 
-                        if (await BR_BRS_REG_Compress_GoodQty.Execute() == false)
-                            throw new Exception(BR_BRS_REG_Compress_GoodQty.Exception.Message, BR_BRS_REG_Compress_GoodQty.Exception);
-
-                        var xml = BizActorRuleBase.CreateXMLStream(ds);
-                        var bytesArray = System.Text.Encoding.UTF8.GetBytes(xml);
-
-                        _mainWnd.CurrentInstruction.Raw.ACTVAL = _mainWnd.TableTypeName;
-                        _mainWnd.CurrentInstruction.Raw.NOTE = bytesArray;
-
-                        var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction, true);
-                        if (result != enumInstructionRegistErrorType.Ok)
+                        if (await _BR_BRS_REG_Compress_GoodQty.Execute())
                         {
-                            throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", _mainWnd.CurrentInstruction.Raw.IRTGUID, result));
-                        }
+                            var xml = BizActorRuleBase.CreateXMLStream(ds);
+                            var bytesArray = System.Text.Encoding.UTF8.GetBytes(xml);
 
-                        if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
-                        else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
+                            _mainWnd.CurrentInstruction.Raw.ACTVAL = _mainWnd.TableTypeName;
+                            _mainWnd.CurrentInstruction.Raw.NOTE = bytesArray;
+
+                            var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction, true);
+                            if (result != enumInstructionRegistErrorType.Ok)
+                            {
+                                throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", _mainWnd.CurrentInstruction.Raw.IRTGUID, result));
+                            }
+
+                            if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
+                            else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
+                        }                            
+                        
                         ///
                         CommandResults["ConfirmCommandAsync"] = true;
                     }
@@ -318,7 +347,7 @@ namespace 보령
 
         #endregion
         #region [User Define]
-        private async void GetGoodQuantity(bool RequestFlag = false)
+        private async Task GetGoodQuantity(bool RequestFlag = false)
         {
             try
             {
@@ -339,7 +368,7 @@ namespace 보령
                             {
                                 EQPTID = row["설비코드"].ToString(),
                                 TAGDESC = row["태그종류"].ToString(),
-                                TAGVALUE = row["수량"].ToString()
+                                TAGVALUE = row["수량"].ToString().Replace(_PRODUCTUOM,"")
                             });
                         }
                     }

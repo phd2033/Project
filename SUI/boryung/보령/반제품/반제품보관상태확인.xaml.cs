@@ -1,5 +1,7 @@
-﻿using System;
+﻿using ShopFloorUI;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Windows;
@@ -12,7 +14,8 @@ using System.Windows.Shapes;
 
 namespace 보령
 {
-    public partial class 반제품보관상태확인 : ShopFloorUI.ShopFloorCustomWindow
+    [Description("반제품(공정중제품)의 보관기간확인")]
+    public partial class 반제품보관상태확인 : ShopFloorCustomWindow
     {
         public 반제품보관상태확인()
         {
@@ -22,11 +25,6 @@ namespace 보령
         public override string TableTypeName
         {
             get { return "TABLE,반제품보관상태확인"; }
-        }
-
-        private void OKButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.DialogResult = true;
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)

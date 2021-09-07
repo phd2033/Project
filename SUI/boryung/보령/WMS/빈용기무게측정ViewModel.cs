@@ -810,7 +810,7 @@ namespace 보령
                     Weight tare = new Weight();
                     tare.SetWeight(TareWeight, Uom, Precision);
 
-                    return tare.WeightUOMString;
+                    return tare.WeightUOMStringWithSeperator;
                 }
             }
         }

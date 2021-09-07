@@ -15,8 +15,12 @@ using C1.Silverlight.Data;
 namespace 보령
 {
     public class 반제품보관상태확인ViewModel : ViewModelBase
-    {         
+    {
         #region [Property]
+        public 반제품보관상태확인ViewModel()
+        {
+            _BR_BRS_SEL_ProductionOrderOutput_State = new BR_BRS_SEL_ProductionOrderOutput_State();
+        }
 
         반제품보관상태확인 _mainWnd;
         
@@ -33,15 +37,6 @@ namespace 보령
                 _BR_BRS_SEL_ProductionOrderOutput_State = value;
                 OnPropertyChanged("BR_BRS_SEL_ProductionOrderOutput_State ");
             }
-        }
-
-        #endregion
-
-        #region [Constructor]
-
-        public 반제품보관상태확인ViewModel()
-        {
-            _BR_BRS_SEL_ProductionOrderOutput_State = new BR_BRS_SEL_ProductionOrderOutput_State();
         }
 
         #endregion
@@ -155,15 +150,11 @@ namespace 보령
                             var dt = new DataTable("DATA");
                             ds.Tables.Add(dt);
 
-                            dt.Columns.Add(new DataColumn("반제품명"));
-                            dt.Columns.Add(new DataColumn("IBCID"));
+                            dt.Columns.Add(new DataColumn("공정명"));
+                            dt.Columns.Add(new DataColumn("관리번호"));
                             dt.Columns.Add(new DataColumn("보관기간기준"));
                             dt.Columns.Add(new DataColumn("보관기간"));
-                            dt.Columns.Add(new DataColumn("보관기한"));
-                            dt.Columns.Add(new DataColumn("보관조건온도기준"));
-                            dt.Columns.Add(new DataColumn("보관조건습도기준"));
                             dt.Columns.Add(new DataColumn("일탈여부"));
-                            dt.Columns.Add(new DataColumn("작업자"));
 
                             if (_BR_BRS_SEL_ProductionOrderOutput_State.OUTDATAs.Count > 0)
                             {
@@ -171,15 +162,12 @@ namespace 보령
                                 {
                                     var row = dt.NewRow();
 
-                                    row["반제품명"] = item.OUTPUTID != null ? item.OUTPUTID.ToString() : "";
-                                    row["IBCID"] = item.VESSELID != null ? item.VESSELID.ToString() : "";
-                                    row["보관기간기준"] = item.STDSTGTIME != null ? item.STDSTGTIME.ToString() : "";
-                                    row["보관기간"] = item.STGTIME != null ? item.STGTIME.ToString() : "";
-                                    row["보관기한"] = item.EXPIRYDTTM != null ? item.EXPIRYDTTM.ToString() : "";
-                                    row["보관조건온도기준"] = item.STD_TEMPERATURE != null ? item.STD_TEMPERATURE.ToString() : "";
-                                    row["보관조건습도기준"] = item.STD_MOISTURE != null ? item.STD_MOISTURE.ToString() : "";
-                                    row["일탈여부"] = item.DEVIATION_YN != null ? item.DEVIATION_YN.ToString() : "";
-                                    row["작업자"] = item.USERID != null ? item.USERID.ToString() : "";
+                                    row["공정명"] = item.OPSGNAME ?? "";
+                                    row["관리번호"] = item.VESSELNAME ?? "";
+                                    row["보관기간기준"] = item.STRGSTANDARD ?? "";
+                                    row["보관기간"] = item.STRGDATE ?? "";
+                                    row["일탈여부"] = item.DEVIATIONYN ?? "";
+
                                     dt.Rows.Add(row);
                                 }
 

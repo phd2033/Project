@@ -267,7 +267,7 @@ namespace 보령
                                     _curWeight.SetWeight(0, ScaleUom, ScalePrecision);
 
                                     avgWeighing = "";
-                                    eqptID = eqpt;                                    
+                                    eqptID = _ScaleInfo.OUTDATAs[0].EQPTID;
                                     _repeater.Start();
                                 }
                                 else
@@ -496,6 +496,40 @@ namespace 보령
                             ///
                             if (filteredComponents.Count > 0)
                             {
+                                // 전자서명
+                                iPharmAuthCommandHelper authHelper = new iPharmAuthCommandHelper();
+
+                                if (_mainWnd.CurrentInstruction.Raw.INSERTEDYN.Equals("Y") && _mainWnd.Phase.CurrentPhase.STATE.Equals("COMP")) // 값 수정
+                                {
+                                    authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
+
+                                    if (await authHelper.ClickAsync(
+                                        Common.enumCertificationType.Function,
+                                        Common.enumAccessType.Create,
+                                        string.Format("기록값을 변경합니다."),
+                                        string.Format("기록값 변경"),
+                                        true,
+                                        "OM_ProductionOrder_SUI",
+                                        "", _mainWnd.CurrentInstruction.Raw.RECIPEISTGUID, null) == false)
+                                    {
+                                        throw new Exception(string.Format("서명이 완료되지 않았습니다."));
+                                    }
+                                }
+
+                                authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
+                                if (await authHelper.ClickAsync(
+                                    Common.enumCertificationType.Role,
+                                    Common.enumAccessType.Create,
+                                    "평균질량측정",
+                                    "평균질량측정",
+                                    false,
+                                    "OM_ProductionOrder_SUI",
+                                    "",
+                                    null, null) == false)
+                                {
+                                    throw new Exception(string.Format("서명이 완료되지 않았습니다."));
+                                }
+
                                 _BR_BRS_REG_IPC_AVG_WEIGHT_MULTI.INDATAs.Clear();
 
                                 //XML 형식으로 저장
@@ -595,6 +629,40 @@ namespace 보령
                             CommandCanExecutes["NoRecordConfirmCommand"] = false;
 
                             ///
+
+                            // 전자서명
+                            iPharmAuthCommandHelper authHelper = new iPharmAuthCommandHelper();
+
+                            if (_mainWnd.CurrentInstruction.Raw.INSERTEDYN.Equals("Y") && _mainWnd.Phase.CurrentPhase.STATE.Equals("COMP")) // 값 수정
+                            {
+                                authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
+
+                                if (await authHelper.ClickAsync(
+                                    Common.enumCertificationType.Function,
+                                    Common.enumAccessType.Create,
+                                    string.Format("기록값을 변경합니다."),
+                                    string.Format("기록값 변경"),
+                                    true,
+                                    "OM_ProductionOrder_SUI",
+                                    "", _mainWnd.CurrentInstruction.Raw.RECIPEISTGUID, null) == false)
+                                {
+                                    throw new Exception(string.Format("서명이 완료되지 않았습니다."));
+                                }
+                            }
+
+                            authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
+                            if (await authHelper.ClickAsync(
+                                Common.enumCertificationType.Role,
+                                Common.enumAccessType.Create,
+                                "평균질량측정",
+                                "평균질량측정",
+                                false,
+                                "OM_ProductionOrder_SUI",
+                                "",
+                                null, null) == false)
+                            {
+                                throw new Exception(string.Format("서명이 완료되지 않았습니다."));
+                            }
 
                             //XML 형식으로 저장
                             DataSet ds = new DataSet();
