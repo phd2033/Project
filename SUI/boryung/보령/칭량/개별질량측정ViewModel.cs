@@ -248,6 +248,7 @@ namespace 보령
                                 if (await _ScaleInfo.Execute() && _ScaleInfo.OUTDATAs.Count > 0)
                                 {
                                     SCALEID = _ScaleInfo.OUTDATAs[0].EQPTID;
+                                    _scalePresion = Convert.ToInt32(_ScaleInfo.OUTDATAs[0].PRECISION.GetValueOrDefault());
 
                                     IsBtnEnable = true;
                                     SCALE_ALERT = "저울 조회 성공";
@@ -262,7 +263,7 @@ namespace 보령
                                 }
 
                                 _CURWEIGHT = new Weight();
-                                _CURWEIGHT.SetWeight(0, _IPCUOM, _scalePresion);
+                                _CURWEIGHT.SetWeight(0, _IPCUOM, 1);
                                 OnPropertyChanged("CURWEIGHT");
                             }
 
@@ -342,7 +343,7 @@ namespace 보령
                                     SCALE_ALERT = "Tare 성공";
 
                                     _CURWEIGHT = new Weight();
-                                    _CURWEIGHT.SetWeight(0, _IPCUOM, _scalePresion);
+                                    _CURWEIGHT.SetWeight(0, _IPCUOM, 1);
                                     OnPropertyChanged("CURWEIGHT");
                                 }
                                 else
