@@ -21,7 +21,6 @@ namespace 보령
             _BR_PHR_REG_ScaleSetTare = new BR_PHR_REG_ScaleSetTare();
             _BR_BRS_SEL_CurrentWeight = new BR_BRS_SEL_CurrentWeight();
             _BR_BRS_REG_IPC_EACH_WEIGHT_MULTI = new BR_BRS_REG_IPC_EACH_WEIGHT_MULTI();
-
             _IPC_RESULTS = new ObservableCollection<EACH_INDATA>();
 
             string interval_str = ShopFloorUI.App.Current.Resources["GetWeightInterval"].ToString();
