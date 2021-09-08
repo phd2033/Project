@@ -280,11 +280,13 @@ namespace 보령
                         {
                             decimal chk = 0;
 
-                            if (item.TAGDESC == "양품 수량")
+                            if (decimal.TryParse(item.TAGVALUE, out chk))
                             {
-                                if (decimal.TryParse(item.TAGVALUE, out chk))
+                                if (item.TAGDESC == "양품 수량")
+                                {
                                     _totalCount += chk;
-                            }
+                                }
+                            }   
 
                             var row = dt.NewRow();
 
