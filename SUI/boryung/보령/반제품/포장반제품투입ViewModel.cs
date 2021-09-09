@@ -378,7 +378,7 @@ namespace 보령
                                 row["현재수량"] = o.NET.WeightUOMStringWithSeperator;
                                 // 2021.08.22 박희돈 IBC관리번호 - > 용기번호 로 변경
                                 row["용기번호"] = o.VESSELID != null ? o.VESSELID.ToString() : "";
-                                row["투입일자"] = chargingdttm.ToString();
+                                row["투입일자"] = chargingdttm.ToString("yyyy-MM-dd HH:mm:ss");
                                 row["작업자"] = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_Charging");
 
                                 dt.Rows.Add(row);
