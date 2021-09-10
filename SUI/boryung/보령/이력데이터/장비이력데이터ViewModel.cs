@@ -331,7 +331,7 @@ namespace 보령
                                     ((enumVariableType)Enum.Parse(typeof(enumVariableType), o.Raw.IRTTYPE, false)) == enumVariableType.IT004;
                             }).OrderBy(o => o.Raw.IRTSEQ).ToList();
 
-                            _mainWnd.CurrentInstruction.Raw.ACTVAL = "Image Attached";
+                            _mainWnd.CurrentInstruction.Raw.ACTVAL = "장비이력데이터";
 
                             var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction);
                             if (result != enumInstructionRegistErrorType.Ok)

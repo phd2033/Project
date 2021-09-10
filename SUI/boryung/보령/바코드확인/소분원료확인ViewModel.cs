@@ -241,23 +241,23 @@ namespace 보령
                             var ds = new DataSet();
                             var dt = new DataTable("DATA");
                             ds.Tables.Add(dt);
-                            dt.Columns.Add(new DataColumn("자재ID"));
-                            dt.Columns.Add(new DataColumn("자재명"));
-                            dt.Columns.Add(new DataColumn("원료배치번호"));
+                            dt.Columns.Add(new DataColumn("원료코드"));
+                            dt.Columns.Add(new DataColumn("원료명"));
+                            dt.Columns.Add(new DataColumn("원료시험번호"));
                             dt.Columns.Add(new DataColumn("바코드"));
-                            dt.Columns.Add(new DataColumn("전체무게"));
+                            dt.Columns.Add(new DataColumn("무게"));
                             //dt.Columns.Add(new DataColumn("단위"));
 
                           
                             chargingItem.ForEach(o =>
                             {
                                 var row = dt.NewRow();
-                                row["자재ID"] = o.MTRLID;
-                                row["자재명"] = o.MTRLNAME;
-                                row["원료배치번호"] = o.MLOTID;
+                                row["원료코드"] = o.MTRLID;
+                                row["원료명"] = o.MTRLNAME;
+                                row["원료시험번호"] = o.MLOTID;
                                 row["바코드"] = o.SCANNED_BARCODE;
                                 // 2021.08.22 박희돈 단위 컬럼 제거. 전체무게에 더해 단위 표시하도록 변경.
-                                row["전체무게"] =  o.DSP + " " + o.UOM;
+                                row["무게"] =  o.DSP + " " + o.UOM;
                                 //row["단위"] = o.UOM;
                                 dt.Rows.Add(row);
                             });
@@ -265,7 +265,7 @@ namespace 보령
                             var xml = BizActorRuleBase.CreateXMLStream(ds);
                             var bytesArray = System.Text.Encoding.UTF8.GetBytes(xml);
 
-                            _mainWnd.CurrentInstruction.Raw.ACTVAL = "TABLE,소분원료확인";
+                            _mainWnd.CurrentInstruction.Raw.ACTVAL = "TABLE,원료확인";
                             _mainWnd.CurrentInstruction.Raw.NOTE = bytesArray;
 
                             var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction);
