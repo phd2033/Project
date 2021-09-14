@@ -358,8 +358,7 @@ namespace 보령
                                         row["원료명"] = item.MTRLNAME != null ? item.MTRLNAME : "";
                                         row["원료시험번호"] = item.MLOTID != null ? item.MLOTID : "";                                        
                                         row["바코드"] = item.MSUBLOTBCD != null ? item.MSUBLOTBCD : "";
-                                        //row["투입량"] =  item.CHGQTY != null ? item.CHGQTY + item.UOM : "";
-                                        row["투입량"] = item.CHGQTY != null ? string.Format("{0}{1}{2}", decimal.Parse(item.CHGQTY).ToString("0.##0"), " ", item.UOM) : "";
+                                        row["투입량"] =  item.CHGQTY != null ? item.CHGQTY + " " + item.UOM : "";
                                         row["상태"] = item.IS_CAN_CHARGING_CHECKED_NAME != null ? item.IS_CAN_CHARGING_CHECKED_NAME : "";
                                         dt.Rows.Add(row);
                                     }
