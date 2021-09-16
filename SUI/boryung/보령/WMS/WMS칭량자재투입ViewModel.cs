@@ -386,7 +386,7 @@ namespace 보령
 
                         dt.Columns.Add(new DataColumn("자재코드"));
                         dt.Columns.Add(new DataColumn("자재명"));
-                        dt.Columns.Add(new DataColumn("원료시험번호"));
+                        dt.Columns.Add(new DataColumn("시험번호"));
                         dt.Columns.Add(new DataColumn("피킹순번")); // 수정 필요
                         dt.Columns.Add(new DataColumn("자재바코드"));
                         dt.Columns.Add(new DataColumn("출고량"));
@@ -399,7 +399,7 @@ namespace 보령
                             var row = dt.NewRow();
                             row["자재코드"] = rowdata.MTRLID != null ? rowdata.MTRLID : "";
                             row["자재명"] = rowdata.MTRLNAME != null ? rowdata.MTRLNAME : "";
-                            row["원료시험번호"] = rowdata.MLOTID != null ? rowdata.MLOTID : "";
+                            row["시험번호"] = rowdata.MLOTID != null ? rowdata.MLOTID : "";
                             row["피킹순번"] = rowdata.QCT_NO_SEQ != null ? rowdata.QCT_NO_SEQ : "";
                             row["자재바코드"] = rowdata.MSUBLOTBCD != null ? rowdata.MSUBLOTBCD : "";
                             row["출고량"] = rowdata.DSP != null ? rowdata.DSP + rowdata.UOM : "";

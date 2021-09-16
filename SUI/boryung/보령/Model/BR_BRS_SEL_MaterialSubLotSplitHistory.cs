@@ -33,7 +33,8 @@ namespace 보령
                     Weight temp = new Weight();
                     temp.SetWeight(this._OLDMSUBLOTQTY.GetValueOrDefault(), this._UOM, this._PRECISION.GetValueOrDefault());
 
-                    return temp.WeightUOMString;
+                    //return temp.WeightUOMString;
+                    return temp.WeightUOMStringWithSeperator;
                 }
             }
             public string CURWEIGHT
@@ -43,7 +44,8 @@ namespace 보령
                     Weight temp = new Weight();
                     temp.SetWeight(this._MSUBLOTQTY.GetValueOrDefault(), this._UOM, this._PRECISION.GetValueOrDefault());
 
-                    return temp.WeightUOMString;
+                    //return temp.WeightUOMString;
+                    return temp.WeightUOMStringWithSeperator;
                 }
             }
         }
