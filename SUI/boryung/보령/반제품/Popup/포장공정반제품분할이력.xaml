@@ -30,7 +30,7 @@
                     </c1:DataGridTemplateColumn>
                     <c1:DataGridTextColumn Header="용기번호" Binding="{Binding VESSELID}"/>
                     <c1:DataGridTextColumn Header="변경전내용물무게" Binding="{Binding PREVWEIGHT}"/>
-                    <c1:DataGridTextColumn Header="변경전내용물무게" Binding="{Binding CURWEIGHT}"/>
+                    <c1:DataGridTextColumn Header="변경후내용물무게" Binding="{Binding CURWEIGHT}"/>
                 </c1:C1DataGrid.Columns>
             </c1:C1DataGrid>
         </Grid>
