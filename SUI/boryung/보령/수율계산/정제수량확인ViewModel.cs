@@ -276,6 +276,9 @@ namespace 보령
                         dt.Columns.Add(new DataColumn("태그종류"));
                         dt.Columns.Add(new DataColumn("수량"));
 
+                        _totalCount = 0;    // 2021.10.05 박희돈 양품수량 합계 전 초기화
+
+
                         foreach (var item in BR_BRS_SEL_TabletPressGoodCount.OUTDATAs)
                         {
                             decimal chk = 0;
