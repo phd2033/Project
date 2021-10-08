@@ -30,11 +30,6 @@ namespace 보령
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             this.DialogResult = false;
-        }
-
-        private void txtReturnQty_KeyDown(object sender, KeyEventArgs e)
-        {
-            
-        }
+        }       
     }
 }

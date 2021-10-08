@@ -97,7 +97,13 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="환입수량" FontSize="20" Margin="3"/>
                     <Button Grid.Row="1" Grid.Column="0" Content="123" FontSize="20" Command="{Binding KeyPadPopupCommand}"/>
-                    <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtReturnQty" Text="{Binding RETURNQTY, Mode=TwoWay, StringFormat='#,0'}" TextAlignment="Right" FontSize="20" KeyDown="txtReturnQty_KeyDown"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtReturnQty" Text="{Binding RETURNQTY, Mode=OneWay, StringFormat='#,0'}" TextAlignment="Right" FontSize="20">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="KeyDown">
+                                <icommon:EditBoxKeyDownAction Command="{Binding ChangeReturnQtyCommand}" CommandParameter="{Binding Text, ElementName=txtReturnQty}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBox>
                 </Grid>
             </Grid>
             <Grid Grid.Row="2" Name="Footer">

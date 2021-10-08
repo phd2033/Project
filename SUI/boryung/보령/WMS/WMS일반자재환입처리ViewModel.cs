@@ -108,26 +108,25 @@ namespace 보령
             get { return _RETURNQTY; }
             set
             {
-                decimal chk;
-                if(decimal.TryParse(value.ToString(), out chk))
+                decimal val = value;
+
+                if (_CurSourceContainer != null)
                 {
-                    _RETURNQTY = chk;
-
-                    if (_CurSourceContainer != null)
+                    if (val > _MsubLotqty)
                     {
-                        if(chk > _MsubLotqty)
-                        {
-                            OnMessage(string.Format("피킹수량 보다 환입량이 많습니다.\n(피킹수량 : {0}, 환입량 : {1})", _MsubLotqty, chk));
-                            _RETURNQTY = _MsubLotqty;
-                        }
-
-                        btnReturnEnable = true;
+                        OnMessage(string.Format("피킹수량 보다 환입량이 많습니다.\n(피킹수량 : {0}, 환입량 : {1})", _MsubLotqty, val));
+                        _RETURNQTY = _MsubLotqty;
                     }
                     else
-                    {
-                        _RETURNQTY = 0m;
-                        btnReturnEnable = false;
-                    }
+                        _RETURNQTY = val;
+
+                    btnReturnEnable = true;
+                }
+                else
+                {
+                    OnMessage("선택한 자재가 없습니다.");
+                    _RETURNQTY = 0m;
+                    btnReturnEnable = false;
                 }
 
                 OnPropertyChanged("RETURNQTY");
@@ -337,6 +336,51 @@ namespace 보령
             }
         }
 
+
+        public ICommand ChangeReturnQtyCommand
+        {
+            get
+            {
+                return new CommandBase(arg =>
+                {
+                    try
+                    {
+                        IsBusy = true;
+
+                        CommandResults["ChangeReturnQtyCommand"] = false;
+                        CommandCanExecutes["ChangeReturnQtyCommand"] = false;
+
+                        ///
+                        if(arg != null && arg is string)
+                        {
+                            string returnqty = arg as string;
+
+                            decimal chk;
+                            if (decimal.TryParse(returnqty, out chk))                            
+                                RETURNQTY = chk;                                                            
+                        }
+                        ///
+
+                        CommandResults["ChangeReturnQtyCommand"] = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        CommandResults["ChangeReturnQtyCommand"] = false;
+                        OnException(ex.Message, ex);
+                    }
+                    finally
+                    {
+                        CommandCanExecutes["ChangeReturnQtyCommand"] = true;
+
+                        IsBusy = false;
+                    }
+                }, arg =>
+               {
+                   return CommandCanExecutes.ContainsKey("ChangeReturnQtyCommand") ?
+                       CommandCanExecutes["ChangeReturnQtyCommand"] : (CommandCanExecutes["ChangeReturnQtyCommand"] = true);
+               });
+            }
+        }
 
         public ICommand KeyPadPopupCommand
         {
