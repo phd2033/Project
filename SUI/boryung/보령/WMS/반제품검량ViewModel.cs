@@ -382,12 +382,12 @@ namespace 보령
                                             DataTable dt = new DataTable("DATA");
                                             ds.Tables.Add(dt);
 
-                                            dt.Columns.Add(new DataColumn("VESSELID"));
-                                            dt.Columns.Add(new DataColumn("SCALEID"));
-                                            dt.Columns.Add(new DataColumn("TOTALWEIGHT"));
-                                            dt.Columns.Add(new DataColumn("MAXQTY"));
-                                            dt.Columns.Add(new DataColumn("STANDARD"));
-                                            dt.Columns.Add(new DataColumn("MINQTY"));
+                                            dt.Columns.Add(new DataColumn("관리번호"));
+                                            dt.Columns.Add(new DataColumn("저울번호"));
+                                            dt.Columns.Add(new DataColumn("무게"));
+                                            dt.Columns.Add(new DataColumn("상한"));
+                                            dt.Columns.Add(new DataColumn("기준"));
+                                            dt.Columns.Add(new DataColumn("하한"));
 
                                             if (_ListRequestOut.Count(x => x.STATUS.Equals("완료")) > 0)
                                             {
@@ -395,12 +395,12 @@ namespace 보령
                                                 {
                                                     var row = dt.NewRow();
 
-                                                    row["VESSELID"] = Vessel.VESSELID != null ? Vessel.VESSELID : "";
-                                                    row["SCALEID"] = scaleid != null ? scaleid : "";
-                                                    row["TOTALWEIGHT"] = Vessel.WIPs[0].REALQTY.HasValue ? Vessel.WIPs[0].REALQTY.Value.ToString() : "";
-                                                    row["MAXQTY"] = Vessel.WIPs[0].TOTALQTY_UPPER.HasValue ? Vessel.WIPs[0].TOTALQTY_UPPER.Value.ToString() : "";
-                                                    row["STANDARD"] = Vessel.WIPs[0].TOTALQTY.HasValue ? Vessel.WIPs[0].TOTALQTY.Value.ToString() : "";
-                                                    row["MINQTY"] = Vessel.WIPs[0].TOTALQTY_LOWER.HasValue ? Vessel.WIPs[0].TOTALQTY_LOWER.Value.ToString() : "";
+                                                    row["관리번호"] = Vessel.VESSELID != null ? Vessel.VESSELID : "";
+                                                    row["저울번호"] = scaleid != null ? scaleid : "";
+                                                    row["무게"] = Vessel.WIPs[0].REALQTY.HasValue ? Vessel.WIPs[0].REALQTY.Value.ToString() : "";
+                                                    row["상한"] = Vessel.WIPs[0].TOTALQTY_UPPER.HasValue ? Vessel.WIPs[0].TOTALQTY_UPPER.Value.ToString() : "";
+                                                    row["기준"] = Vessel.WIPs[0].TOTALQTY.HasValue ? Vessel.WIPs[0].TOTALQTY.Value.ToString() : "";
+                                                    row["하한"] = Vessel.WIPs[0].TOTALQTY_LOWER.HasValue ? Vessel.WIPs[0].TOTALQTY_LOWER.Value.ToString() : "";
 
                                                     dt.Rows.Add(row);
                                                 }
@@ -521,12 +521,12 @@ namespace 보령
                                     DataTable dt = new DataTable("DATA");
                                     ds.Tables.Add(dt);
 
-                                    dt.Columns.Add(new DataColumn("VESSELID"));
-                                    dt.Columns.Add(new DataColumn("SCALEID"));
-                                    dt.Columns.Add(new DataColumn("TOTALWEIGHT"));
-                                    dt.Columns.Add(new DataColumn("MAXQTY"));
-                                    dt.Columns.Add(new DataColumn("STANDARD"));
-                                    dt.Columns.Add(new DataColumn("MINQTY"));
+                                    dt.Columns.Add(new DataColumn("관리번호"));
+                                    dt.Columns.Add(new DataColumn("저울번호"));
+                                    dt.Columns.Add(new DataColumn("무게"));
+                                    dt.Columns.Add(new DataColumn("상한"));
+                                    dt.Columns.Add(new DataColumn("기준"));
+                                    dt.Columns.Add(new DataColumn("하한"));
 
                                     if (_ListRequestOut.Count(x => x.STATUS.Equals("완료")) > 0)
                                     {
@@ -534,12 +534,12 @@ namespace 보령
                                         {
                                             var row = dt.NewRow();
 
-                                            row["VESSELID"] = Vessel.VESSELID != null ? Vessel.VESSELID : "";
-                                            row["SCALEID"] = scaleid != null ? scaleid : "";
-                                            row["TOTALWEIGHT"] = Vessel.WIPs[0].REALQTY.HasValue ? Vessel.WIPs[0].REALQTY.Value.ToString() : "";
-                                            row["MAXQTY"] = Vessel.WIPs[0].TOTALQTY_UPPER.HasValue ? Vessel.WIPs[0].TOTALQTY_UPPER.Value.ToString() : "";
-                                            row["STANDARD"] = Vessel.WIPs[0].TOTALQTY.HasValue ? Vessel.WIPs[0].TOTALQTY.Value.ToString() : "";
-                                            row["MINQTY"] = Vessel.WIPs[0].TOTALQTY_LOWER.HasValue ? Vessel.WIPs[0].TOTALQTY_LOWER.Value.ToString() : "";
+                                            row["관리번호"] = Vessel.VESSELID != null ? Vessel.VESSELID : "";
+                                            row["저울번호"] = scaleid != null ? scaleid : "";
+                                            row["무게"] = Vessel.WIPs[0].REALQTY.HasValue ? Vessel.WIPs[0].REALQTY.Value.ToString() : "";
+                                            row["상한"] = Vessel.WIPs[0].TOTALQTY_UPPER.HasValue ? Vessel.WIPs[0].TOTALQTY_UPPER.Value.ToString() : "";
+                                            row["기준"] = Vessel.WIPs[0].TOTALQTY.HasValue ? Vessel.WIPs[0].TOTALQTY.Value.ToString() : "";
+                                            row["하한"] = Vessel.WIPs[0].TOTALQTY_LOWER.HasValue ? Vessel.WIPs[0].TOTALQTY_LOWER.Value.ToString() : "";
 
                                             dt.Rows.Add(row);
                                         }
