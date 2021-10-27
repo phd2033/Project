@@ -186,6 +186,7 @@
     <Compile Include="Model.Access\BR_BRS_SEL_EquipmentStatusParameter_EQSTID.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_SEL_EquipmentStatus_PROC_OPSG.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_SEL_ProductionOrderBOM_CHGSEQ.Access.cs" />
+    <Compile Include="Model.Access\BR_BRS_SEL_ProductionOrderDispenseSubLot_OPSG_COMPONENT.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_SEL_ProductionOrder_Component_Summary.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_SEL_ProductionOrder_RECIPEISTGUID.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_SEL_ProductOrder_JOB_HIST.Access.cs" />

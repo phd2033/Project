@@ -28,8 +28,8 @@ namespace 보령
         {
             InitializeComponent();
 
-            System.Text.StringBuilder empty = new System.Text.StringBuilder();
-            LGCNS.iPharmMES.Common.UIObject.SetObjectLang(this, ref empty, LGCNS.EZMES.Common.LogInInfo.LangID);
+            //System.Text.StringBuilder empty = new System.Text.StringBuilder();
+            //LGCNS.iPharmMES.Common.UIObject.SetObjectLang(this, ref empty, LGCNS.EZMES.Common.LogInInfo.LangID);
         }
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {

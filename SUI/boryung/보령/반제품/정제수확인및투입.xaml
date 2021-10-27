@@ -19,6 +19,11 @@
     Height="450" Width="1000">
     <ShopFloorUI:ShopFloorCustomWindow.Resources>
         <my:정제수확인및투입ViewModel x:Key="viewModel"/>
+        <Style TargetType="Button" x:Key="btnStyle">
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Margin" Value="5,0"/>
+        </Style>
         <Style x:Key="HeaderStyle" TargetType="c1:DataGridColumnHeaderPresenter">
             <Setter Property="HorizontalContentAlignment" Value="Center" />
         </Style>
@@ -29,7 +34,7 @@
                 <i:InvokeCommandAction Command="{Binding LoadedCommand}" CommandParameter="{Binding ElementName=Main}"/>
             </i:EventTrigger>
         </i:Interaction.Triggers>
-        <Grid x:Name="LayoutRoot" Background="White">
+        <Grid x:Name="LayoutRoot" Background="White" Height="418" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1.5*"/>
                 <ColumnDefinition Width="*"/>
@@ -111,18 +116,40 @@
                     <TextBlock Grid.Row="2" Text="{Binding Path=LowerWeight, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="23" FontWeight="Bold"/>
                 </Grid>
             </Grid>
-            <Grid Grid.Row="2" Grid.ColumnSpan="2">
+            <Grid x:Name="Footer" Grid.Row="2" Grid.ColumnSpan="2">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                    <TextBlock Text="{Binding Path=W[CUICurrentPrintName], Source={StaticResource viewModel}, FallbackValue='프린트명'}" Margin="2,0"/>
+                    <TextBlock Text="{Binding curPrintName, FallbackValue='N/A', UpdateSourceTrigger=PropertyChanged}"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Margin="5,0" x:Name="btnChangePrint" Width="100" Content="{Binding W[CUIChangePrintButtonText], Source={StaticResource viewModel}, FallbackValue='프린터변경'}" 
+                            Style="{StaticResource btnStyle}" Command="{Binding ChangePrintCommand}"/>
+                    <Button Margin="5,0" x:Name="btnCharging" Width="100" Content="{Binding W[CUIChargingButtonText], Source={StaticResource viewModel}, FallbackValue='투입'}" 
+                            Style="{StaticResource btnStyle}" IsEnabled="{Binding IsCharging}" Command="{Binding ChargingCommandAsync}"/>
+                    <Button Margin="5,0" x:Name="btnConfirm" Width="100" Content="{Binding W[CUIDataWriteToEBRButtonText], Source={StaticResource viewModel}, FallbackValue='기록'}" 
+                            Style="{StaticResource btnStyle}" IsEnabled="{Binding IsEnabled}" Command="{Binding ConfirmCommandAsync}"/>
+                    <Button Margin="5,0" x:Name="btnClose" Width="100" Content="{Binding [CUICloseButtonText], Source={StaticResource viewModel}, FallbackValue='닫기'}"
+                            Style="{StaticResource btnStyle}" Click="btnClose_Click"/>
+                </StackPanel>
+            </Grid>
+            <!--<Grid Grid.Row="2" Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
+                    <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="200"/>
                     <ColumnDefinition Width="200"/>
                     <ColumnDefinition Width="200"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="btnCharging" Content="투입" Grid.Column="1" Margin="5" Command="{Binding ChargingCommandAsync}" IsEnabled="{Binding IsCharging}"/>
-                <Button x:Name="btnConfirm" Content="기록" Grid.Column="2" Margin="5" Command="{Binding ConfirmCommandAsync}" IsEnabled="{Binding IsEnabled}"/>
-                <Button x:Name="btnClose" Content="닫기"  Grid.Column="3" Margin="5" Click="btnClose_Click"/>
-            </Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                    <TextBlock Text="{Binding Path=W[CUICurrentPrintName], Source={StaticResource R}, FallbackValue='프린트명'}" Margin="2,0"/>
+                    <TextBlock Text="{Binding curPrintName, FallbackValue='N/A'}"/>
+                </StackPanel>
+                <Button x:Name="btnChangePrint" Content="프린터변경" Grid.Column="1" Margin="5" Command="{Binding ChangePrintCommand}"/>
+                <Button x:Name="btnCharging" Content="투입" Grid.Column="2" Margin="5" Command="{Binding ChargingCommandAsync}" IsEnabled="{Binding IsCharging}"/>
+                <Button x:Name="btnConfirm" Content="기록" Grid.Column="3" Margin="5" Command="{Binding ConfirmCommandAsync}" IsEnabled="{Binding IsEnabled}"/>
+                <Button x:Name="btnClose" Content="닫기"  Grid.Column="4" Margin="5" Click="btnClose_Click"/>
+            </Grid>-->
         </Grid>
     </toolkit:BusyIndicator>
 </ShopFloorUI:ShopFloorCustomWindow>
