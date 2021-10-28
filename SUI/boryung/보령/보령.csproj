@@ -401,6 +401,10 @@
     </Compile>
     <Compile Include="WMS\빈용기출고ViewModel.cs" />
     <Compile Include="EM모니터링\EM모니터링.cs" />
+    <Compile Include="WMS\칭량IBC반제품무게측정.xaml.cs">
+      <DependentUpon>칭량IBC반제품무게측정.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WMS\칭량IBC반제품무게측정ViewModel.cs" />
     <Compile Include="공정검사\IPC검사결과조회.xaml.cs">
       <DependentUpon>IPC검사결과조회.xaml</DependentUpon>
     </Compile>
@@ -956,6 +960,10 @@
     <Page Include="WMS\빈용기출고.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WMS\칭량IBC반제품무게측정.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="공정검사\IPC검사결과조회.xaml">
       <SubType>Designer</SubType>
