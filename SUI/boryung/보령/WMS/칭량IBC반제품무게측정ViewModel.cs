@@ -136,6 +136,8 @@ namespace 보령
                 OnPropertyChanged("IBCList");
             }
         }
+
+        decimal GorssSum;
         #endregion
         #region BizRule
         /// <summary>
@@ -361,7 +363,8 @@ namespace 보령
                             if(arg != null && arg is string)
                             {
                                 string vessel = arg as string;
-                                decimal tare = 0m, grossSum = 0m;                         
+                                decimal tare = 0m;
+                                GorssSum = 0m;  // 이론량. 용기에 담긴 제품의 무게의 합.
 
                                 // 용기정보 조회
                                 _BR_BRS_SEL_VESSEL_Info.INDATAs.Clear();
@@ -392,7 +395,7 @@ namespace 보령
                                 {
                                     foreach (var item in _BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging.OUTDATAs)
                                     {
-                                        grossSum += Weight.Add(0, _CURVALUE.Uom, item.MSUBLOTQTY.GetValueOrDefault(), item.UOMNAME);
+                                        GorssSum += Weight.Add(0, _CURVALUE.Uom, item.MSUBLOTQTY.GetValueOrDefault(), item.UOMNAME);
                                     }
                                 }
                                 else
@@ -400,9 +403,9 @@ namespace 보령
 
                                 if (tare > 0)
                                 {
-                                    if (grossSum > 0)
+                                    if (GorssSum > 0)
                                     {
-                                        decimal min = tare + grossSum - 300, max = tare + grossSum + 300;
+                                        decimal min = tare + GorssSum - 300, max = tare + GorssSum + 300;
 
                                         _MINVALUE.SetWeight(min > 0 ? min : 0m, _CURVALUE.Uom, _CURVALUE.Precision);                                        
                                         _MAXVALUE.SetWeight(max > 0 ? max : 0m, _CURVALUE.Uom, _CURVALUE.Precision);
@@ -496,8 +499,11 @@ namespace 보령
                                     ScaleId = _SCALEID,
                                     Uom = _CURVALUE.Uom,
                                     Precision = _CURVALUE.Precision,
-                                    TareWeight = tare.Value,
-                                    NetWeight = _CURVALUE.Value - tare.Value
+                                    TareWeight = Convert.ToDecimal(tare.Value.ToString("F" + tare.Precision)),
+                                    NetWeight = GorssSum,
+                                    MinWeight = MINVALUE,
+                                    MaxWeight = MAXVALUE,
+                                    CurWeight = _CURVALUE.Value
                                 });
 
                                 InitializeData();
@@ -589,24 +595,28 @@ namespace 보령
                                 DataSet ds = new DataSet();
                                 DataTable dt = new DataTable("DATA");
                                 ds.Tables.Add(dt);
-
-                                dt.Columns.Add(new DataColumn("POID"));
-                                dt.Columns.Add(new DataColumn("IBCID"));
-                                dt.Columns.Add(new DataColumn("SCALEID"));
-                                dt.Columns.Add(new DataColumn("TOTALWEIGHT"));
-                                dt.Columns.Add(new DataColumn("TAREWEIGHT"));
-                                dt.Columns.Add(new DataColumn("RAWWEIGHT"));
+                                
+                                dt.Columns.Add(new DataColumn("용기번호"));
+                                dt.Columns.Add(new DataColumn("저울번호"));
+                                dt.Columns.Add(new DataColumn("용기중량"));
+                                dt.Columns.Add(new DataColumn("내용물중량"));
+                                dt.Columns.Add(new DataColumn("하한"));
+                                dt.Columns.Add(new DataColumn("전체중량"));
+                                dt.Columns.Add(new DataColumn("상한"));
+                                dt.Columns.Add(new DataColumn("무게"));   // 2021.11.01 박희돈 무게(측정값)으로 컬럼명 만들어 달라는 요청(남정이) 해당 이름으로는 컬럼을 못만들어 EBR표시할때만 바꿔줌.
 
                                 foreach (var item in _IBCList)
                                 {
                                     var row = dt.NewRow();
-
-                                    row["POID"] = item.PoId != null ? item.PoId : "";
-                                    row["IBCID"] = item.VesselId != null ? item.VesselId : "";
-                                    row["SCALEID"] = item.ScaleId != null ? item.ScaleId : "";
-                                    row["TOTALWEIGHT"] = item != null ? item.GrossWeight.ToString("F" + item.Precision) : "";
-                                    row["TAREWEIGHT"] = item != null ? item.TareWeight.ToString("F" + item.Precision) : "";
-                                    row["RAWWEIGHT"] = item != null ? item.NetWeight.ToString("F" + item.Precision) : "";
+                                    
+                                    row["용기번호"] = item.VesselId != null ? item.VesselId : "";
+                                    row["저울번호"] = item.ScaleId != null ? item.ScaleId : "";
+                                    row["용기중량"] = item != null ? item.TareWeight.ToString("F" + item.Precision) + " " + _ScaleUom : "";
+                                    row["내용물중량"] = item != null ? item.NetWeight.ToString("F" + item.Precision) + " " + _ScaleUom : "";
+                                    row["하한"] = item != null ? item.MinWeight : "";
+                                    row["전체중량"] = item != null ? item.GrossWeight.ToString("F" + item.Precision) + " " + _ScaleUom : "";
+                                    row["상한"] = item != null ? item.MaxWeight : "";
+                                    row["무게"] = item != null ? item.CurWeight.ToString("F" + item.Precision) + " " + _ScaleUom : "";
 
                                     dt.Rows.Add(row);
                                 }

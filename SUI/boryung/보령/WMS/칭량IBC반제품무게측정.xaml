@@ -111,23 +111,30 @@
                             <TextBlock Grid.Row="2" Text="{Binding MINVALUE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ScaleValueStyle}"/>
                         </Grid>
                     </Border>
-                    
-                    
+
+
                     <Button Grid.Row="1" Grid.Column="1" Name="btnSaveWeight" Content="중량 확인" Height="30" Margin="5"
                             IsEnabled="{Binding btnSaveWeightEnable}" Command="{Binding SaveWeightCommandAsync}"/>
                 </Grid>
                 <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="725*"/>
+                        <ColumnDefinition Width="58*"/>
+                        <ColumnDefinition Width="105*"/>
+                    </Grid.ColumnDefinitions>
                     <c1:C1DataGrid x:Name="HALBDataGrid" HeadersVisibility="Column" AutoGenerateColumns="False"
                                    ScrollBarStyle="{Binding Source={StaticResource dgScroll}}"
                                    CanUserAddRows="False" CanUserEditRows="False" CanUserRemoveRows="False"
-                                   ItemsSource="{Binding IBCList}">
+                                   ItemsSource="{Binding IBCList}" Grid.ColumnSpan="3">
                         <c1:C1DataGrid.Columns>
-                            <c1:DataGridTextColumn Header="{Binding W[CUIOrderNo], Source={StaticResource R}, FallbackValue='오더 번호'}" Binding="{Binding PoId}"/>
-                            <c1:DataGridTextColumn Header="{Binding W[CUIVesselId], Source={StaticResource R}, FallbackValue='용기 번호'}" Binding="{Binding VesselId}"/>
-                            <c1:DataGridTextColumn Header="{Binding W[CUIScaleID], Source={StaticResource R}, FallbackValue='저울 ID'}" Binding="{Binding ScaleId}"/>
-                            <c1:DataGridTextColumn Header="{Binding W[CUIGrossWeight], Source={StaticResource R}, FallbackValue='총 중량'}" Binding="{Binding GrossWeight}"/>
-                            <c1:DataGridTextColumn Header="{Binding W[CUITareWeight], Source={StaticResource R}, FallbackValue='용기 중량'}" Binding="{Binding TareWeight}"/>
-                            <c1:DataGridTextColumn Header="{Binding W[CUINetWeight], Source={StaticResource R}, FallbackValue='내용 중량'}" Binding="{Binding NetWeight}"/>
+                            <c1:DataGridTextColumn Header="{Binding W[CUIVesselId], Source={StaticResource VM}, FallbackValue='용기 번호'}" Binding="{Binding VesselId}"/>
+                            <c1:DataGridTextColumn Header="{Binding W[CUIScaleID], Source={StaticResource VM}, FallbackValue='저울 번호'}" Binding="{Binding ScaleId}"/>
+                            <c1:DataGridTextColumn Header="{Binding W[CUITareWeight], Source={StaticResource VM}, FallbackValue='용기 중량'}" Binding="{Binding TareWeight, StringFormat='#0.00# g'}"/>
+                            <c1:DataGridTextColumn Header="{Binding W[CUINetWeight], Source={StaticResource VM}, FallbackValue='내용 중량'}" Binding="{Binding NetWeight, StringFormat='#0.00# g'}"/>
+                            <c1:DataGridTextColumn Header="{Binding W[CUIMinWeight], Source={StaticResource VM}, FallbackValue='하한'}" Binding="{Binding MinWeight}"/>
+                            <c1:DataGridTextColumn Header="{Binding W[CUIGrossWeight], Source={StaticResource VM}, FallbackValue='전체 중량'}" Binding="{Binding GrossWeight, StringFormat='#0.00# g'}"/>
+                            <c1:DataGridTextColumn Header="{Binding W[CUIMaxWeight], Source={StaticResource VM}, FallbackValue='상한'}" Binding="{Binding MaxWeight}"/>
+                            <c1:DataGridTextColumn Header="{Binding W[CUICurWeight], Source={StaticResource VM}, FallbackValue='무게(측정값)'}" Binding="{Binding CurWeight, StringFormat='#0.00# g'}"/>
                         </c1:C1DataGrid.Columns>
                     </c1:C1DataGrid>
                 </Grid>
@@ -135,12 +142,12 @@
 
             <Grid x:Name="Footer" Grid.Row="2">
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Button Margin="5,0" x:Name="btnChangeScale" Width="100" Height="50" Content="{Binding W[CUIChangeScaleButtonText], Source={StaticResource R}, FallbackValue=저울변경}" Command="{Binding ChangeScaleCommand}"/>
-                    <Button Margin="5,0" Name="btnComfirm" Width="100" Height="50" Content="{Binding W[CUIDataWriteToEBRButtonText], Source={StaticResource R}, FallbackValue=기록}" Command="{Binding ConfirmCommandAsync}"/>
-                    <Button Margin="5,0" Name="btnClose" Width="100" Height="50" Content="{Binding W[CUICloseButtonText], Source={StaticResource R}, FallbackValue=닫기}" Click="btnClose_Click" />
+                    <Button Margin="5,0" x:Name="btnChangeScale" Width="100" Height="50" Content="{Binding W[CUIChangeScaleButtonText], Source={StaticResource VM}, FallbackValue=저울변경}" Command="{Binding ChangeScaleCommand}"/>
+                    <Button Margin="5,0" Name="btnComfirm" Width="100" Height="50" Content="{Binding W[CUIDataWriteToEBRButtonText], Source={StaticResource VM}, FallbackValue=기록}" Command="{Binding ConfirmCommandAsync}"/>
+                    <Button Margin="5,0" Name="btnClose" Width="100" Height="50" Content="{Binding W[CUICloseButtonText], Source={StaticResource VM}, FallbackValue=닫기}" Click="btnClose_Click" />
                 </StackPanel>
             </Grid>
         </Grid>
     </toolkit:BusyIndicator>
-    
+
 </ShopFloorUI:ShopFloorCustomWindow>

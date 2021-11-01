@@ -58,7 +58,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding W[ScanData], Source={StaticResource R}, FallbackValue=|ScanData|}" HorizontalAlignment="Center"
+        <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding W[CUIScanData], Source={StaticResource R}, FallbackValue=|ScanData|}" HorizontalAlignment="Center"
                    VerticalAlignment="Center" FontSize="20"/>
         <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding Path=ScanData}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="txtScan" FontSize="20" Margin="0"
                  Grid.ColumnSpan="5" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">

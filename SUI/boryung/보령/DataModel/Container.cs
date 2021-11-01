@@ -89,6 +89,47 @@ namespace 보령
             get { return _NetWeight + _TareWeight; }
         }
 
+        /// <summary>
+        /// 저울 하한 값 저장
+        /// </summary>
+        private string _MinWeight;
+        public string MinWeight
+        {
+            get { return _MinWeight; }
+            set
+            {
+                _MinWeight = value;
+                OnPropertyChanged("MinWeight");
+            }
+        }
+
+        /// <summary>
+        /// 저울 상한 값 저장
+        /// </summary>
+        private string _MaxWeight;
+        public string MaxWeight
+        {
+            get { return _MaxWeight; }
+            set
+            {
+                _MaxWeight = value;
+                OnPropertyChanged("MaxWeight");
+            }
+        }
+
+        /// <summary>
+        /// 저울의 현재 측정 값
+        /// </summary>
+        private decimal _CurWeight;
+        public decimal CurWeight
+        {
+            get { return _CurWeight; }
+            set
+            {
+                _CurWeight = value;
+                OnPropertyChanged("CurWeight");
+            }
+        }
     }
 
     public abstract class WIPContainer : Container
