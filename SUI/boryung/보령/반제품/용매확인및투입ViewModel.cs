@@ -18,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Common = LGCNS.iPharmMES.Common.Common;
 using System.Configuration;
+using 보령.UserControls;
 
 namespace 보령
 {
@@ -30,6 +31,9 @@ namespace 보령
             _filteredComponents = new BR_BRS_SEL_Charging_Solvent.OUTDATACollection();
             _BR_BRS_REG_Dispense_Charging_Solvent = new BR_BRS_REG_Dispense_Charging_Solvent();
             _curSeletedItem = new BR_BRS_SEL_Charging_Solvent.OUTDATA();
+            _BR_PHR_SEL_PRINT_LabelImage = new BR_PHR_SEL_PRINT_LabelImage();
+            _BR_PHR_SEL_System_Printer = new BR_PHR_SEL_System_Printer();
+            _BR_BRS_SEL_ProductionOrderDispenseSubLot_OPSG_COMPONENT = new 보령.BR_BRS_SEL_ProductionOrderDispenseSubLot_OPSG_COMPONENT();
 
             int interval = 2000;
             string interval_str = ShopFloorUI.App.Current.Resources["GetWeightInterval"].ToString();
@@ -275,6 +279,27 @@ namespace 보령
                 OnPropertyChanged("BR_BRS_REG_Dispense_Charging_Solvent");
             }
         }
+        private BR_BRS_SEL_ProductionOrderDispenseSubLot_OPSG_COMPONENT _BR_BRS_SEL_ProductionOrderDispenseSubLot_OPSG_COMPONENT;
+
+        private BR_PHR_SEL_System_Printer.OUTDATA _selectedPrint;
+        public string curPrintName
+        {
+            get
+            {
+                if (_selectedPrint != null)
+                    return _selectedPrint.PRINTERNAME;
+                else
+                    return "N/A";
+            }
+        }
+        /// <summary>
+        /// 라벨발행
+        /// </summary>
+        BR_PHR_SEL_PRINT_LabelImage _BR_PHR_SEL_PRINT_LabelImage;
+        /// <summary>
+        /// 프린터 조회
+        /// </summary>
+        BR_PHR_SEL_System_Printer _BR_PHR_SEL_System_Printer;        
         #endregion
         #region [Command]
         public ICommand LoadedCommand
@@ -368,6 +393,20 @@ namespace 보령
                                         throw new Exception(string.Format("대상 원료가 존재하지 않습니다."));
                                 }
 
+                                // 프린터 설정
+                                _BR_PHR_SEL_System_Printer.INDATAs.Add(new BR_PHR_SEL_System_Printer.INDATA
+                                {
+                                    LANGID = AuthRepositoryViewModel.Instance.LangID,
+                                    ROOMID = AuthRepositoryViewModel.Instance.RoomID,
+                                    IPADDRESS = Common.ClientIP
+                                });
+                                if (await _BR_PHR_SEL_System_Printer.Execute() && _BR_PHR_SEL_System_Printer.OUTDATAs.Count > 0)
+                                {
+                                    _selectedPrint = _BR_PHR_SEL_System_Printer.OUTDATAs[0];
+                                    OnPropertyChanged("curPrintName");
+                                }
+                                else
+                                    OnMessage("연결된 프린트가 없습니다.");
                             }
 
                             IsBusy = false;
@@ -603,6 +642,27 @@ namespace 보령
 
                             if (await _BR_BRS_REG_Dispense_Charging_Solvent.Execute() == true)
                             {
+                                //2021.10.27 박희돈 정제수 칭량 후 생성된 msublotid로 라벨 출력하도록 로직 추가.
+                                _BR_BRS_SEL_ProductionOrderDispenseSubLot_OPSG_COMPONENT.INDATAs.Clear();
+                                _BR_BRS_SEL_ProductionOrderDispenseSubLot_OPSG_COMPONENT.OUTDATAs.Clear();
+                                _BR_BRS_SEL_ProductionOrderDispenseSubLot_OPSG_COMPONENT.INDATAs.Add(new BR_BRS_SEL_ProductionOrderDispenseSubLot_OPSG_COMPONENT.INDATA()
+                                {
+                                    POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                    COMPONENTGUID = _BR_BRS_SEL_Charging_Solvent.OUTDATA_BOMs[0].COMPONENTGUID,
+                                    OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID
+                                });
+
+                                if (await _BR_BRS_SEL_ProductionOrderDispenseSubLot_OPSG_COMPONENT.Execute() == true)
+                                {
+                                    // 라벨 출력
+                                    await LabelPrint(_BR_BRS_SEL_ProductionOrderDispenseSubLot_OPSG_COMPONENT.OUTDATAs[0].MSUBLOTID);
+                                }
+                                else
+                                {
+                                    OnMessage("라벨 출력 오류");
+                                }
+
+
                                 var ds = new DataSet();
                                 var dt = new DataTable("DATA");
                                 ds.Tables.Add(dt);
@@ -623,6 +683,7 @@ namespace 보령
                                     row["무게"] = item.REALQTY.ToString("0.##0");
                                     row["단위"] = item.UOMNAME != null ? item.UOMNAME : "";
                                     dt.Rows.Add(row);
+
                                 }
 
                                 var xml = BizActorRuleBase.CreateXMLStream(ds);
@@ -795,6 +856,95 @@ namespace 보령
             catch (Exception ex)
             {
                 OnException(ex.Message, ex);
+            }
+        }
+
+        public ICommand ChangePrintCommand
+        {
+            get
+            {
+                return new CommandBase(arg =>
+                {
+                    try
+                    {
+                        IsBusy = true;
+
+                        CommandResults["ChangePrintCommand"] = false;
+                        CommandCanExecutes["ChangePrintCommand"] = false;
+
+                        ///
+                        SelectPrinterPopup popup = new SelectPrinterPopup();
+
+                        popup.Closed += (s, e) =>
+                        {
+                            if (popup.DialogResult.GetValueOrDefault())
+                            {
+                                if (popup.SourceGrid.SelectedItem != null && popup.SourceGrid.SelectedItem is BR_PHR_SEL_System_Printer.OUTDATA)
+                                {
+                                    _selectedPrint = popup.SourceGrid.SelectedItem as BR_PHR_SEL_System_Printer.OUTDATA;
+                                    OnPropertyChanged("curPrintName");
+                                }
+                            }
+                        };
+
+                        popup.Show();
+                        ///
+
+                        CommandResults["ChangePrintCommand"] = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        CommandResults["ChangePrintCommand"] = false;
+                        OnException(ex.Message, ex);
+                    }
+                    finally
+                    {
+                        CommandCanExecutes["ChangePrintCommand"] = true;
+
+                        IsBusy = false;
+                    }
+                }, arg =>
+                {
+                    return CommandCanExecutes.ContainsKey("ChangePrintCommand") ?
+                        CommandCanExecutes["ChangePrintCommand"] : (CommandCanExecutes["ChangePrintCommand"] = true);
+                });
+            }
+        }
+
+        /// <summary>
+        /// 라벨발행
+        /// </summary>
+        /// <param name="msublotid"></param>
+        private async Task LabelPrint(string msublotid)
+        {
+            try
+            {
+                if (_selectedPrint != null)
+                {
+                    _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Clear();
+                    _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Clear();
+
+                    _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Add(new BR_PHR_SEL_PRINT_LabelImage.INDATA
+                    {
+                        ReportPath = "/Reports/Label/LABEL_WEIGHING_SOLUTION_SUI",
+                        PrintName = _selectedPrint.PRINTERNAME,
+                        USERID = AuthRepositoryViewModel.Instance.LoginedUserID
+                    });
+                    _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
+                    {
+                        ParamName = "MSUBLOTID",
+                        ParamValue = msublotid
+                    });
+
+                    await _BR_PHR_SEL_PRINT_LabelImage.Execute(Common.enumBizRuleOutputClearMode.Always, Common.enumBizRuleXceptionHandleType.FailEvent);
+                }
+
+                return;
+            }
+            catch (Exception ex)
+            {
+                OnException(ex.Message, ex);
+                return;
             }
         }
         #endregion

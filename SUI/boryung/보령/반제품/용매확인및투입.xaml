@@ -125,9 +125,13 @@
                         <ColumnDefinition Width="200"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="btnCharging" Content="투입" Grid.Column="1" Margin="5" Click="btnCharging_Click" IsEnabled="{Binding CANCHARGEFLAG}"/>
-                    <Button x:Name="btnConfirm" Content="기록" Grid.Column="2" Margin="5" Command="{Binding ConfirmCommandAsync}" IsEnabled="{Binding CANRECORDFLAG}"/>
-                    <Button x:Name="btnClose" Content="닫기"  Grid.Column="3" Margin="5" Click="btnClose_Click"/>
+                    <Button x:Name="btnCharging" Content="투입" Grid.Column="2" Margin="26,10,56,0" Click="btnCharging_Click" IsEnabled="{Binding CANCHARGEFLAG}"/>
+                    <Button x:Name="btnConfirm" Content="기록" Grid.Column="2" Margin="148,10,134,0" Command="{Binding ConfirmCommandAsync}" IsEnabled="{Binding CANRECORDFLAG}" Grid.ColumnSpan="2"/>
+                    <Button x:Name="btnClose" Content="닫기"  Grid.Column="3" Margin="73,10,10,0" Click="btnClose_Click"/>
+                    <TextBlock Text="{Binding W[CUICurrentPrintName], FallbackValue=프린트명, Source={StaticResource viewModel}}" Margin="0,34,46,0"/>
+                    <TextBlock Text="{Binding curPrintName, FallbackValue='N/A', UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2" Margin="49,34,129,0"/>
+                    <Button Margin="104,10,178,0" x:Name="btnChangePrint" Content="{Binding W[CUIChangePrintButtonText], FallbackValue=프린터변경, Source={StaticResource viewModel}}" 
+                        Command="{Binding ChangePrintCommand}" Grid.Column="1" Grid.ColumnSpan="2"/>
                 </Grid>
             </Grid>
         </toolkit:BusyIndicator>

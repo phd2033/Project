@@ -24,8 +24,8 @@ namespace 보령
         {
             InitializeComponent();
 
-            System.Text.StringBuilder empty = new System.Text.StringBuilder();
-            LGCNS.iPharmMES.Common.UIObject.SetObjectLang(this, ref empty, LGCNS.EZMES.Common.LogInInfo.LangID);
+            //System.Text.StringBuilder empty = new System.Text.StringBuilder();
+            //LGCNS.iPharmMES.Common.UIObject.SetObjectLang(this, ref empty, LGCNS.EZMES.Common.LogInInfo.LangID);
 
             _headerRowColumns = dgProductionOutput.Columns.Take(1).ToArray();
             _headerColumnRows = dgProductionOutput.TopRows.Take(1).ToArray();
