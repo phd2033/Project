@@ -642,7 +642,7 @@ namespace 보령
 
                             if (await _BR_BRS_REG_Dispense_Charging_Solvent.Execute() == true)
                             {
-                                //2021.10.27 박희돈 정제수 칭량 후 생성된 msublotid로 라벨 출력하도록 로직 추가.
+                                //2021.12.01 김호연 에탄올 칭량 후 생성된 msublotid로 라벨 출력하도록 로직 추가.
                                 _BR_BRS_SEL_ProductionOrderDispenseSubLot_OPSG_COMPONENT.INDATAs.Clear();
                                 _BR_BRS_SEL_ProductionOrderDispenseSubLot_OPSG_COMPONENT.OUTDATAs.Clear();
                                 _BR_BRS_SEL_ProductionOrderDispenseSubLot_OPSG_COMPONENT.INDATAs.Add(new BR_BRS_SEL_ProductionOrderDispenseSubLot_OPSG_COMPONENT.INDATA()
