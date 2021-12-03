@@ -197,51 +197,52 @@ namespace 보령
                                 INSUSER = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_Yield")
                             });
 
-                            await _BR_BRS_MRG_ProductionOrderDetailAttributeValue_Multi.Execute();
-
-                            // 수율기록
-                            _BR_BRS_REG_ProductionOrderDetailYield.INDATAs.Clear();
-                            _BR_BRS_REG_ProductionOrderDetailYield.INDATAs.Add(new BR_BRS_REG_ProductionOrderDetailYield.INDATA
+                            if (await _BR_BRS_MRG_ProductionOrderDetailAttributeValue_Multi.Execute())
                             {
-                                POID = _mainWnd.CurrentOrder.ProductionOrderID,
-                                OPSGGUID = Guid.Parse(_mainWnd.CurrentOrder.OrderProcessSegmentID),
-                                COMMENT = AuthRepositoryViewModel.GetCommentByFunctionCode("OM_ProductionOrder_Yield"),
-                                INSUSER = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_Yield"),
-                                YIELD2 = Result_SUM
-                            });
-
-                            if (await BR_BRS_REG_ProductionOrderDetailYield.Execute() == true)
-                            {
-                                Brush background = _mainWnd.PrintArea.Background;
-                                _mainWnd.PrintArea.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xD6, 0xD4, 0xD4));
-                                _mainWnd.PrintArea.BorderThickness = new System.Windows.Thickness(1);
-                                _mainWnd.PrintArea.Background = new SolidColorBrush(Colors.White);
-
-
-                                _mainWnd.CurrentInstruction.Raw.ACTVAL = Result_SUM.ToString();
-                                _mainWnd.CurrentInstruction.Raw.NOTE = imageToByteArray();
-
-                                var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction, false, false, true);
-                                if (result != enumInstructionRegistErrorType.Ok)
+                                // 수율기록
+                                _BR_BRS_REG_ProductionOrderDetailYield.INDATAs.Clear();
+                                _BR_BRS_REG_ProductionOrderDetailYield.INDATAs.Add(new BR_BRS_REG_ProductionOrderDetailYield.INDATA
                                 {
-                                    throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", _mainWnd.CurrentInstruction.Raw.IRTGUID, result));
-                                }
+                                    POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                    OPSGGUID = Guid.Parse(_mainWnd.CurrentOrder.OrderProcessSegmentID),
+                                    COMMENT = AuthRepositoryViewModel.GetCommentByFunctionCode("OM_ProductionOrder_Yield"),
+                                    INSUSER = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_Yield"),
+                                    YIELD2 = Result_SUM
+                                });
 
-                                foreach (var item in outputValues)
+                                if (await BR_BRS_REG_ProductionOrderDetailYield.Execute() == true)
                                 {
-                                    item.Raw.ACTVAL = _mainWnd.CurrentInstruction.Raw.ACTVAL;
+                                    Brush background = _mainWnd.PrintArea.Background;
+                                    _mainWnd.PrintArea.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xD6, 0xD4, 0xD4));
+                                    _mainWnd.PrintArea.BorderThickness = new System.Windows.Thickness(1);
+                                    _mainWnd.PrintArea.Background = new SolidColorBrush(Colors.White);
 
-                                    result = await _mainWnd.Phase.RegistInstructionValue(item);
+
+                                    _mainWnd.CurrentInstruction.Raw.ACTVAL = Result_SUM.ToString();
+                                    _mainWnd.CurrentInstruction.Raw.NOTE = imageToByteArray();
+
+                                    var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction, false, false, true);
                                     if (result != enumInstructionRegistErrorType.Ok)
                                     {
-                                        throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", item.Raw.IRTGUID, result));
+                                        throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", _mainWnd.CurrentInstruction.Raw.IRTGUID, result));
                                     }
+
+                                    foreach (var item in outputValues)
+                                    {
+                                        item.Raw.ACTVAL = _mainWnd.CurrentInstruction.Raw.ACTVAL;
+
+                                        result = await _mainWnd.Phase.RegistInstructionValue(item);
+                                        if (result != enumInstructionRegistErrorType.Ok)
+                                        {
+                                            throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", item.Raw.IRTGUID, result));
+                                        }
+                                    }
+
+                                    if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
+                                    else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
                                 }
-
-                                if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
-                                else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
                             }
-
+                            
                             IsBusy = false;
                             ///
 
