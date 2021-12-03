@@ -171,6 +171,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model.Access\iPharm.Report\BR.Performance\BR_BRS_SEL_TST_REQUEST_NUMBER_CONFIRM.Access.cs" />
     <Compile Include="Model.Access\iPharm.Report\BR.ProductionOrderReport\BR_PHR_RPT_ProductionOrderDetail_Result.Access.cs" />
     <Compile Include="Model.Access\iPharm.Report\BR.ProductionOrderReport\BR_PHR_RPT_ProductionOrderDetail_WorkTime.Access.cs" />
     <Compile Include="Model.Access\iPharm.Report\BR.ProductionOrderReport\BR_PHR_RPT_ProductionOrderTestSpecificationResult.Access.cs" />
@@ -198,6 +199,7 @@
     <Compile Include="ViewModel\DetailSearch\PerformanceByWorkshopViewModel.cs" />
     <Compile Include="ViewModel\Original\BoardSettingPopupViewModel.cs" />
     <Compile Include="ViewModel\Original\MainPageViewModel.cs" />
+    <Compile Include="ViewModel\TstRequestConfirmViewModel.cs" />
     <Compile Include="View\BoardMain.xaml.cs">
       <DependentUpon>BoardMain.xaml</DependentUpon>
     </Compile>
@@ -269,6 +271,9 @@
     </Compile>
     <Compile Include="View\IPCCPPRsltView.xaml.cs">
       <DependentUpon>IPCCPPRsltView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TstRequestConfirm.xaml.cs">
+      <DependentUpon>TstRequestConfirm.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -365,6 +370,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\IPCCPPRsltView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\TstRequestConfirm.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
