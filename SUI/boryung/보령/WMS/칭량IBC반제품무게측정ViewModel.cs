@@ -472,7 +472,10 @@ namespace 보령
                             CommandResults["SaveWeightCommandAsync"] = false;
                             CommandCanExecutes["SaveWeightCommandAsync"] = false;
 
-                            ///
+                            // 2021-12-03 김호연 
+                            // 저울 무게 기록하는 시점에 무게 변경되는 현상이 발생
+                            // 저울 무게는 변경이 되니 변수에 담아서 무게 저장 및 기록
+                            Decimal CurWeightValue = _CURVALUE.Value;
 
                             btnSaveWeightEnable = false;
                             _repeater.Stop();
@@ -482,7 +485,9 @@ namespace 보령
                             {
                                 VESSELID = _VESSELID,
                                 USERID = AuthRepositoryViewModel.Instance.LoginedUserID,
-                                GROSSWEIGHT = _CURVALUE.Value,
+                                //GROSSWEIGHT = _CURVALUE.Value,
+                                // 2021-12-03 김호연 
+                                GROSSWEIGHT = CurWeightValue,
                                 SCALEID = _SCALEID,
                                 ROOMNO = AuthRepositoryViewModel.Instance.RoomID
                             });
@@ -503,7 +508,9 @@ namespace 보령
                                     NetWeight = GorssSum,
                                     MinWeight = MINVALUE,
                                     MaxWeight = MAXVALUE,
-                                    CurWeight = _CURVALUE.Value
+                                    //CurWeight = _CURVALUE.Value
+                                    // 2021-12-03 김호연 
+                                    CurWeight = CurWeightValue
                                 });
 
                                 InitializeData();

@@ -416,6 +416,11 @@ namespace 보령
                             _repeater.Stop();
                             btnRecordEnable = false;
 
+                            // 2021-12-03 김호연 
+                            // 저울 무게 기록하는 시점에 무게 변경되는 현상이 발생
+                            // 저울 무게는 변경이 되니 변수에 담아서 무게 저장 및 기록
+                            Decimal TareWeightValue = _TareWeight.Value;
+
                             _BR_BRS_REG_VESSEL_WEIGHT.INDATAs.Clear();
                             _BR_BRS_REG_VESSEL_WEIGHT.INDATAs.Add(new BR_BRS_REG_VESSEL_WEIGHT.INDATA
                             {
@@ -425,7 +430,9 @@ namespace 보령
                                 OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
                                 OUTPUTGUID = _Outputguid,
                                 OUTGUBUN = "EMPTY",
-                                GROSSWEIGHT = _TareWeight.Value,
+                                //GROSSWEIGHT = _TareWeight.Value,
+                                // 2021-12-03 김호연 
+                                GROSSWEIGHT = TareWeightValue,
                                 UOMID = _ScaleUom,
                                 VESSELID = _VesselId,
                                 SCALEID = ScaleId,
@@ -439,7 +446,9 @@ namespace 보령
                                     PoId = _mainWnd.CurrentOrder.ProductionOrderID,
                                     VesselId = _VesselId,
                                     ScaleId = ScaleId,
-                                    TareWeight = _TareWeight.Value,
+                                    //TareWeight = _TareWeight.Value,
+                                    // 2021-12-03 김호연 
+                                    TareWeight = TareWeightValue,
                                     NetWeight = 0,
                                     Precision = _TareWeight.Precision,
                                     Uom = _TareWeight.Uom
