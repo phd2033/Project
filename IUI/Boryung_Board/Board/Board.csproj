@@ -171,6 +171,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model.Access\iPharm.Report\BR.Performance\BR_BRS_INS_TST_APPROVAL_CANCELL.Access.cs" />
     <Compile Include="Model.Access\iPharm.Report\BR.Performance\BR_BRS_SEL_TST_REQUEST_NUMBER_CONFIRM.Access.cs" />
     <Compile Include="Model.Access\iPharm.Report\BR.ProductionOrderReport\BR_PHR_RPT_ProductionOrderDetail_Result.Access.cs" />
     <Compile Include="Model.Access\iPharm.Report\BR.ProductionOrderReport\BR_PHR_RPT_ProductionOrderDetail_WorkTime.Access.cs" />

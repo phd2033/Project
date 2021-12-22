@@ -78,19 +78,26 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="5" />
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="5" />
-                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="5" />
                     </Grid.ColumnDefinitions>
 
                     <sdk:Label Grid.Column="1" Content="날짜" Style="{StaticResource lblStyle}"/>
-                    <StackPanel Grid.Column="3" Orientation="Horizontal" Width="210">
+                    <StackPanel Grid.Column="3" Orientation="Horizontal">
                         <Ctrl:iPharmMESFromToCalendar SelectedDateFrom="{Binding Path=PeriodSTDTTM, Mode=TwoWay}"
                                                        SelectedDateTo="{Binding Path=PeriodEDDTTM, Mode=TwoWay}" />
                     </StackPanel>
-                    <Button Grid.Column="17" Content="검색" Width="80" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+                    <Button Grid.Column="15" Content="승인취소" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10,0,0,0" Width="80" >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <i:InvokeCommandAction Command="{Binding Path=BtnApprovalCancelCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Button>
+                     <Button Grid.Column="16" Content="검색" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10,0,0,0" Width="80" >
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Click">
                                 <i:InvokeCommandAction Command="{Binding Path=BtnSearchCommand}"/>
@@ -122,16 +129,17 @@
                                        CanUserAddRows="False"
                                        CanUserSort="True"
                                        ItemsSource="{Binding Path=BR_BRS_SEL_TST_REQUEST_NUMBER_CONFIRM.OUTDATAs, Mode=OneWay}">
-                        <c1:C1DataGrid.Columns>
+                            <c1:C1DataGrid.Columns>
                                 <c1:DataGridTextColumn SortMemberPath="POID" Header="오더번호" Binding="{Binding Path=POID}" HorizontalAlignment="Center" MinWidth="60" HeaderStyle="{StaticResource colHeader}"/>
                                 <c1:DataGridTextColumn SortMemberPath="MTRLNAME" Header="제품명" Binding="{Binding Path=MTRLNAME}" HorizontalAlignment="Center" MinWidth="60" HeaderStyle="{StaticResource colHeader}"/>
+                                <c1:DataGridTextColumn SortMemberPath="ITEM_TYPE" Header="품목 유형" Binding="{Binding Path=ITEM_TYPE}" HorizontalAlignment="Center" MinWidth="60" HeaderStyle="{StaticResource colHeader}"/>
                                 <c1:DataGridTextColumn SortMemberPath="BATCHNO" Header="제조번호" Binding="{Binding Path=BATCHNO}" HorizontalAlignment="Center" MinWidth="60" HeaderStyle="{StaticResource colHeader}"/>
                                 <c1:DataGridTextColumn SortMemberPath="PROCESSSEGMENTID" Header="공정" Binding="{Binding Path=PROCESSSEGMENTID}" HorizontalAlignment="Center" MinWidth="60" HeaderStyle="{StaticResource colHeader}"/>
                                 <c1:DataGridTextColumn SortMemberPath="TST_REQ_NO" Header="의뢰 번호" Binding="{Binding Path=TST_REQ_NO}" HorizontalAlignment="Center" MinWidth="60" HeaderStyle="{StaticResource colHeader}"/>
                                 <c1:DataGridTextColumn SortMemberPath="INSDTTM" Header="의뢰 일시" Binding="{Binding Path=INSDTTM}" HorizontalAlignment="Center" MinWidth="60" HeaderStyle="{StaticResource colHeader}"/>
                                 <c1:DataGridTextColumn SortMemberPath="UD_TYPE" Header="적합여부" Binding="{Binding Path=UD_TYPE}" HorizontalAlignment="Center" MinWidth="60" HeaderStyle="{StaticResource colHeader}"/>
                                 <c1:DataGridTextColumn SortMemberPath="UD_TIME" Header="적합일시" Binding="{Binding Path=UD_TIME}" HorizontalAlignment="Center" MinWidth="60" HeaderStyle="{StaticResource colHeader}"/>
-                            </c1:C1DataGrid.Columns>   
+                            </c1:C1DataGrid.Columns>
                         </c1:C1DataGrid>
 
                         <!--<Button Grid.Row="3" Grid.Column="1" Width="60" Height="30" HorizontalAlignment="Right" Cursor="Hand" Visibility="Visible">

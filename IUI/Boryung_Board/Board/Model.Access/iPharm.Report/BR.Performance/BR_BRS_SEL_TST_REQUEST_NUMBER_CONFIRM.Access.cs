@@ -257,6 +257,38 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
+            private string _ITEM_TYPE;
+            [BizActorOutputItemAttribute()]
+            public string ITEM_TYPE
+            {
+                get
+                {
+                    return this._ITEM_TYPE;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._ITEM_TYPE = value;
+                        this.CheckIsOriginal("ITEM_TYPE", value);
+                        this.OnPropertyChanged("ITEM_TYPE");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
             private string _BATCHNO;
             [BizActorOutputItemAttribute()]
             public string BATCHNO

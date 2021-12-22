@@ -160,6 +160,8 @@
                                               CertificationType="Function"
                                               IsEnabled="{Binding IsEnable_OKBtn}"
                                               Command="{Binding ConfirmCommandAsync}"/>
+                    <Button Content="{Binding W[CUIDefaultDataWriteToEBRButtonText], FallbackValue='기록없음'}" Margin="5,1" Width="100" Height="40"
+                            Command="{Binding NoRecordConfirmCommand}"/>
                     <Button Content="닫기" Width="100" Click="Button_Click"  Margin="10 5 0 5"/>
                 </StackPanel>
             </Grid>
