@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LGCNS.iPharmMES.Common
 {
-
+    
     /// <summary>
     /// summary of BR_PHR_RPT_ProductionOrder_Result
     /// </summary>
@@ -22,7 +22,7 @@ namespace LGCNS.iPharmMES.Common
                 return this._INDATAs;
             }
         }
-        [BizActorInputSetDefineAttribute(Order = "0")]
+        [BizActorInputSetDefineAttribute(Order="0")]
         [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
         public partial class INDATA : BizActorDataSetBase
         {
@@ -338,7 +338,7 @@ namespace LGCNS.iPharmMES.Common
                 return this._OUTDATAs;
             }
         }
-        [BizActorOutputSetDefineAttribute(Order = "0")]
+        [BizActorOutputSetDefineAttribute(Order="0")]
         [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
         public partial class OUTDATA : BizActorDataSetBase
         {
@@ -609,9 +609,9 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
-            private string _PLANQTY;
+            private System.Nullable<decimal> _PLANQTY;
             [BizActorOutputItemAttribute()]
-            public string PLANQTY
+            public System.Nullable<decimal> PLANQTY
             {
                 get
                 {
@@ -673,9 +673,9 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
-            private string _PRODQTY;
+            private System.Nullable<decimal> _PRODQTY;
             [BizActorOutputItemAttribute()]
-            public string PRODQTY
+            public System.Nullable<decimal> PRODQTY
             {
                 get
                 {
@@ -705,9 +705,9 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
-            private string _SCRAPQTY;
+            private System.Nullable<decimal> _SCRAPQTY;
             [BizActorOutputItemAttribute()]
-            public string SCRAPQTY
+            public System.Nullable<decimal> SCRAPQTY
             {
                 get
                 {
@@ -737,9 +737,9 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
-            private string _SAMPLEQTY;
+            private System.Nullable<decimal> _SAMPLEQTY;
             [BizActorOutputItemAttribute()]
-            public string SAMPLEQTY
+            public System.Nullable<decimal> SAMPLEQTY
             {
                 get
                 {
@@ -769,9 +769,9 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
-            private string _STDYIELD;
+            private System.Nullable<decimal> _STDYIELD;
             [BizActorOutputItemAttribute()]
-            public string STDYIELD
+            public System.Nullable<decimal> STDYIELD
             {
                 get
                 {
@@ -801,9 +801,9 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
-            private string _ACTYIELD;
+            private System.Nullable<decimal> _ACTYIELD;
             [BizActorOutputItemAttribute()]
-            public string ACTYIELD
+            public System.Nullable<decimal> ACTYIELD
             {
                 get
                 {
