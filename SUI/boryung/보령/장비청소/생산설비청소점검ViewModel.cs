@@ -90,7 +90,9 @@ namespace 보령
                                 {
                                     foreach (InstructionModel Inst in refInst)
                                     {
-                                        if(Inst.Raw.ACTVAL != "N/A")
+                                        // 김호연 n/a 소문자도 청소점검 화면 안보이게 변경
+                                        // if (Inst.Raw.ACTVAL != "N/A")
+                                        if (Inst.Raw.ACTVAL.ToUpper() != "N/A")
                                         {
                                             _BR_BRS_SEL_EquipmentStatus_PROCEQPT.INDATAs.Add(new BR_BRS_SEL_EquipmentStatus_PROCEQPT.INDATA
                                             {

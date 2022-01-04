@@ -50,7 +50,9 @@ namespace 보령
 
             foreach (var item in inputValues)
             {
-                if(item.Raw.ACTVAL != "N/A")
+                // 김호연 n/a 소문자도 로그북 기록 안되도록 변경
+                //if(item.Raw.ACTVAL != "N/A")
+                if (item.Raw.ACTVAL.ToUpper() != "N/A")
                 {
                     bizRule.INDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_PROCEQPT.INDATA()
                     {
