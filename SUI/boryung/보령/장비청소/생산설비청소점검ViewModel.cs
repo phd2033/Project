@@ -92,19 +92,39 @@ namespace 보령
                                     {
                                         // 김호연 n/a 소문자도 청소점검 화면 안보이게 변경
                                         // if (Inst.Raw.ACTVAL != "N/A")
-                                        if (Inst.Raw.ACTVAL.ToUpper() != "N/A")
+                                        if (Inst.Raw.ACTVAL == null)
                                         {
-                                            _BR_BRS_SEL_EquipmentStatus_PROCEQPT.INDATAs.Add(new BR_BRS_SEL_EquipmentStatus_PROCEQPT.INDATA
+                                            if (Inst.Raw.ACTVAL != "N/A")
                                             {
-                                                LANGID = "ko-KR",
-                                                ROOMNO = AuthRepositoryViewModel.Instance.RoomID,
-                                                POID = _mainWnd.CurrentOrder.ProductionOrderID,
-                                                BATCHNO = _mainWnd.CurrentOrder.BatchNo,
-                                                EQPTID = Inst.Raw.EQPTID,
-                                                OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
-                                                ACTVAL = Inst.Raw.ACTVAL
-                                            });
+                                                _BR_BRS_SEL_EquipmentStatus_PROCEQPT.INDATAs.Add(new BR_BRS_SEL_EquipmentStatus_PROCEQPT.INDATA
+                                                {
+                                                    LANGID = "ko-KR",
+                                                    ROOMNO = AuthRepositoryViewModel.Instance.RoomID,
+                                                    POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                                    BATCHNO = _mainWnd.CurrentOrder.BatchNo,
+                                                    EQPTID = Inst.Raw.EQPTID,
+                                                    OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
+                                                    ACTVAL = Inst.Raw.ACTVAL
+                                                });
+                                            }
                                         }
+                                        else
+                                        {
+                                            if (Inst.Raw.ACTVAL.ToUpper() != "N/A")
+                                            {
+                                                _BR_BRS_SEL_EquipmentStatus_PROCEQPT.INDATAs.Add(new BR_BRS_SEL_EquipmentStatus_PROCEQPT.INDATA
+                                                {
+                                                    LANGID = "ko-KR",
+                                                    ROOMNO = AuthRepositoryViewModel.Instance.RoomID,
+                                                    POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                                    BATCHNO = _mainWnd.CurrentOrder.BatchNo,
+                                                    EQPTID = Inst.Raw.EQPTID,
+                                                    OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
+                                                    ACTVAL = Inst.Raw.ACTVAL
+                                                });
+                                            }
+                                        }
+                                            
                                     }
 
                                     await BR_BRS_SEL_EquipmentStatus_PROCEQPT.Execute();

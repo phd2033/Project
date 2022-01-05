@@ -52,39 +52,79 @@ namespace 보령
             {
                 // 김호연 n/a 소문자도 로그북 기록 안되도록 변경
                 //if(item.Raw.ACTVAL != "N/A")
-                if (item.Raw.ACTVAL.ToUpper() != "N/A")
+                if (item.Raw.ACTVAL == null)
                 {
-                    bizRule.INDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_PROCEQPT.INDATA()
+                    if (item.Raw.ACTVAL != "N/A")
                     {
-                        ROOMNO = roomId ?? "",
-                        USER = AuthRepositoryViewModel.GetUserIDByFunctionCode("EM_BRS_EquipmentAction_PROCSTART"),
-                        LANGID = AuthRepositoryViewModel.Instance.LangID,
-                        DTTM = null,
-                        POID = this.CurrentOrder.ProductionOrderID,
-                        OPSGGUID = this.CurrentOrder.OrderProcessSegmentID,
-                        EQPTID = item.Raw.EQPTID ?? "",
-                        ACTVAL = item.Raw.ACTVAL ?? ""
-                    });
+                        bizRule.INDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_PROCEQPT.INDATA()
+                        {
+                            ROOMNO = roomId ?? "",
+                            USER = AuthRepositoryViewModel.GetUserIDByFunctionCode("EM_BRS_EquipmentAction_PROCSTART"),
+                            LANGID = AuthRepositoryViewModel.Instance.LangID,
+                            DTTM = null,
+                            POID = this.CurrentOrder.ProductionOrderID,
+                            OPSGGUID = this.CurrentOrder.OrderProcessSegmentID,
+                            EQPTID = item.Raw.EQPTID ?? "",
+                            ACTVAL = item.Raw.ACTVAL ?? ""
+                        });
 
-                    bizRule.PARAMDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_PROCEQPT.PARAMDATA()
-                    {
-                        EQPAID = LGCNS.iPharmMES.Common.AuthRepositoryViewModel.GetSystemOptionValue("LOGBOOK_PRODUCTION_ORDER"),
-                        PAVAL = this.CurrentOrder.OrderID,
-                        ROOMNO = roomId ?? ""
-                    });
-                    bizRule.PARAMDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_PROCEQPT.PARAMDATA()
-                    {
-                        EQPAID = LGCNS.iPharmMES.Common.AuthRepositoryViewModel.GetSystemOptionValue("LOGBOOK_PRODUCTION_BATCHNO"),
-                        PAVAL = this.CurrentOrder.BatchNo,
-                        ROOMNO = roomId ?? ""
-                    });
-                    bizRule.PARAMDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_PROCEQPT.PARAMDATA()
-                    {
-                        EQPAID = LGCNS.iPharmMES.Common.AuthRepositoryViewModel.GetSystemOptionValue("LOGBOOK_PRODUCTION_PROCESS"),
-                        PAVAL = this.CurrentOrder.OrderProcessSegmentID,
-                        ROOMNO = roomId ?? ""
-                    });
+                        bizRule.PARAMDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_PROCEQPT.PARAMDATA()
+                        {
+                            EQPAID = LGCNS.iPharmMES.Common.AuthRepositoryViewModel.GetSystemOptionValue("LOGBOOK_PRODUCTION_ORDER"),
+                            PAVAL = this.CurrentOrder.OrderID,
+                            ROOMNO = roomId ?? ""
+                        });
+                        bizRule.PARAMDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_PROCEQPT.PARAMDATA()
+                        {
+                            EQPAID = LGCNS.iPharmMES.Common.AuthRepositoryViewModel.GetSystemOptionValue("LOGBOOK_PRODUCTION_BATCHNO"),
+                            PAVAL = this.CurrentOrder.BatchNo,
+                            ROOMNO = roomId ?? ""
+                        });
+                        bizRule.PARAMDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_PROCEQPT.PARAMDATA()
+                        {
+                            EQPAID = LGCNS.iPharmMES.Common.AuthRepositoryViewModel.GetSystemOptionValue("LOGBOOK_PRODUCTION_PROCESS"),
+                            PAVAL = this.CurrentOrder.OrderProcessSegmentID,
+                            ROOMNO = roomId ?? ""
+                        });
+                    }
                 }
+                else
+                {
+                    if (item.Raw.ACTVAL.ToUpper() != "N/A")
+                    {
+                        bizRule.INDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_PROCEQPT.INDATA()
+                        {
+                            ROOMNO = roomId ?? "",
+                            USER = AuthRepositoryViewModel.GetUserIDByFunctionCode("EM_BRS_EquipmentAction_PROCSTART"),
+                            LANGID = AuthRepositoryViewModel.Instance.LangID,
+                            DTTM = null,
+                            POID = this.CurrentOrder.ProductionOrderID,
+                            OPSGGUID = this.CurrentOrder.OrderProcessSegmentID,
+                            EQPTID = item.Raw.EQPTID ?? "",
+                            ACTVAL = item.Raw.ACTVAL ?? ""
+                        });
+
+                        bizRule.PARAMDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_PROCEQPT.PARAMDATA()
+                        {
+                            EQPAID = LGCNS.iPharmMES.Common.AuthRepositoryViewModel.GetSystemOptionValue("LOGBOOK_PRODUCTION_ORDER"),
+                            PAVAL = this.CurrentOrder.OrderID,
+                            ROOMNO = roomId ?? ""
+                        });
+                        bizRule.PARAMDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_PROCEQPT.PARAMDATA()
+                        {
+                            EQPAID = LGCNS.iPharmMES.Common.AuthRepositoryViewModel.GetSystemOptionValue("LOGBOOK_PRODUCTION_BATCHNO"),
+                            PAVAL = this.CurrentOrder.BatchNo,
+                            ROOMNO = roomId ?? ""
+                        });
+                        bizRule.PARAMDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_PROCEQPT.PARAMDATA()
+                        {
+                            EQPAID = LGCNS.iPharmMES.Common.AuthRepositoryViewModel.GetSystemOptionValue("LOGBOOK_PRODUCTION_PROCESS"),
+                            PAVAL = this.CurrentOrder.OrderProcessSegmentID,
+                            ROOMNO = roomId ?? ""
+                        });
+                    }
+                }
+                    
             }
 
             if (await bizRule.Execute() == false) throw bizRule.Exception;
