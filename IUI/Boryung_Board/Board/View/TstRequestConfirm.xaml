@@ -90,7 +90,7 @@
                         <Ctrl:iPharmMESFromToCalendar SelectedDateFrom="{Binding Path=PeriodSTDTTM, Mode=TwoWay}"
                                                        SelectedDateTo="{Binding Path=PeriodEDDTTM, Mode=TwoWay}" />
                     </StackPanel>
-                    <Button Grid.Column="15" Content="승인취소" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10,0,0,0" Width="80" >
+                    <Button Grid.Column="15" Content="의뢰취소" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10,0,0,0" Width="80" >
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Click">
                                 <i:InvokeCommandAction Command="{Binding Path=BtnApprovalCancelCommand}"/>
