@@ -50,8 +50,10 @@ namespace 보령
 
             foreach (var item in inputValues)
             {
-                // 김호연 n/a 소문자도 로그북 기록 안되도록 변경
-                //if(item.Raw.ACTVAL != "N/A")
+                /* 2022.01.05 김호연 n/a 소문자도 로그북 기록 안되도록 변경
+                   화면에 보이지 않는 장비들이 있어 Actval 값이 Null인 데이터가 있음. 
+                   Actval 값이 Null이면 ToUpper() 함수 사용시 NullException 에러가 나기 때문에 
+                   item.Raw.ACTVAL == null인경우엔 기존 로직을 수행하고 null이 아닌경우에 item.Raw.ACTVAL.ToUpper() 조건 수행하도록 로직 수정 */
                 if (item.Raw.ACTVAL == null)
                 {
                     if (item.Raw.ACTVAL != "N/A")

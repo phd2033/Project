@@ -90,8 +90,10 @@ namespace 보령
                                 {
                                     foreach (InstructionModel Inst in refInst)
                                     {
-                                        // 김호연 n/a 소문자도 청소점검 화면 안보이게 변경
-                                        // if (Inst.Raw.ACTVAL != "N/A")
+                                        /* 2022.01.05 김호연 n/a 소문자도 청소점검 화면 안보이게 변경
+                                           화면에 보이지 않는 장비들이 있어 Actval 값이 Null인 데이터가 있음. 
+                                           Actval 값이 Null이면 ToUpper() 함수 사용시 NullException 에러가 나기 때문에 
+                                           item.Raw.ACTVAL == null인경우엔 기존 로직을 수행하고 null이 아닌경우에 item.Raw.ACTVAL.ToUpper() 조건 수행하도록 로직 수정 */
                                         if (Inst.Raw.ACTVAL == null)
                                         {
                                             if (Inst.Raw.ACTVAL != "N/A")
