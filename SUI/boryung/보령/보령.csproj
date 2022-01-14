@@ -658,22 +658,6 @@
     <Compile Include="원료칭량\Popup\AllocationInfoPopup.xaml.cs">
       <DependentUpon>AllocationInfoPopup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="원료칭량\Popup\BinBarcodePopup.xaml.cs">
-      <DependentUpon>BinBarcodePopup.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="원료칭량\Popup\RemainedSourceHandlingWindow.xaml.cs">
-      <DependentUpon>RemainedSourceHandlingWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="원료칭량\Popup\SelectListPopup.xaml.cs">
-      <DependentUpon>SelectListPopup.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="원료칭량\Popup\SelectListPopupViewModel.cs" />
-    <Compile Include="원료칭량\Popup\SourceBarcodePopup.xaml.cs">
-      <DependentUpon>SourceBarcodePopup.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="원료칭량\Popup\TrustScaleWeightPopup.xaml.cs">
-      <DependentUpon>TrustScaleWeightPopup.xaml</DependentUpon>
-    </Compile>
     <Compile Include="원료칭량\원료칭량확인및기록.xaml.cs">
       <DependentUpon>원료칭량확인및기록.xaml</DependentUpon>
     </Compile>
@@ -1208,26 +1192,6 @@
     <Page Include="원료칭량\Popup\AllocationInfoPopup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="원료칭량\Popup\BinBarcodePopup.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="원료칭량\Popup\RemainedSourceHandlingWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="원료칭량\Popup\SelectListPopup.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="원료칭량\Popup\SourceBarcodePopup.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="원료칭량\Popup\TrustScaleWeightPopup.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="원료칭량\원료칭량확인및기록.xaml">
       <SubType>Designer</SubType>
