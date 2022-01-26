@@ -534,11 +534,11 @@ namespace 보령
                                         row["최소두께"] = rowdata.AVG_THICK != null ? rowdata.MIN_THICK : "";
                                         row["최대두께"] = rowdata.AVG_THICK != null ? rowdata.MAX_THICK : "";
                                         row["평균경도"] = rowdata.AVG_HARDNESS != null ? rowdata.AVG_HARDNESS : "";
-                                        row["최소경도"] = rowdata.AVG_HARDNESS != null ? rowdata.MIN_HARDNESS : "";
-                                        row["최대경도"] = rowdata.AVG_HARDNESS != null ? rowdata.MAX_HARDNESS : "";
+                                        row["최소경도"] = rowdata.MIN_HARDNESS != null ? rowdata.MIN_HARDNESS : "";
+                                        row["최대경도"] = rowdata.MAX_HARDNESS != null ? rowdata.MAX_HARDNESS : "";
                                         row["평균직경"] = rowdata.AVG_DIAMETER != null ? rowdata.AVG_DIAMETER : "";
-                                        row["최소직경"] = rowdata.AVG_DIAMETER != null ? rowdata.MIN_DIAMETER : "";
-                                        row["최대직경"] = rowdata.AVG_DIAMETER != null ? rowdata.MAX_DIAMETER : "";
+                                        row["최소직경"] = rowdata.MIN_DIAMETER != null ? rowdata.MIN_DIAMETER : "";
+                                        row["최대직경"] = rowdata.MAX_DIAMETER != null ? rowdata.MAX_DIAMETER : "";
 
                                         dt.Rows.Add(row);
                                     }

@@ -509,16 +509,22 @@ namespace 보령
                                     {
                                         if (btn.Name == "btnNetWeightChange")
                                         {
-                                            if (val >= _oriMergeLotNetWeight.Value)
-                                            {
-                                                MergeMaterialSubLot.NET.Value = val;
-                                                MergeMaterialSubLot.GROSS.Value = MergeMaterialSubLot.TARE.Value + val;
+                                            // 2022.01.20 박희돈 Validation 삭제. 사유 : 작업자가 더 많이 분할 후 분할 양을 줄여야 하는 이슈 발생.
+                                            MergeMaterialSubLot.NET.Value = val;
+                                            MergeMaterialSubLot.GROSS.Value = MergeMaterialSubLot.TARE.Value + val;
 
-                                                SplitMaterialSubLot.NET.Value = _oriNetWeight_sum.Value - val;
-                                                SplitMaterialSubLot.GROSS.Value = SplitMaterialSubLot.NET.Value + SplitMaterialSubLot.TARE.Value;
-                                            }
-                                            else
-                                                OnMessage("병합 대상의 내용물 무게는 기존 무게보다 작을 수 없습니다.");
+                                            SplitMaterialSubLot.NET.Value = _oriNetWeight_sum.Value - val;
+                                            SplitMaterialSubLot.GROSS.Value = SplitMaterialSubLot.NET.Value + SplitMaterialSubLot.TARE.Value;
+                                            //if (val >= _oriMergeLotNetWeight.Value)
+                                            //{
+                                            //    MergeMaterialSubLot.NET.Value = val;
+                                            //    MergeMaterialSubLot.GROSS.Value = MergeMaterialSubLot.TARE.Value + val;
+
+                                            //    SplitMaterialSubLot.NET.Value = _oriNetWeight_sum.Value - val;
+                                            //    SplitMaterialSubLot.GROSS.Value = SplitMaterialSubLot.NET.Value + SplitMaterialSubLot.TARE.Value;
+                                            //}
+                                            //else
+                                            //    OnMessage("병합 대상의 내용물 무게는 기존 무게보다 작을 수 없습니다.");
                                         }
                                         else if (btn.Name == "btnTareWeightChange")
                                         {
