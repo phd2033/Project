@@ -509,7 +509,7 @@ namespace 보령
                                     {
                                         if (btn.Name == "btnNetWeightChange")
                                         {
-                                            // 2022.01.20 박희돈 Validation 삭제. 사유 : 작업자가 더 많이 분할 후 분할 양을 줄여야 하는 이슈 발생.
+                                            // 2022.01.20 박희돈 Validation 삭제. 사유 : 작업자가 더 많이 분할 후 분할 양을 줄여야 하는 이슈 발생. 
                                             MergeMaterialSubLot.NET.Value = val;
                                             MergeMaterialSubLot.GROSS.Value = MergeMaterialSubLot.TARE.Value + val;
 
