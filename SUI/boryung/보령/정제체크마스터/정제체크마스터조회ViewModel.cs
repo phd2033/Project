@@ -531,8 +531,8 @@ namespace 보령
                                         row["개별최소질량"] = rowdata.MIN_WEIGHT != null ? rowdata.MIN_WEIGHT : "";
                                         row["개별최대질량"] = rowdata.MAX_WEIGHT != null ? rowdata.MAX_WEIGHT : "";
                                         row["평균두께"] = rowdata.AVG_THICK != null ? rowdata.AVG_THICK : "";
-                                        row["최소두께"] = rowdata.AVG_THICK != null ? rowdata.MIN_THICK : "";
-                                        row["최대두께"] = rowdata.AVG_THICK != null ? rowdata.MAX_THICK : "";
+                                        row["최소두께"] = rowdata.MIN_THICK != null ? rowdata.MIN_THICK : "";
+                                        row["최대두께"] = rowdata.MAX_THICK != null ? rowdata.MAX_THICK : "";
                                         row["평균경도"] = rowdata.AVG_HARDNESS != null ? rowdata.AVG_HARDNESS : "";
                                         row["최소경도"] = rowdata.MIN_HARDNESS != null ? rowdata.MIN_HARDNESS : "";
                                         row["최대경도"] = rowdata.MAX_HARDNESS != null ? rowdata.MAX_HARDNESS : "";
