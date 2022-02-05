@@ -116,6 +116,43 @@ namespace 보령
 
                                         foreach (var row in dt.Rows)
                                         {
+                                            if (row["용기번호"] != null)
+                                            {
+                                                //Pallet에 적재된 반제품을 조회(소용량라인 용)
+                                                //MaterialSubLotCustomAttribute.MTATID = 'LEADED_MSUBLOTID'에 값이 있는 경우
+                                                var subLotBiz = new BR_BRS_SEL_MaterialSubLot_LoadOnPallet_BYVESSELID();
+                                                subLotBiz.INDATAs.Add(new BR_BRS_SEL_MaterialSubLot_LoadOnPallet_BYVESSELID.INDATA()
+                                                {
+                                                    VESSELID = row["용기번호"] != null ? row["용기번호"].ToString() : "",
+                                                });
+
+                                                if (await subLotBiz.Execute() == true)
+                                                {
+                                                    if (subLotBiz.OUTDATAs.Count > 0)
+                                                    {
+                                                        //Pallet에 적재된 반제품 존재하면 적재된 반제품을 표시 함
+                                                        foreach (var itm in subLotBiz.OUTDATAs)
+                                                        {
+                                                            ListRequestOut.Add(new IBCInfo
+                                                            {
+                                                                CHK = true,
+                                                                VESSELID = itm.VESSELID,
+                                                                POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                                                OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
+                                                                OPSGNAME = itm.OPSGNAME,
+                                                                OUTPUTID = "",
+                                                                OUTPUTGUID = "",
+                                                                STATUS = "무게측정필요",
+                                                                Weight = 0m
+                                                            });
+                                                        }
+
+                                                        continue;
+                                                    }
+                                                }
+                                            }
+
+                                            // Pallet에 적재된 반제품이 없으면 기존 데이터 Add
                                             ListRequestOut.Add(new IBCInfo
                                             {
                                                 CHK = true,
