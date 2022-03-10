@@ -168,6 +168,7 @@
   <ItemGroup>
     <Compile Include="DataModel\CampaignProduction.cs" />
     <Compile Include="DataModel\Container.cs" />
+    <Compile Include="DataModel\IPCControlData.cs" />
     <Compile Include="DataModel\Weight.cs" />
     <Compile Include="LIMS\LIMS샘플링확인.xaml.cs">
       <DependentUpon>LIMS샘플링확인.xaml</DependentUpon>
@@ -209,6 +210,8 @@
     <Compile Include="Model.Access\WMS\BR_BRS_SEL_CurrentWeight.Access.cs" />
     <Compile Include="Model.Access\공정검사\BR_BRS_GET_AutoInspection_Reject_Ratio.Access.cs" />
     <Compile Include="Model.Access\공정검사\BR_BRS_GET_ProductionOrderTestSpecificationResult.Access.cs" />
+    <Compile Include="Model.Access\공정검사\BR_BRS_SEL_ProductionOrderIPCResult.Access.cs" />
+    <Compile Include="Model.Access\공정검사\BR_BRS_SEL_ProductionOrderIPCStandard.Access.cs" />
     <Compile Include="Model.Access\반제품\BR_BRS_CHK_ProductionOrderSubLot_Valid.Access.cs" />
     <Compile Include="Model.Access\반제품\BR_BRS_GET_VESSEL_INFO_DETAIL.Access.cs" />
     <Compile Include="Model.Access\반제품\BR_BRS_GET_VESSEL_WMS_IN.Access.cs" />
@@ -340,6 +343,9 @@
     <Compile Include="UserControls\CustomUIHeader.xaml.cs">
       <DependentUpon>CustomUIHeader.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\IPCControl.xaml.cs">
+      <DependentUpon>IPCControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\ScaleControl.xaml.cs">
       <DependentUpon>ScaleControl.xaml</DependentUpon>
     </Compile>
@@ -412,10 +418,22 @@
       <DependentUpon>IPC검사결과조회.xaml</DependentUpon>
     </Compile>
     <Compile Include="공정검사\IPC검사결과조회ViewModel.cs" />
+    <Compile Include="공정검사\Popup\공정검사결과입력.xaml.cs">
+      <DependentUpon>공정검사결과입력.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="공정검사\Popup\공정검사결과입력ViewModel.cs" />
     <Compile Include="공정검사\선별공정불량확인.xaml.cs">
       <DependentUpon>선별공정불량확인.xaml</DependentUpon>
     </Compile>
     <Compile Include="공정검사\선별공정불량확인ViewModel.cs" />
+    <Compile Include="공정검사\타정공정검사1.xaml.cs">
+      <DependentUpon>타정공정검사1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="공정검사\타정공정검사1ViewModel.cs" />
+    <Compile Include="공정검사\타정공정검사2.xaml.cs">
+      <DependentUpon>타정공정검사2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="공정검사\타정공정검사2ViewModel.cs" />
     <Compile Include="공정중 시험의뢰\공정중시험의뢰.cs" />
     <Compile Include="반제품\Popup\포장공정반제품분할이력.xaml.cs">
       <DependentUpon>포장공정반제품분할이력.xaml</DependentUpon>
@@ -888,6 +906,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\IPCControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="UserControls\ScaleControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -960,7 +982,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="공정검사\Popup\공정검사결과입력.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="공정검사\선별공정불량확인.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="공정검사\타정공정검사1.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="공정검사\타정공정검사2.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
