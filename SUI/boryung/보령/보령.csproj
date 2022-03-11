@@ -711,10 +711,18 @@
     <Compile Include="이력데이터\장비이력데이터Popup.xaml.cs">
       <DependentUpon>장비이력데이터Popup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="이력데이터\장비이력데이터V2.xaml.cs">
+      <DependentUpon>장비이력데이터V2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="이력데이터\장비이력데이터V2ViewModel.cs" />
     <Compile Include="이력데이터\장비이력데이터ViewModel.cs" />
     <Compile Include="이력데이터\장비이력데이터마킹.xaml.cs">
       <DependentUpon>장비이력데이터마킹.xaml</DependentUpon>
     </Compile>
+    <Compile Include="이력데이터\장비이력데이터멀티.xaml.cs">
+      <DependentUpon>장비이력데이터멀티.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="이력데이터\장비이력데이터멀티ViewModel.cs" />
     <Compile Include="이력데이터\장비이력데이터저장Popup.xaml.cs">
       <DependentUpon>장비이력데이터저장Popup.xaml</DependentUpon>
     </Compile>
@@ -1266,7 +1274,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="이력데이터\장비이력데이터V2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="이력데이터\장비이력데이터마킹.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="이력데이터\장비이력데이터멀티.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
