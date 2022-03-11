@@ -208,6 +208,7 @@ namespace 보령
                                 dt.Columns.Add(new DataColumn("원료명"));
                                 dt.Columns.Add(new DataColumn("원료시험번호"));
                                 dt.Columns.Add(new DataColumn("무게"));
+                                dt.Columns.Add(new DataColumn("바코드"));
 
                                 foreach (var item in BR_BRS_SEL_ProductionOrderDispenseOutput.OUTDATAs)
                                 {
@@ -216,6 +217,7 @@ namespace 보령
                                     row["원료명"] = item.MTRLNAME != null ? item.MTRLNAME : "";
                                     row["원료시험번호"] = item.TST_REQ_NO != null ? item.TST_REQ_NO : "";
                                     row["무게"] = item.MSUBLOTQTYUOM != null ? item.MSUBLOTQTYUOM : "";
+                                    row["바코드"] = item.MSUBLOTBCD != null ? item.MSUBLOTBCD : "";
 
                                     dt.Rows.Add(row);
                                 }
