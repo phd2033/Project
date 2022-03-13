@@ -233,16 +233,29 @@ namespace 보령
 
                             _ReceiveValues = InstructionModel.GetParameterSender(_mainWnd.CurrentInstruction, _mainWnd.Instructions);
 
-                            List<InstructionModel> equipmentRunTime = _ReceiveValues.Where(o => o.Raw.IRTTYPE.Equals("IT004") && o.Raw.ACTVAL.Trim() != "").OrderBy(o=>o.Raw.IRTSEQ).ToList();
+                            List<InstructionModel> equipmentRunTime = _ReceiveValues.Where(o => o.Raw.IRTTYPE.Equals("IT004")).OrderBy(o=>o.Raw.IRTSEQ).ToList();
                             if (equipmentRunTime != null && equipmentRunTime.Count() == 2)
                             {
-                                this.FromDt = Convert.ToDateTime(equipmentRunTime[0].Raw.ACTVAL);
-                                this.ToDt = Convert.ToDateTime(equipmentRunTime[1].Raw.ACTVAL);
+                                DateTime instFromDT;
+                                DateTime instToDT;
+
+                                if (!DateTime.TryParse(equipmentRunTime[0].Raw.ACTVAL, out instFromDT))
+                                {
+                                    OnMessage("설비 가동 시작일시 또는 종료일시가 기록되지않았습니다!");
+                                }
+                                else if (!DateTime.TryParse(equipmentRunTime[1].Raw.ACTVAL, out instToDT))
+                                {
+                                    OnMessage("설비 가동 시작일시 또는 종료일시가 기록되지않았습니다!");
+                                }
+                                else
+                                {
+                                    FromDt = instFromDT;
+                                    ToDt = instToDT;
+                                }
                             }
                             else
                             {
                                 OnMessage("설비 가동 시작일시 또는 종료일시가 기록되지않았습니다!");
-                                return;
                             }
 
                             _inputValues = _ReceiveValues.Where(o => !Convert.ToString(o.Raw.TAGID).Equals("")).OrderBy(o => o.Raw.IRTSEQ).ToList();
@@ -257,7 +270,6 @@ namespace 보령
 
                             //await checkEqptInfo(txtEQPTID);
                             ///
-
 
                             CommandResults["LoadedCommand"] = true;
                         }
@@ -419,6 +431,8 @@ namespace 보령
                             chartZoom.View.Children.Clear();
 
                             ErrorChk = 1;
+                            txtEQPTID = txtEQPTID.ToUpper();
+
                             if (await checkEqptInfo(txtEQPTID) == true)
                             {
                                 await GetValues(this.FromDt, this.ToDt, txtEQPTID);
@@ -484,6 +498,9 @@ namespace 보령
                             }
 
                             bool isDeviationconfirm = false;
+                            isDeviation = false;
+
+                            if (FilteredComponents.Where(o => o.STATUS == "NG").FirstOrDefault() != null) isDeviation = true;
 
                             if (isDeviation == true &&
                                 _mainWnd.CurrentInstruction.Raw.DVTPASSYN != "Y" &&
@@ -903,13 +920,17 @@ namespace 보령
 
             actualYmax = outdatas.Where(o => double.TryParse(o.ACTVAL, out checker)).Max(o => Convert.ToDouble(o.ACTVAL));
             actualYmin = outdatas.Where(o => double.TryParse(o.ACTVAL, out checker)).Min(o => Convert.ToDouble(o.ACTVAL));
-            defUCL = _inputValues.Where(o => double.TryParse(o.Raw.MAXVAL, out checker)).Max(o => Convert.ToDouble(o.Raw.MAXVAL));
-            defLCL = _inputValues.Where(o => double.TryParse(o.Raw.MINVAL, out checker)).Min(o => Convert.ToDouble(o.Raw.MINVAL));
+            foreach(var ucl in  _inputValues.Where(o => (double.TryParse(o.Raw.MAXVAL, out checker)) == true))
+            {
+                lstBase.Add(Convert.ToDouble(ucl.Raw.MAXVAL));
+            }
+            foreach(var lcl in _inputValues.Where(o => (double.TryParse(o.Raw.MINVAL, out checker)) == true))
+            {
+                lstBase.Add(Convert.ToDouble(lcl.Raw.MINVAL));
+            }
 
             if (actualYmax != null) lstBase.Add(actualYmax);
             if (actualYmin != null) lstBase.Add(actualYmin);
-            if (defUCL != null) lstBase.Add(defUCL);
-            if (defLCL != null) lstBase.Add(defLCL);
 
             _ChartYMax = Ymax = Convert.ToDouble(lstBase.Max());
             _ChartYMin = Ymin = Convert.ToDouble(lstBase.Min());

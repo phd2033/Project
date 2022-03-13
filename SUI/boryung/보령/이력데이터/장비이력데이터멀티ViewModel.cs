@@ -269,16 +269,29 @@ namespace 보령
 
                             _ReceiveValues = InstructionModel.GetParameterSender(_mainWnd.CurrentInstruction, _mainWnd.Instructions);
 
-                            List<InstructionModel> equipmentRunTime = _ReceiveValues.Where(o => o.Raw.IRTTYPE.Equals("IT004") && o.Raw.ACTVAL.Trim() != "").OrderBy(o=>o.Raw.IRTSEQ).ToList();
+                            List<InstructionModel> equipmentRunTime = _ReceiveValues.Where(o => o.Raw.IRTTYPE.Equals("IT004")).OrderBy(o=>o.Raw.IRTSEQ).ToList();
                             if (equipmentRunTime != null && equipmentRunTime.Count() == 2)
                             {
-                                this.FromDt = Convert.ToDateTime(equipmentRunTime[0].Raw.ACTVAL);
-                                this.ToDt = Convert.ToDateTime(equipmentRunTime[1].Raw.ACTVAL);
+                                DateTime instFromDT;
+                                DateTime instToDT;
+
+                                if (!DateTime.TryParse(equipmentRunTime[0].Raw.ACTVAL, out instFromDT))
+                                {
+                                    OnMessage("설비 가동 시작일시 또는 종료일시가 기록되지않았습니다!");
+                                }
+                                else if (!DateTime.TryParse(equipmentRunTime[1].Raw.ACTVAL, out instToDT))
+                                {
+                                    OnMessage("설비 가동 시작일시 또는 종료일시가 기록되지않았습니다!");
+                                }
+                                else
+                                {
+                                    FromDt = instFromDT;
+                                    ToDt = instToDT;
+                                }
                             }
                             else
                             {
                                 OnMessage("설비 가동 시작일시 또는 종료일시가 기록되지않았습니다!");
-                                return;
                             }
 
                             _inputValues = _ReceiveValues.Where(o => !Convert.ToString(o.Raw.TAGID).Equals("")).OrderBy(o => o.Raw.IRTSEQ).ToList();
@@ -553,6 +566,8 @@ namespace 보령
 
                             ///
                             ErrorChk = 1;
+                            txtEQPTID = txtEQPTID.ToUpper();
+
                             if (await checkEqptInfo(txtEQPTID) == true)
                             {
                                 await GetValues(this.FromDt, this.ToDt, txtEQPTID);
@@ -633,6 +648,9 @@ namespace 보령
                             }
 
                             bool isDeviationconfirm = false;
+                            isDeviation = false;
+
+                            if (FilteredComponents.Where(o => o.STATUS == "NG").FirstOrDefault() != null) isDeviation = true;
 
                             if (isDeviation == true &&
                                 _mainWnd.CurrentInstruction.Raw.DVTPASSYN != "Y" &&
@@ -700,20 +718,21 @@ namespace 보령
                             }
 
                             //Tag별 지시문 이미지 저장
-                            imageIndex = 0;
-
                             var outputValues = InstructionModel.GetResultReceiver(_mainWnd.CurrentInstruction, _mainWnd.Instructions);
 
-                            foreach (var irt in outputValues.OrderBy(o=> o.Raw.IRTSEQ).ToList())
+                            foreach (var irt in outputValues.Where(o=>o.Raw.EQPTID != null && o.Raw.TAGID != null).OrderBy(o=> o.Raw.IRTSEQ).ToList())
                             {
-                                if (TagImageList.Count > imageIndex)
+                                byte[] img = null;
+                                string tagID = irt.Raw.TAGID.Replace(irt.Raw.EQPTID, txtEQPTID);
+
+                                if (TagImageList.TryGetValue(tagID, out img))
                                 {
                                     //string CMT = string.IsNullOrWhiteSpace(FilteredComponents[imageIndex].COMMENT) ? "" : ", Comment : " + FilteredComponents[imageIndex].COMMENT;
 
                                     //irt.Raw.ACTVAL = "TAG 명 : " + FilteredComponents[imageIndex].TAGNAME + ", AVG : " + FilteredComponents[imageIndex].AVG +
                                     //                  ", Min : " + FilteredComponents[imageIndex].MIN + ", Max : " + FilteredComponents[imageIndex].MAX + CMT;
 
-                                    irt.Raw.NOTE = TagImageList.Values.ElementAt(imageIndex);
+                                    irt.Raw.NOTE = img;
                                     irt.Raw.ACTVAL = "장비이력데이터";
 
                                     result = await _mainWnd.Phase.RegistInstructionValue(irt);
@@ -722,36 +741,8 @@ namespace 보령
                                         throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", irt.Raw.IRTGUID, result));
                                     }
                                 }
-
-                                ++imageIndex;
                             }
-                            #endregion
-
-                            #region 일시 Receiver instruction 값 셋팅
-                            var dateTimeInstructions = outputValues.Where(o =>
-                            {
-                                return string.Compare(o.Raw.REF_IRTGUID, _mainWnd.CurrentInstruction.Raw.IRTGUID) == 0 &&
-                                    ((enumVariableType)Enum.Parse(typeof(enumVariableType), o.Raw.IRTTYPE, false)) == enumVariableType.IT004;
-                            }).OrderBy(o => o.Raw.IRTSEQ).ToList();
-
-                            if (dateTimeInstructions.Count == 2)
-                            {
-                                dateTimeInstructions[0].Raw.ACTVAL = DateTime.FromOADate(_mainWnd.SelectedFromTime).ToString();
-                                dateTimeInstructions[1].Raw.ACTVAL = DateTime.FromOADate(_mainWnd.SelectedToTime).ToString();
-
-                                result = await _mainWnd.Phase.RegistInstructionValue(dateTimeInstructions[0]);
-                                if (result != enumInstructionRegistErrorType.Ok)
-                                {
-                                    throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", dateTimeInstructions[0].Raw.IRTGUID, result));
-                                }
-
-                                result = await _mainWnd.Phase.RegistInstructionValue(dateTimeInstructions[1]);
-                                if (result != enumInstructionRegistErrorType.Ok)
-                                {
-                                    throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", dateTimeInstructions[1].Raw.IRTGUID, result));
-                                }
-                            }
-                            #endregion
+                            #endregion                                                       
 
                             #region Deviation comment 기록
                             if (isDeviationconfirm)
@@ -808,226 +799,7 @@ namespace 보령
                         CommandCanExecutes["ConfirmCommand"] : (CommandCanExecutes["ConfirmCommand"] = true);
                 });
             }
-        }
-
-        public ICommand ConfirmCommandAsyncOld
-        {
-            get
-            {
-                return new AsyncCommandBase(async arg =>
-                {
-                    using (await AwaitableLocks["ConfirmCommand"].EnterAsync())
-                    {
-                        try
-                        {
-                            //IsBusy = true;
-
-                            CommandResults["ConfirmCommand"] = false;
-
-                            ///
-                            if (_mainWnd.CurrentInstruction.Raw.INSERTEDYN.Equals("Y") && _mainWnd.Phase.CurrentPhase.STATE.Equals("COMP")) // 값 수정
-                            {
-                                // 전자서명 요청
-                                var authHelper = new iPharmAuthCommandHelper();
-                                authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
-
-                                if (await authHelper.ClickAsync(
-                                    Common.enumCertificationType.Function,
-                                    Common.enumAccessType.Create,
-                                    string.Format("기록값을 변경합니다."),
-                                    string.Format("기록값 변경"),
-                                    true,
-                                    "OM_ProductionOrder_SUI",
-                                    "", _mainWnd.CurrentInstruction.Raw.RECIPEISTGUID, null) == false)
-                                {
-                                    throw new Exception(string.Format("서명이 완료되지 않았습니다."));
-                                }
-                            }
-
-                            bool isDeviationconfirm = false;
-
-                            if (isDeviation == true &&
-                                _mainWnd.CurrentInstruction.Raw.DVTPASSYN != "Y" &&
-                                _mainWnd.CurrentInstruction.Raw.VLTTYPE != enumValidationTypeCode.QMVLTNONE.ToString())
-                            {
-                                if (await OnMessageAsync("입력값이 기준값을 벗어났습니다. 기록을 진행하시겟습니까?", true) == false) return;
-
-                                var authHelper = new iPharmAuthCommandHelper();
-
-                                authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_Deviation");
-
-                                enumRoleType inspectorRole = enumRoleType.ROLE001;
-                                if (_mainWnd.Phase.CurrentPhase.INSPECTOR_ROLE != null && Enum.TryParse<enumRoleType>(_mainWnd.Phase.CurrentPhase.INSPECTOR_ROLE, out inspectorRole))
-                                {
-                                }
-
-                                if (await authHelper.ClickAsync(
-                                    Common.enumCertificationType.Role,
-                                    Common.enumAccessType.Create,
-                                    "기록값 일탈에 대해 서명후 기록을 진행합니다 ",
-                                    "Deviation Sign",
-                                    true,
-                                    "OM_ProductionOrder_Deviation",
-                                    "",
-                                    this._mainWnd.CurrentInstruction.Raw.RECIPEISTGUID,
-                                    this._mainWnd.CurrentInstruction.Raw.DVTPASSYN == "Y" ? enumRoleType.ROLE001.ToString() : inspectorRole.ToString()) == false)
-                                {
-                                    return;
-                                }
-                                _mainWnd.CurrentInstruction.Raw.DVTFCYN = "Y";
-                                _mainWnd.CurrentInstruction.Raw.DVTCONFIRMUSER = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_Deviation");
-
-                                isDeviationconfirm = true;
-                            }
-
-                            #region 결과 수신 지시문 기록
-                            _mainWnd.CurrentInstruction.Raw.ACTVAL = "장비이력데이터";
-
-                            var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction);
-                            if (result != enumInstructionRegistErrorType.Ok)
-                            {
-                                throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", _mainWnd.CurrentInstruction.Raw.IRTGUID, result));
-                            }
-
-                            #region Equipment Tag별 이미지 저장
-                            //Tag별 이미지 생성
-                            List<byte[]> imageList = new List<byte[]>();
-                            int imageIndex = 0;
-
-                            foreach (var item in _mainWnd.tabTags.Items)
-                            {
-                                TabItem tabItem = item as TabItem;
-
-                                if (tabItem != null)
-                                {
-                                    _mainWnd.tabTags.SelectedIndex = imageIndex;
-
-                                    Border printArea = tabItem.FindName("PrintArea") as Border;
-
-                                    if (printArea != null)
-                                    {
-                                        Brush background = printArea.Background;
-                                        printArea.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xD6, 0xD4, 0xD4));
-                                        printArea.BorderThickness = new System.Windows.Thickness(1);
-                                        printArea.Background = new SolidColorBrush(Colors.White);
-
-                                        imageList.Add(imageToByteArray(printArea).Result);
-                                    }
-                                }
-
-                                ++imageIndex;
-                            }
-
-                            //Tag별 지시문 이미지 저장
-                            imageIndex = 0;
-
-                            var outputValues = InstructionModel.GetResultReceiver(_mainWnd.CurrentInstruction, _mainWnd.Instructions);
-
-                            foreach (var irt in outputValues.OrderBy(o => o.Raw.IRTSEQ).ToList())
-                            {
-                                if (imageList.Count > imageIndex)
-                                {
-                                    //string CMT = string.IsNullOrWhiteSpace(FilteredComponents[imageIndex].COMMENT) ? "" : ", Comment : " + FilteredComponents[imageIndex].COMMENT;
-
-                                    //irt.Raw.ACTVAL = "TAG 명 : " + FilteredComponents[imageIndex].TAGNAME + ", AVG : " + FilteredComponents[imageIndex].AVG +
-                                    //                  ", Min : " + FilteredComponents[imageIndex].MIN + ", Max : " + FilteredComponents[imageIndex].MAX + CMT;
-
-                                    irt.Raw.NOTE = imageList[imageIndex];
-                                    irt.Raw.ACTVAL = "장비이력데이터";
-
-                                    result = await _mainWnd.Phase.RegistInstructionValue(irt);
-                                    if (result != enumInstructionRegistErrorType.Ok)
-                                    {
-                                        throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", irt.Raw.IRTGUID, result));
-                                    }
-                                }
-
-                                ++imageIndex;
-                            }
-                            #endregion
-
-                            #region 일시 Receiver instruction 값 셋팅
-                            var dateTimeInstructions = outputValues.Where(o =>
-                            {
-                                return string.Compare(o.Raw.REF_IRTGUID, _mainWnd.CurrentInstruction.Raw.IRTGUID) == 0 &&
-                                    ((enumVariableType)Enum.Parse(typeof(enumVariableType), o.Raw.IRTTYPE, false)) == enumVariableType.IT004;
-                            }).OrderBy(o => o.Raw.IRTSEQ).ToList();
-
-                            if (dateTimeInstructions.Count == 2)
-                            {
-                                dateTimeInstructions[0].Raw.ACTVAL = DateTime.FromOADate(_mainWnd.SelectedFromTime).ToString();
-                                dateTimeInstructions[1].Raw.ACTVAL = DateTime.FromOADate(_mainWnd.SelectedToTime).ToString();
-
-                                result = await _mainWnd.Phase.RegistInstructionValue(dateTimeInstructions[0]);
-                                if (result != enumInstructionRegistErrorType.Ok)
-                                {
-                                    throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", dateTimeInstructions[0].Raw.IRTGUID, result));
-                                }
-
-                                result = await _mainWnd.Phase.RegistInstructionValue(dateTimeInstructions[1]);
-                                if (result != enumInstructionRegistErrorType.Ok)
-                                {
-                                    throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", dateTimeInstructions[1].Raw.IRTGUID, result));
-                                }
-                            }
-                            #endregion
-
-                            #region Deviation comment 기록
-                            if (isDeviationconfirm)
-                            {
-                                var bizrule = new BR_PHR_REG_InstructionComment();
-
-                                bizrule.IN_Comments.Add(
-                                    new BR_PHR_REG_InstructionComment.IN_Comment
-                                    {
-                                        POID = _mainWnd.CurrentOrder.ProductionOrderID,
-                                        OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
-                                        COMMENTTYPE = "CM008",
-                                        COMMENT = AuthRepositoryViewModel.GetCommentByFunctionCode("OM_ProductionOrder_Deviation")
-                                    }
-                                    );
-                                bizrule.IN_IntructionResults.Add(
-                                    new BR_PHR_REG_InstructionComment.IN_IntructionResult
-                                    {
-                                        RECIPEISTGUID = _mainWnd.CurrentInstruction.Raw.RECIPEISTGUID,
-                                        ACTIVITYID = _mainWnd.CurrentInstruction.Raw.ACTIVITYID,
-                                        IRTGUID = _mainWnd.CurrentInstruction.Raw.IRTGUID,
-                                        IRTRSTGUID = _mainWnd.CurrentInstruction.Raw.IRTRSTGUID,
-                                        IRTSEQ = (int)_mainWnd.CurrentInstruction.Raw.IRTSEQ
-                                    }
-                                    );
-
-                                await bizrule.Execute();
-                            }
-                            #endregion
-
-                            #endregion
-
-                            //if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
-                            //else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
-                            ///
-
-                            CommandResults["ConfirmCommand"] = true;
-                        }
-                        catch (Exception ex)
-                        {
-                            CommandResults["ConfirmCommand"] = false;
-                            OnException(ex.Message, ex);
-                        }
-                        finally
-                        {
-                            CommandCanExecutes["ConfirmCommand"] = true;
-
-                            IsBusy = false;
-                        }
-                    }
-                }, arg =>
-                {
-                    return CommandCanExecutes.ContainsKey("ConfirmCommand") ?
-                        CommandCanExecutes["ConfirmCommand"] : (CommandCanExecutes["ConfirmCommand"] = true);
-                });
-            }
-        }
+        }              
 
         async Task<bool> checkEqptInfo(string eqptid)
         {
@@ -1047,10 +819,6 @@ namespace 보령
                 OnMessage(string.Format("{0} 장비 정보를 조회할 수 없습니다", "[" + eqptid + "]"));
                 return false;
             }
-
-            //if (await _BR_PHR_SEL_Element_ELMNAME.Execute() == false || _BR_PHR_SEL_Element_ELMNAME.OUTDATAs.Count <= 0)
-            //{
-            //}
 
             _BR_PHR_SEL_Element_VariableOUTDATAs.Clear();
 
@@ -1385,17 +1153,22 @@ namespace 보령
                 double? defLCL = null;
                 double? Ytolerance = null;
                 List<double?> lstBase = new List<double?>();
+
                 var groups = outdatas.GroupBy(o => o.TAGID).ToList();
 
                 actualYmax = outdatas.Where(o => double.TryParse(o.ACTVAL, out checker)).Max(o => Convert.ToDouble(o.ACTVAL));
                 actualYmin = outdatas.Where(o => double.TryParse(o.ACTVAL, out checker)).Min(o => Convert.ToDouble(o.ACTVAL));
-                defUCL = _inputValues.Where(o => double.TryParse(o.Raw.MAXVAL, out checker)).Max(o => Convert.ToDouble(o.Raw.MAXVAL));
-                defLCL = _inputValues.Where(o => double.TryParse(o.Raw.MINVAL, out checker)).Min(o => Convert.ToDouble(o.Raw.MINVAL));
+                foreach (var ucl in _inputValues.Where(o => (double.TryParse(o.Raw.MAXVAL, out checker)) == true))
+                {
+                    lstBase.Add(Convert.ToDouble(ucl.Raw.MAXVAL));
+                }
+                foreach (var lcl in _inputValues.Where(o => (double.TryParse(o.Raw.MINVAL, out checker)) == true))
+                {
+                    lstBase.Add(Convert.ToDouble(lcl.Raw.MINVAL));
+                }
 
                 if (actualYmax != null) lstBase.Add(actualYmax);
                 if (actualYmin != null) lstBase.Add(actualYmin);
-                if (defUCL != null) lstBase.Add(defUCL);
-                if (defLCL != null) lstBase.Add(defLCL);
 
                 _ChartYMax = Ymax = Convert.ToDouble(lstBase.Max());
                 _ChartYMin = Ymin = Convert.ToDouble(lstBase.Min());
@@ -1458,14 +1231,19 @@ namespace 보령
                         
                         actualYmax = outdatas.Where(o => double.TryParse(o.ACTVAL, out checker) && o.TAGID == tag.Key).Max(o => Convert.ToDouble(o.ACTVAL));
                         actualYmin = outdatas.Where(o => double.TryParse(o.ACTVAL, out checker) && o.TAGID == tag.Key).Min(o => Convert.ToDouble(o.ACTVAL));
-                        defUCL = _inputValues.Where(o => double.TryParse(o.Raw.MAXVAL, out checker) && o.Raw.TAGID == tag.Key).Max(o => Convert.ToDouble(o.Raw.MAXVAL));
-                        defLCL = _inputValues.Where(o => double.TryParse(o.Raw.MINVAL, out checker) && o.Raw.TAGID == tag.Key).Min(o => Convert.ToDouble(o.Raw.MINVAL));
+                       
+                        foreach (var ucl in _inputValues.Where(o => (double.TryParse(o.Raw.MAXVAL, out checker)== true && o.Raw.TAGID == tag.Key)))
+                        {
+                            lstBase.Add(Convert.ToDouble(ucl.Raw.MAXVAL));
+                        }
+                        foreach (var lcl in _inputValues.Where(o => (double.TryParse(o.Raw.MINVAL, out checker) && o.Raw.TAGID == tag.Key)))
+                        {
+                            lstBase.Add(Convert.ToDouble(lcl.Raw.MINVAL));
+                        }
 
                         if (actualYmax != null) lstBase.Add(actualYmax);
                         if (actualYmin != null) lstBase.Add(actualYmin);
-                        if (defUCL != null) lstBase.Add(defUCL);
-                        if (defLCL != null) lstBase.Add(defLCL);
-
+ 
                         _ChartYMax = Ymax = Convert.ToDouble(lstBase.Max());
                         _ChartYMin = Ymin = Convert.ToDouble(lstBase.Min());
 
