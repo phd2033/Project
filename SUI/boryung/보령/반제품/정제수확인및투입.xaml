@@ -80,7 +80,7 @@
                     <c1:C1DataGrid.Columns>
                         <c1:DataGridTextColumn  Header="원료배치번호" Width="150" Binding="{Binding Path=MLOTID}" IsReadOnly="True" HorizontalAlignment="Center" HeaderStyle="{StaticResource HeaderStyle}"/>
                         <c1:DataGridTextColumn  Header="No" Width="40"  Binding="{Binding Path=SEQ}" IsReadOnly="True" HorizontalAlignment="Center" HeaderStyle="{StaticResource HeaderStyle}"/>
-                        <c1:DataGridTextColumn  Header="출고량"  Width="80" Binding="{Binding Path=MSUBLOTQTY}" IsReadOnly="True" HorizontalAlignment="Right" HeaderStyle="{StaticResource HeaderStyle}"/>
+                        <c1:DataGridTextColumn  Header="칭량기준량"  Width="80" Binding="{Binding Path=MSUBLOTQTY}" IsReadOnly="True" HorizontalAlignment="Right" HeaderStyle="{StaticResource HeaderStyle}"/>
                         <c1:DataGridTextColumn  Header="실제투입량"  Width="80" Binding="{Binding Path=REALQTY}" IsReadOnly="True" HorizontalAlignment="Right" HeaderStyle="{StaticResource HeaderStyle}"/>
                         <c1:DataGridTextColumn  Header="단위"  Width="50"  Binding="{Binding Path=UOMNAME}" IsReadOnly="True" HorizontalAlignment="Center" HeaderStyle="{StaticResource HeaderStyle}"/>
                         <c1:DataGridTextColumn  Header="상태"  Width="55" Binding="{Binding Path=CHECK}" IsReadOnly="True" HorizontalAlignment="Center" HeaderStyle="{StaticResource HeaderStyle}"/>

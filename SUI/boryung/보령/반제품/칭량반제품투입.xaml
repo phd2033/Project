@@ -54,7 +54,7 @@
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="1" Name="btnComfrim" Width="90" Height="40" Content="Check">
+            <Button Grid.Column="1" Name="btnComfrim" Width="90" Height="40" Content="기록">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Click">
                         <i:InvokeCommandAction Command="{Binding ConfirmCommandAsync}"/>
