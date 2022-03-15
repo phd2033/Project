@@ -212,6 +212,8 @@
     <Compile Include="Model.Access\공정검사\BR_BRS_GET_ProductionOrderTestSpecificationResult.Access.cs" />
     <Compile Include="Model.Access\공정검사\BR_BRS_SEL_ProductionOrderIPCResult.Access.cs" />
     <Compile Include="Model.Access\공정검사\BR_BRS_SEL_ProductionOrderIPCStandard.Access.cs" />
+    <Compile Include="Model.Access\레시피확인\BR_BRS_SEL_EquipmentRecipe.Access.cs" />
+    <Compile Include="Model.Access\레시피확인\BR_BRS_SEL_EquipmentRecipeStepType.Access.cs" />
     <Compile Include="Model.Access\반제품\BR_BRS_CHK_ProductionOrderSubLot_Valid.Access.cs" />
     <Compile Include="Model.Access\반제품\BR_BRS_GET_VESSEL_INFO_DETAIL.Access.cs" />
     <Compile Include="Model.Access\반제품\BR_BRS_GET_VESSEL_WMS_IN.Access.cs" />
@@ -435,6 +437,10 @@
     </Compile>
     <Compile Include="공정검사\타정공정검사2ViewModel.cs" />
     <Compile Include="공정중 시험의뢰\공정중시험의뢰.cs" />
+    <Compile Include="레시피확인\레시피확인.xaml.cs">
+      <DependentUpon>레시피확인.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="레시피확인\레시피확인ViewModel.cs" />
     <Compile Include="반제품\Popup\포장공정반제품분할이력.xaml.cs">
       <DependentUpon>포장공정반제품분할이력.xaml</DependentUpon>
     </Compile>
@@ -1003,6 +1009,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="공정검사\타정공정검사2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="레시피확인\레시피확인.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

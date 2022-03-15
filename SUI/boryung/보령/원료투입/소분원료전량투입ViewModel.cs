@@ -288,7 +288,7 @@ namespace 보령
                             CommandCanExecutes["ConfirmCommand"] = false;
 
                             ///
-                            if (filteredComponents.Count(x => x.IS_CAN_CHARGING_CHECKED_NAME.Equals("투입가능") || x.IS_CAN_CHARGING_CHECKED_NAME.Equals("투입완료")) > 0)
+                            if (filteredComponents.Count(x => x.IS_CAN_CHARGING_CHECKED_NAME.Equals("투입가능") || x.IS_CAN_CHARGING_CHECKED_NAME.Equals("투입완료")) == filteredComponents.Count)
                             {
                                 if (_mainWnd.CurrentInstruction.Raw.INSERTEDYN.Equals("Y") && _mainWnd.Phase.CurrentPhase.STATE.Equals("COMP")) // 값 수정
                                 {
@@ -314,7 +314,7 @@ namespace 보령
                                 ds.Tables.Add(dt);
                                 dt.Columns.Add(new DataColumn("원료코드"));
                                 dt.Columns.Add(new DataColumn("원료명"));
-                                dt.Columns.Add(new DataColumn("원료시험번호"));                                
+                                dt.Columns.Add(new DataColumn("원료시험번호"));
                                 dt.Columns.Add(new DataColumn("바코드"));
                                 dt.Columns.Add(new DataColumn("투입량"));
                                 dt.Columns.Add(new DataColumn("상태"));
@@ -356,9 +356,9 @@ namespace 보령
                                         var row = dt.NewRow();
                                         row["원료코드"] = item.MTRLID != null ? item.MTRLID : "";
                                         row["원료명"] = item.MTRLNAME != null ? item.MTRLNAME : "";
-                                        row["원료시험번호"] = item.MLOTID != null ? item.MLOTID : "";                                        
+                                        row["원료시험번호"] = item.MLOTID != null ? item.MLOTID : "";
                                         row["바코드"] = item.MSUBLOTBCD != null ? item.MSUBLOTBCD : "";
-                                        row["투입량"] =  item.CHGQTY != null ? item.CHGQTY + " " + item.UOM : "";
+                                        row["투입량"] = item.CHGQTY != null ? item.CHGQTY + " " + item.UOM : "";
                                         row["상태"] = item.IS_CAN_CHARGING_CHECKED_NAME != null ? item.IS_CAN_CHARGING_CHECKED_NAME : "";
                                         dt.Rows.Add(row);
                                     }
@@ -380,6 +380,8 @@ namespace 보령
                                 if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
                                 else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
                             }
+                            else
+                                OnMessage("스캔하지 않은 원료가 있습니다.");
                             ///
 
                             CommandResults["ConfirmCommand"] = true;
