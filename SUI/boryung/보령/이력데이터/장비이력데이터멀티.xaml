@@ -59,11 +59,14 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
+                    <!-- TAGID & Value 표시 주석, 2022.03.15 실제값이 가려지는 현상으로 표시 않음 -->
+                    <!--
                     <Border BorderBrush="DarkRed"  BorderThickness="1" Background="Pink"  CornerRadius="3" HorizontalAlignment="Left" Canvas.ZIndex="1">
                         <Grid>
                             <TextBlock Foreground="Black" x:Name="tbMax" Margin="2,2,18,2" Text="{Binding ElementName=obj,Path=Tag}" />
                         </Grid>
                     </Border>
+                    -->
                     <Rectangle Height="2" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Fill="Red" VerticalAlignment="Center" HorizontalAlignment="Stretch" Canvas.ZIndex="0"/>
                 </Grid>
             </c1:ChartPanelObject>
@@ -79,11 +82,14 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
+                    <!-- TAGID & Value 표시 주석, 2022.03.15 실제값이 가려지는 현상으로 표시 않음 -->
+                    <!--
                     <Border BorderBrush="DarkBlue" BorderThickness="1" Background="LightBlue"  CornerRadius="3" HorizontalAlignment="Right" Canvas.ZIndex="1">
                         <Grid>
                             <TextBlock Foreground="Black" x:Name="tbMin" Margin="2,2,18,2" Text="{Binding ElementName=obj,Path=Tag}" />
                         </Grid>
                     </Border>
+                    -->
                     <Rectangle Height="2" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Fill="Blue" VerticalAlignment="Center" HorizontalAlignment="Stretch" Canvas.ZIndex="0"/>
                 </Grid>
             </c1:ChartPanelObject>
