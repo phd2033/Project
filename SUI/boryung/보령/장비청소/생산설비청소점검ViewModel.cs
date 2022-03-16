@@ -13,6 +13,8 @@ using C1.Silverlight.Data;
 using ShopFloorUI;
 using Equipment;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 
 namespace 보령
@@ -398,7 +400,7 @@ namespace 보령
                                 dt.Columns.Add(new DataColumn("이전제품명"));
                                 dt.Columns.Add(new DataColumn("이전제조번호"));
                                 dt.Columns.Add(new DataColumn("점검상태"));
-                                dt.Columns.Add(new DataColumn("교정상태"));
+                                dt.Columns.Add(new DataColumn("적격성평가상태"));
                                 dt.Columns.Add(new DataColumn("청소상태"));
                                 dt.Columns.Add(new DataColumn("청소완료일시"));
                                 dt.Columns.Add(new DataColumn("청소유효일시"));
@@ -412,8 +414,8 @@ namespace 보령
                                     row["장비명"] = item.EQPTNAME != null ? item.EQPTNAME : "";
                                     row["이전제품명"] = item.MTRLNAME != null ? item.MTRLNAME : "";
                                     row["이전제조번호"] = item.BATCHNO != null ? item.BATCHNO : "";
-                                    row["점검상태"] = item.SCALEDAILYSTATUS != null ? item.SCALEDAILYSTATUS : "";
-                                    row["교정상태"] = item.CALIBRATIONSTATUS != null ? item.CALIBRATIONSTATUS : "";
+                                    row["점검상태"] = item.PERIODCHKSTATUS != null ? item.PERIODCHKSTATUS : "";
+                                    row["적격성평가상태"] = item.QUALIFICATIONSTATUS != null ? item.QUALIFICATIONSTATUS : "";
                                     row["청소상태"] = item.STATUS != null ? item.STATUS : "";
                                     row["청소완료일시"] = item.CLEANDTTM != null ? item.CLEANDTTM : "";
                                     row["청소유효일시"] = item.EXPIREDTTM != null ? item.EXPIREDTTM : "";
@@ -468,14 +470,10 @@ namespace 보령
             if (BR_BRS_SEL_EquipmentStatus_PROCEQPT != null && BR_BRS_SEL_EquipmentStatus_PROCEQPT.OUTDATAs.Count > 0)
             {
                 CANRECORDFLAG = true;
-                foreach (var item in BR_BRS_SEL_EquipmentStatus_PROCEQPT.OUTDATAs)
-                {
-                    if (item.AVAILFLAG == "N")
-                    {
-                        CANRECORDFLAG = false;
-                        break;
-                    }
-                }
+
+                var failEQPTS = BR_BRS_SEL_EquipmentStatus_PROCEQPT.OUTDATAs.FirstOrDefault(o => o.AVAILFLAG == "N" || o.PERIODCHKSTATUS == "부적합" || o.QUALIFICATIONSTATUS == "부적합");
+
+                if (null != failEQPTS) CANRECORDFLAG = false;
             }
         }
         private async void RefreshData(string prevEQPTID, string curEQPTID)
@@ -521,6 +519,10 @@ namespace 보령
                         item.CALIBRATIONSTATUS = BR_BRS_SEL_EquipmentStatus_CheckCleaned_Multi.OUTDATAs[0].CALIBRATIONSTATUS;
                         item.CALIBATIONDTTM = BR_BRS_SEL_EquipmentStatus_CheckCleaned_Multi.OUTDATAs[0].CALIBATIONDTTM;
                         item.NEXTCALIBATIONDTTM = BR_BRS_SEL_EquipmentStatus_CheckCleaned_Multi.OUTDATAs[0].NEXTCALIBATIONDTTM;
+                        item.QUARTERCHKSTATUS = BR_BRS_SEL_EquipmentStatus_CheckCleaned_Multi.OUTDATAs[0].QUARTERCHKSTATUS;
+                        item.QUALIFICATIONSTATUS = BR_BRS_SEL_EquipmentStatus_CheckCleaned_Multi.OUTDATAs[0].QUALIFICATIONSTATUS;
+                        item.QUALIFICATIONEXPIREDTTM = BR_BRS_SEL_EquipmentStatus_CheckCleaned_Multi.OUTDATAs[0].QUALIFICATIONEXPIREDTTM;
+                        item.PERIODCHKSTATUS = BR_BRS_SEL_EquipmentStatus_CheckCleaned_Multi.OUTDATAs[0].PERIODCHKSTATUS;
                     }
                 }
             }

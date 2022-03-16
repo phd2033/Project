@@ -2,9 +2,9 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace 보령
+namespace LGCNS.iPharmMES.Common
 {
-
+    
     /// <summary>
     /// summary of BR_BRS_SEL_EquipmentStatus_ROOM
     /// </summary>
@@ -22,7 +22,7 @@ namespace 보령
                 return this._INDATAs;
             }
         }
-        [BizActorInputSetDefineAttribute(Order = "0")]
+        [BizActorInputSetDefineAttribute(Order="0")]
         [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
         public partial class INDATA : BizActorDataSetBase
         {
@@ -242,7 +242,7 @@ namespace 보령
                 return this._INDATA_IRTRESULTs;
             }
         }
-        [BizActorInputSetDefineAttribute(Order = "1")]
+        [BizActorInputSetDefineAttribute(Order="1")]
         [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
         public partial class INDATA_IRTRESULT : BizActorDataSetBase
         {
@@ -462,7 +462,7 @@ namespace 보령
                 return this._OUTDATAs;
             }
         }
-        [BizActorOutputSetDefineAttribute(Order = "0")]
+        [BizActorOutputSetDefineAttribute(Order="0")]
         [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
         public partial class OUTDATA : BizActorDataSetBase
         {
@@ -1309,11 +1309,138 @@ namespace 보령
                     }
                 }
             }
+            private string _QUARTERCHKSTATUS;
+            [BizActorOutputItemAttribute()]
+            public string QUARTERCHKSTATUS
+            {
+                get
+                {
+                    return this._QUARTERCHKSTATUS;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._QUARTERCHKSTATUS = value;
+                        this.CheckIsOriginal("QUARTERCHKSTATUS", value);
+                        this.OnPropertyChanged("QUARTERCHKSTATUS");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+            private string _QUALIFICATIONSTATUS;
+            [BizActorOutputItemAttribute()]
+            public string QUALIFICATIONSTATUS
+            {
+                get
+                {
+                    return this._QUALIFICATIONSTATUS;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._QUALIFICATIONSTATUS = value;
+                        this.CheckIsOriginal("QUALIFICATIONSTATUS", value);
+                        this.OnPropertyChanged("QUALIFICATIONSTATUS");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+            private string _QUALIFICATIONEXPIREDTTM;
+            [BizActorOutputItemAttribute()]
+            public string QUALIFICATIONEXPIREDTTM
+            {
+                get
+                {
+                    return this._QUALIFICATIONEXPIREDTTM;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._QUALIFICATIONEXPIREDTTM = value;
+                        this.CheckIsOriginal("QUALIFICATIONEXPIREDTTM", value);
+                        this.OnPropertyChanged("QUALIFICATIONEXPIREDTTM");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+            private string _PERIODCHKSTATUS;
+            [BizActorOutputItemAttribute()]
+            public string PERIODCHKSTATUS
+            {
+                get
+                {
+                    return this._PERIODCHKSTATUS;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._PERIODCHKSTATUS = value;
+                        this.CheckIsOriginal("PERIODCHKSTATUS", value);
+                        this.OnPropertyChanged("PERIODCHKSTATUS");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
         }
         public BR_BRS_SEL_EquipmentStatus_ROOM()
         {
             RuleName = "BR_BRS_SEL_EquipmentStatus_ROOM";
-            BizName = "BR_BRS_SEL_EquipmentStatus_ROOM";
             _INDATAs = new INDATACollection();
             _INDATA_IRTRESULTs = new INDATA_IRTRESULTCollection();
             _OUTDATAs = new OUTDATACollection();
