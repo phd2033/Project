@@ -132,9 +132,14 @@ namespace 보령
 
                             foreach (var item in _BR_BRS_SEL_ProductionOrder_SAMPLEQTY.OUTDATAs)
                             {
-                                if(item.MSUBLOTSTAT != strAccept || item.MSUBLOTEXPIRYSTAT != strAccept)
+                                if (item.MSUBLOTSTAT != strAccept)
                                 {
                                     OnMessage("시험결과가 부적합 입니다.");
+                                    return;
+                                }
+                                else if (item.MSUBLOTEXPIRYSTAT != strAccept)
+                                {
+                                    OnMessage("반제품 유효기간이 부적합 입니다.");
                                     return;
                                 }
                             }
