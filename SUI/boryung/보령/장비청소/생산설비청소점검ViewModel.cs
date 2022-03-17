@@ -187,7 +187,7 @@ namespace 보령
                                     ActionPerformPopup.DataContext = new EM_EquipmentManagementPerformActionViewModel();
                                     ActionPerformPopup.Closed += (s, e) =>
                                     {
-                                        RefreshData(selectedEqptId, selectedEqptId);
+                                        RefreshData(selectedEqptId, selectedEqptId);                                        
                                     };
                                     ActionPerformPopup.Show();
                                 }
@@ -241,9 +241,7 @@ namespace 보령
 
                                     if (await bizRule.Execute() == true)
                                         RefreshData(selectedEqptId, selectedEqptId);
-                                }
-
-                                CheckRecordFlag();
+                                }                                
                             }
 
                             IsBusy = false;
@@ -471,7 +469,7 @@ namespace 보령
             {
                 CANRECORDFLAG = true;
 
-                var failEQPTS = BR_BRS_SEL_EquipmentStatus_PROCEQPT.OUTDATAs.FirstOrDefault(o => o.AVAILFLAG == "N" || o.PERIODCHKSTATUS == "부적합" || o.QUALIFICATIONSTATUS == "부적합");
+                var failEQPTS = BR_BRS_SEL_EquipmentStatus_PROCEQPT.OUTDATAs.FirstOrDefault(o => o.AVAILFLAG == "N" || o.VALIDFLAG == "N" || o.PERIODCHKSTATUS.Contains( "부적합")|| o.QUALIFICATIONSTATUS.Contains("부적합"));
 
                 if (null != failEQPTS) CANRECORDFLAG = false;
             }
@@ -526,6 +524,7 @@ namespace 보령
                     }
                 }
             }
+            CheckRecordFlag();
         }
         #endregion
     }
