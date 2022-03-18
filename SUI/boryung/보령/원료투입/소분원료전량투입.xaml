@@ -95,7 +95,7 @@
                         <c1:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding STDQYT}"/>
+                                    <TextBlock Text="{Binding STDQTY}"/>
                                     <TextBlock Text=" "/>
                                     <TextBlock Text="{Binding UOM}"/>
                                 </StackPanel>
