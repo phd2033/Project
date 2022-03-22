@@ -35,15 +35,15 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+                </Grid.RowDefinitions>  
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <brs:IPCControl Grid.Row="0" Grid.Column="0" Margin="3" IPCDATA="{Binding ThicknessIPCData, Mode=TwoWay}"/>
-                <brs:IPCControl Grid.Row="0" Grid.Column="1" Margin="3" IPCDATA="{Binding DiameterIPCData, Mode=TwoWay}"/>
-                <brs:IPCControl Grid.Row="0" Grid.Column="2" Margin="3" IPCDATA="{Binding LongitudeIPCData, Mode=TwoWay}"/>
+                <brs:IPCControl Grid.Row="0" Grid.Column="0" Margin="3" IPCDATA="{Binding ThicknessIPCData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <brs:IPCControl Grid.Row="0" Grid.Column="1" Margin="3" IPCDATA="{Binding DiameterIPCData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <brs:IPCControl Grid.Row="0" Grid.Column="2" Margin="3" IPCDATA="{Binding LongitudeIPCData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <Button x:Name="btnRegisterIPCResult" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Right" VerticalAlignment="Center" Content="검사결과저장" Width="100" Height="40"
                         Command="{Binding RegisterIPCCommandAsync}"/>
             </Grid>

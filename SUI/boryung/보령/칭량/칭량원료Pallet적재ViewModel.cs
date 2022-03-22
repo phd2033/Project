@@ -78,16 +78,7 @@ namespace 보령
 
         #region Data
 
-        private BR_PHR_GET_BIN_INFO _BR_PHR_GET_BIN_INFO;
-        public BR_PHR_GET_BIN_INFO BR_PHR_GET_BIN_INFO
-        {
-            get { return _BR_PHR_GET_BIN_INFO; }
-            set
-            {
-                _BR_PHR_GET_BIN_INFO = value;
-                NotifyPropertyChanged();
-            }
-        }
+        private BR_PHR_SEL_Equipment_GetInfo _BR_PHR_SEL_Equipment_GetInfo;
 
         private BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging _BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging;
         public BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging
@@ -172,7 +163,7 @@ namespace 보령
             _BR_PHR_UPD_MaterialSubLot_ChangeVesselID_MULTI = new BR_PHR_UPD_MaterialSubLot_ChangeVesselID_MULTI();
             _BR_UDB_REG_PMS_FILLED_BIN_IN = new BR_UDB_REG_PMS_FILLED_BIN_IN();
             _BR_BRS_GET_DispenseSubLot_VESSID_ISNULL = new BR_BRS_GET_DispenseSubLot_VESSID_ISNULL();
-            _BR_PHR_GET_BIN_INFO = new BR_PHR_GET_BIN_INFO();
+            _BR_PHR_SEL_Equipment_GetInfo = new BR_PHR_SEL_Equipment_GetInfo();
             _BR_PHR_SEL_System_Option_OPTIONTYPE = new BR_PHR_SEL_System_Option_OPTIONTYPE();
             ListContainer = new ObservableCollection<보령.칭량원료Pallet적재ViewModel.LayerCharging>();
             //_DtLayerCharging = new DataTable();
@@ -255,28 +246,31 @@ namespace 보령
                             ///
                             _mainWnd.txtContainer.Text = _mainWnd.txtContainer.Text.ToUpper();
 
-                            BR_PHR_GET_BIN_INFO.INDATAs.Clear();
-                            BR_PHR_GET_BIN_INFO.OUTDATAs.Clear();
+                            _BR_PHR_SEL_Equipment_GetInfo.INDATAs.Clear();
+                            _BR_PHR_SEL_Equipment_GetInfo.OUTDATAs.Clear();
 
-                            BR_PHR_GET_BIN_INFO.INDATAs.Add(new BR_PHR_GET_BIN_INFO.INDATA()
+                            _BR_PHR_SEL_Equipment_GetInfo.INDATAs.Add(new BR_PHR_SEL_Equipment_GetInfo.INDATA()
                             {
-                                LANGID = null,
-                                EQPTID = _mainWnd.txtContainer.Text,
-                                POID = null,
-                                BATCHNO = null,
-                                TYPE = null
+                               EQPTID = _mainWnd.txtContainer.Text
                             });
 
                             lblEqptID = null;
 
-                            if (!await BR_PHR_GET_BIN_INFO.Execute()) return;
-
-                            if (BR_PHR_GET_BIN_INFO.OUTDATAs.Count > 0)
-                                lblEqptID = BR_PHR_GET_BIN_INFO.OUTDATAs[0].EQPTID;
-
-                            await RetrieveMaterialSublotWithVessel();
-
-                            _mainWnd.txtMaterial.Focus();
+                            if (await _BR_PHR_SEL_Equipment_GetInfo.Execute() && _BR_PHR_SEL_Equipment_GetInfo.OUTDATAs.Count > 0)
+                            {
+                                if(string.IsNullOrWhiteSpace(_mainWnd.CurrentInstruction.Raw.EQCLID) || _mainWnd.CurrentInstruction.Raw.EQCLID == _BR_PHR_SEL_Equipment_GetInfo.OUTDATAs[0].EQCLID)
+                                {
+                                    lblEqptID = _BR_PHR_SEL_Equipment_GetInfo.OUTDATAs[0].EQPTID;
+                                    await RetrieveMaterialSublotWithVessel();
+                                    _mainWnd.txtMaterial.Focus();
+                                }
+                                else
+                                {
+                                    BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging.OUTDATAs.Clear();
+                                    BR_BRS_GET_DispenseSubLot_VESSID_ISNULL.OUTDATAs.Clear();
+                                    OnMessage("사용할 수 없는 용기입니다.");
+                                }
+                            }
                             ///
 
                             CommandResults["ContainerBarcodeChangedCommand"] = true;
@@ -870,7 +864,8 @@ namespace 보령
                         OPSGGUID = null,
                         MTRLID = null,
                         CHGSEQ = 0,
-                        OPSGNAME = _mainWnd.CurrentInstruction.Raw.TARGETVAL
+                        OPSGNAME = _mainWnd.CurrentInstruction.Raw.TARGETVAL,
+                        VESSELID = lblEqptID
                     });
 
                     await BR_BRS_GET_DispenseSubLot_VESSID_ISNULL.Execute();

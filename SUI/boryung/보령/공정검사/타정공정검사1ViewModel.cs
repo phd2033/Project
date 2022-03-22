@@ -114,11 +114,10 @@ namespace 보령
                                     ThicknessIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[0]);
                                     DiameterIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[1]);
                                     LongitudeIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[2]);
+                                    
+                                    await GetIPCResult();
                                 }
 
-                                // IPC 기록 조회
-                                if(ThicknessIPCData != null && DiameterIPCData != null && LongitudeIPCData != null)
-                                    await GetIPCResult();
                             } 
                             ///
 
@@ -175,7 +174,7 @@ namespace 보령
                                     Common.enumAccessType.Create,
                                     string.Format("IPC 결과를 기록합니다."),
                                     string.Format("IPC 결과를 기록합니다."),
-                                    true,
+                                    false,
                                     "OM_ProductionOrder_IPC",
                                     "", null, null) == false)
                                 {
@@ -267,9 +266,10 @@ namespace 보령
 
                                 if (await _BR_PHR_REG_ProductionOrderTestResult.Execute())
                                 {
-                                    _ThicknessIPCData.ACTVAL = null;
-                                    _DiameterIPCData.ACTVAL = null;
-                                    _LongitudeIPCData.ACTVAL = null;
+                                    ThicknessIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[0]);
+                                    DiameterIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[1]);
+                                    LongitudeIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[2]);
+
                                     await GetIPCResult();
                                 }
                                     
@@ -340,17 +340,17 @@ namespace 보령
                             var dt = new DataTable("DATA");
                             ds.Tables.Add(dt);
                             dt.Columns.Add(new DataColumn("구분"));
-                            dt.Columns.Add(new DataColumn("검사항목1"));
-                            dt.Columns.Add(new DataColumn("검사항목2"));
-                            dt.Columns.Add(new DataColumn("검사항목3"));
+                            dt.Columns.Add(new DataColumn("두께"));
+                            dt.Columns.Add(new DataColumn("직경"));
+                            dt.Columns.Add(new DataColumn("경도"));
                             
                             foreach (var item in _IPCResults)
                             {
                                 var row = dt.NewRow();
                                 row["구분"] = item.GUBUN ?? "";
-                                row["검사항목1"] = item.RSLT1 ?? "";
-                                row["검사항목2"] = item.RSLT2 ?? "";
-                                row["검사항목3"] = item.RSLT3 ?? "";
+                                row["두께"] = item.RSLT1 ?? "";
+                                row["직경"] = item.RSLT2 ?? "";
+                                row["경도"] = item.RSLT3 ?? "";
                                 dt.Rows.Add(row);
                             }
 

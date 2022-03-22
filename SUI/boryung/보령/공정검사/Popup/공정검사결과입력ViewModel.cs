@@ -258,7 +258,18 @@ namespace 보령
                             {
                                 if (popup.DialogResult.GetValueOrDefault())
                                 {
-                                    NumericRslt = popup.Value;
+                                    string rslt = popup.Value;
+                                    decimal val;
+
+                                    if (!string.IsNullOrWhiteSpace(rslt))
+                                    {
+                                        if (decimal.TryParse(rslt, out val))
+                                        {
+                                            NumericRslt = decimal.Round(val, _curIPCData.PRECISION).ToString();
+                                        }
+                                        else
+                                            OnMessage("숫자로 변환 실패");
+                                    }
                                 }
                             };
 
@@ -295,7 +306,6 @@ namespace 보령
             {
                 if (decimal.TryParse(NumericRslt, out val))
                 {
-                    val = decimal.Round(val, _curIPCData.PRECISION);
                     return val;
                 }
                 else
@@ -451,7 +461,7 @@ namespace 보령
                         else if(ScaleValueSaveButtonContent == "시험후무게 저장")
                         {
                             _AfterScaleValue = _ScaleValue.Copy();
-                            _FriabilityRslt = decimal.Divide((_PrevScaleValue.Value - _AfterScaleValue.Value), (_PrevScaleValue.Value)) * 100m;
+                            _FriabilityRslt = Math.Round(decimal.Divide((_PrevScaleValue.Value - _AfterScaleValue.Value), (_PrevScaleValue.Value)) * 100m, _curIPCData.PRECISION);
                             OnPropertyChanged("FriabilityRslt");
                             OnPropertyChanged("AfterScaleValue");
 

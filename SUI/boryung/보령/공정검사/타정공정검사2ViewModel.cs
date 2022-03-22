@@ -114,11 +114,10 @@ namespace 보령
                                     ShapeIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[0]);
                                     CrumblingIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[1]);
                                     FriabilityIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[2]);
-                                }
 
-                                // IPC 기록 조회
-                                if(ShapeIPCData != null && CrumblingIPCData != null && FriabilityIPCData != null)
                                     await GetIPCResult();
+                                }
+                                
                             } 
                             ///
 
@@ -175,7 +174,7 @@ namespace 보령
                                     Common.enumAccessType.Create,
                                     string.Format("IPC 결과를 기록합니다."),
                                     string.Format("IPC 결과를 기록합니다."),
-                                    true,
+                                    false,
                                     "OM_ProductionOrder_IPC",
                                     "", null, null) == false)
                                 {
@@ -224,7 +223,7 @@ namespace 보령
                                     POTSRGUID = _BR_PHR_REG_ProductionOrderTestResult.INDATA_SPECs[0].POTSRGUID,
                                     OPTSIGUID = new Guid(_ShapeIPCData.OPTSIGUID),
                                     POTSIRGUID = Guid.NewGuid(),
-                                    ACTVAL = _ShapeIPCData.GetACTVAL,
+                                    ACTVAL = _ShapeIPCData.ACTVAL.ToString(),
                                     INSUSER = user,
                                     INSDTTM = curDttm,
                                     EFCTTIMEIN = curDttm,
@@ -267,9 +266,10 @@ namespace 보령
 
                                 if (await _BR_PHR_REG_ProductionOrderTestResult.Execute())
                                 {
-                                    _ShapeIPCData.ACTVAL = null;
-                                    _CrumblingIPCData.ACTVAL = null;
-                                    _FriabilityIPCData.ACTVAL = null;
+                                    ShapeIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[0]);
+                                    CrumblingIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[1]);
+                                    FriabilityIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[2]);
+
                                     await GetIPCResult();
                                 }
                                     
@@ -340,17 +340,17 @@ namespace 보령
                             var dt = new DataTable("DATA");
                             ds.Tables.Add(dt);
                             dt.Columns.Add(new DataColumn("구분"));
-                            dt.Columns.Add(new DataColumn("검사항목1"));
-                            dt.Columns.Add(new DataColumn("검사항목2"));
-                            dt.Columns.Add(new DataColumn("검사항목3"));
+                            dt.Columns.Add(new DataColumn("성상"));
+                            dt.Columns.Add(new DataColumn("분해"));
+                            dt.Columns.Add(new DataColumn("마손도"));
                             
                             foreach (var item in _IPCResults)
                             {
                                 var row = dt.NewRow();
                                 row["구분"] = item.GUBUN ?? "";
-                                row["검사항목1"] = item.RSLT1 ?? "";
-                                row["검사항목2"] = item.RSLT2 ?? "";
-                                row["검사항목3"] = item.RSLT3 ?? "";
+                                row["성상"] = item.RSLT1 ?? "";
+                                row["분해"] = item.RSLT2 ?? "";
+                                row["마손도"] = item.RSLT3 ?? "";
                                 dt.Rows.Add(row);
                             }
 

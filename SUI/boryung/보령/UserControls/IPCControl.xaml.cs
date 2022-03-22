@@ -41,6 +41,14 @@ namespace 보령.UserControls
             // 화면 Setup
             parent.tbIPCName.Text = IPCDATA.TINAME;
             parent.tbIPCStandard.Text = IPCDATA.Standard;
+
+            if(!IPCDATA.DEVIATIONFLAG.HasValue)
+            {
+                parent.tbIPCResult.Foreground = new SolidColorBrush(Colors.Black);
+                parent.tbIPCResult.Text = IPCDATA.GetACTVAL;
+                parent.bdIPCResult.Background = new SolidColorBrush(Colors.LightGray);
+                parent.btnIPCStart.Content = "검사";
+            }
         }
         #endregion
 

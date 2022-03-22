@@ -229,6 +229,38 @@ namespace 보령
                     }
                 }
             }
+            private string _VESSELID;
+            [BizActorInputItemAttribute()]
+            public string VESSELID
+            {
+                get
+                {
+                    return this._VESSELID;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._VESSELID = value;
+                        this.CheckIsOriginal("VESSELID", value);
+                        this.OnPropertyChanged("VESSELID");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
         }
         public sealed partial class OUTDATACollection : BufferedObservableCollection<OUTDATA>
         {

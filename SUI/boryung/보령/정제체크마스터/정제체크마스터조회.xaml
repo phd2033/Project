@@ -139,23 +139,12 @@
                                    ItemsSource="{Binding Path=BR_BRS_GET_Selector_Check_Master.OUTDATAs}">
                         <c1:C1DataGrid.Columns>
                             <c1:DataGridTextColumn Header="No" Width="40" Binding="{Binding SEQ}"/>
-                            <c1:DataGridTextColumn Header="점검 일시" MinWidth="150" Binding="{Binding STDATETIME}"/>
-
+                            <c1:DataGridTextColumn Header="점검일시" MinWidth="150" Binding="{Binding STDATETIME}"/>
                             <c1:DataGridTextColumn Header="평균질량" MinWidth="100" Binding="{Binding AVG_WEIGHT}"/>
-                            <c1:DataGridTextColumn Header="개개질량(최소)" MinWidth="100" Binding="{Binding MIN_WEIGHT}"/>
-                            <c1:DataGridTextColumn Header="개개질량(최대)" MinWidth="100" Binding="{Binding MAX_WEIGHT}"/>
-
-                            <c1:DataGridTextColumn Header="두께(평균)" MinWidth="100" Binding="{Binding AVG_THICK}"/>
-                            <c1:DataGridTextColumn Header="두께(최소)" MinWidth="100" Binding="{Binding MIN_THICK}"/>
-                            <c1:DataGridTextColumn Header="두께(최대)" MinWidth="100" Binding="{Binding MAX_THICK}"/>
-
-                            <c1:DataGridTextColumn Header="경도(평균)" MinWidth="100" Binding="{Binding AVG_HARDNESS}"/>
-                            <c1:DataGridTextColumn Header="경도(최소)" MinWidth="100" Binding="{Binding MIN_HARDNESS}"/>
-                            <c1:DataGridTextColumn Header="경도(최대)" MinWidth="100" Binding="{Binding MAX_HARDNESS}"/>
-
-                            <c1:DataGridTextColumn Header="직경(평균)" MinWidth="100" Binding="{Binding AVG_DIAMETER}"/>
-                            <c1:DataGridTextColumn Header="직경(최소)" MinWidth="100" Binding="{Binding MIN_DIAMETER}"/>
-                            <c1:DataGridTextColumn Header="직경(최대)" MinWidth="100" Binding="{Binding MAX_DIAMETER}"/>
+                            <c1:DataGridTextColumn Header="개별최소질량" MinWidth="100" Binding="{Binding MIN_WEIGHT}"/>
+                            <c1:DataGridTextColumn Header="개별최대질량" MinWidth="100" Binding="{Binding MAX_WEIGHT}"/>
+                            <c1:DataGridTextColumn Header="평균두께" MinWidth="100" Binding="{Binding AVG_THICKNESS}"/>
+                            <c1:DataGridTextColumn Header="평균경도" MinWidth="100" Binding="{Binding AVG_HARDNESS}"/>
                         </c1:C1DataGrid.Columns>
                     </c1:C1DataGrid>
                 </Grid>
