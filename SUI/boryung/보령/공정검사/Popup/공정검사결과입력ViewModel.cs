@@ -11,6 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Linq;
+using System.ComponentModel;
 using 보령.UserControls;
 
 namespace 보령
@@ -457,6 +459,20 @@ namespace 보령
                             _PrevScaleValue = _ScaleValue.Copy();
                             ScaleValueSaveButtonContent = "시험후무게 저장";
                             OnPropertyChanged("PrevScaleValue");
+
+                            var item = _curIPCData.RawDatas.FirstOrDefault(o => o.COLLECTID.Equals("시험전무게"));
+                            if (item == null)
+                            {
+                                _curIPCData.RawDatas.Add(new IPCControlRawData()
+                                {
+                                    COLLECTID = "시험전무게",
+                                    ACTVAL = _PrevScaleValue.WeightUOMString
+                                });
+                            }
+                            else
+                            {
+                                item.ACTVAL = _PrevScaleValue.WeightUOMString;
+                            }
                         } 
                         else if(ScaleValueSaveButtonContent == "시험후무게 저장")
                         {
@@ -464,6 +480,38 @@ namespace 보령
                             _FriabilityRslt = Math.Round(decimal.Divide((_PrevScaleValue.Value - _AfterScaleValue.Value), (_PrevScaleValue.Value)) * 100m, _curIPCData.PRECISION);
                             OnPropertyChanged("FriabilityRslt");
                             OnPropertyChanged("AfterScaleValue");
+
+                            var item = _curIPCData.RawDatas.FirstOrDefault(o => o.COLLECTID.Equals("시험후무게"));
+                            if (item == null)
+                            {
+                                _curIPCData.RawDatas.Add(new IPCControlRawData()
+                                {
+                                    COLLECTID = "시험후무게",
+                                    ACTVAL = _AfterScaleValue.WeightUOMString
+                                });
+                            }
+                            else
+                            {
+                                item.ACTVAL = _AfterScaleValue.WeightUOMString;
+                            }
+
+                            // 결과 설명
+                            _curIPCData.ACTVALDESC = String.Format("{0}% = {1} - {2} / {1} * 100",
+                                _FriabilityRslt, _PrevScaleValue.WeightUOMString, _AfterScaleValue.WeightUOMString);
+
+                            var actDESC = _curIPCData.RawDatas.FirstOrDefault(o => o.COLLECTID.Equals("결과값설명"));
+                            if (item == null)
+                            {
+                                _curIPCData.RawDatas.Add(new IPCControlRawData()
+                                {
+                                    COLLECTID = "결과값설명",
+                                    ACTVAL = _curIPCData.ACTVALDESC
+                                });
+                            }
+                            else
+                            {
+                                item.ACTVAL = _AfterScaleValue.WeightUOMString;
+                            }
 
                             if (_DispatcherTimer.IsEnabled)
                                 _DispatcherTimer.Stop();

@@ -9,6 +9,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace 보령
 {
@@ -310,6 +312,20 @@ namespace 보령
             }
         }
 
+        private string _ACTVALDESC;
+        /// <summary>
+        /// IPC 결과값 설명
+        /// </summary>
+        public string ACTVALDESC
+        {
+            get { return _ACTVALDESC; }
+            set
+            {
+                _ACTVALDESC = value;                
+                OnPropertyChanged("ACTDESCRIPTION");
+            }
+        }
+
         public string GetACTVAL
         {
             get
@@ -356,6 +372,18 @@ namespace 보령
                 OnPropertyChanged("DEVIATIONFLAG");
             }
         }
+
+        private ObservableCollection<IPCControlRawData> _RawDatas;
+        public ObservableCollection<IPCControlRawData> RawDatas
+        {
+            get { return _RawDatas; }
+            set
+            {
+                _RawDatas = value;
+                OnPropertyChanged("RawDatas");
+            }
+        }
+
         #endregion
 
         #region Function
@@ -472,6 +500,7 @@ namespace 보령
                 IPCData.SMPQTY = param.SMPQTY;
                 IPCData.SMPQTYUOMID = param.SMPQTYUOMID;
                 IPCData.SMPQTYNOTATION = param.SMPQTYNOTATION;
+                IPCData.RawDatas = new ObservableCollection<IPCControlRawData>();
 
                 return IPCData;
             }
@@ -482,5 +511,63 @@ namespace 보령
             }
         }
         #endregion
+    }
+
+    public class IPCControlRawData : ViewModelBase
+    {
+        private string _POTSIRGUID;
+         public string POTSIRGUID
+        {
+            get { return _POTSIRGUID; }
+            set
+            {
+                _POTSIRGUID = value;
+                OnPropertyChanged("POTSIRGUID");
+            }
+        }
+
+        private string _POTSIRAWGUID;
+        public string POTSIRAWGUID
+        {
+            get { return _POTSIRAWGUID; }
+            set
+            {
+                _POTSIRAWGUID = value;
+                OnPropertyChanged("POTSIRAWGUID");
+            }
+        }
+
+        private string _COLLECTID;
+        public string COLLECTID
+        {
+            get { return _COLLECTID; }
+            set
+            {
+                _COLLECTID = value;
+                OnPropertyChanged("COLLECTID");
+            }
+        }
+
+        private string _ACTVAL;
+        public string ACTVAL
+        {
+            get { return _ACTVAL; }
+            set
+            {
+                _ACTVAL = value;
+                OnPropertyChanged("ACTVAL");
+            }
+        }
+
+        private string _REASON;
+        public string REASON
+        {
+            get { return _REASON; }
+            set
+            {
+                _REASON = value;
+                OnPropertyChanged("REASON");
+            }
+        }
     }
 }

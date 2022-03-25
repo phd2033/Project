@@ -23,7 +23,7 @@ namespace 보령
             _BR_BRS_SEL_ProductionOrderIPCResult = new BR_BRS_SEL_ProductionOrderIPCResult();
             _BR_BRS_SEL_ProductionOrderIPCStandard = new BR_BRS_SEL_ProductionOrderIPCStandard();
             _IPCResults = new BR_BRS_SEL_ProductionOrderIPCResult.OUTDATACollection();
-            _BR_PHR_REG_ProductionOrderTestResult = new BR_PHR_REG_ProductionOrderTestResult();
+            _BR_BRS_REG_ProductionOrderTestResult = new BR_BRS_REG_ProductionOrderTestResult();
         }
 
         private 타정공정검사1 _mainWnd;
@@ -75,7 +75,7 @@ namespace 보령
         #region BizRule
         private BR_BRS_SEL_ProductionOrderIPCResult _BR_BRS_SEL_ProductionOrderIPCResult;
         private BR_BRS_SEL_ProductionOrderIPCStandard _BR_BRS_SEL_ProductionOrderIPCStandard;
-        private BR_PHR_REG_ProductionOrderTestResult _BR_PHR_REG_ProductionOrderTestResult;
+        private BR_BRS_REG_ProductionOrderTestResult _BR_BRS_REG_ProductionOrderTestResult;
         #endregion
         #region Command
 
@@ -162,9 +162,9 @@ namespace 보령
                             ///
                             if (_ThicknessIPCData.DEVIATIONFLAG.HasValue && _DiameterIPCData.DEVIATIONFLAG.HasValue && _LongitudeIPCData.DEVIATIONFLAG.HasValue)
                             {
-                                _BR_PHR_REG_ProductionOrderTestResult.INDATA_SPECs.Clear();
-                                _BR_PHR_REG_ProductionOrderTestResult.INDATA_ITEMs.Clear();
-                                _BR_PHR_REG_ProductionOrderTestResult.INDATA_ETCs.Clear();
+                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_SPECs.Clear();
+                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEMs.Clear();
+                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_ETCs.Clear();
 
                                 var authHelper = new iPharmAuthCommandHelper();
                                 authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_IPC");
@@ -186,7 +186,7 @@ namespace 보령
                                 string user = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_IPC");
 
                                 // 시험명세 기록
-                                _BR_PHR_REG_ProductionOrderTestResult.INDATA_SPECs.Add(new BR_PHR_REG_ProductionOrderTestResult.INDATA_SPEC
+                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_SPECs.Add(new BR_BRS_REG_ProductionOrderTestResult.INDATA_SPEC
                                 {
                                     POTSRGUID = Guid.NewGuid(),
                                     POID = _mainWnd.CurrentOrder.ProductionOrderID,
@@ -209,7 +209,7 @@ namespace 보령
                                 });
 
                                 // 전자서명 코멘트
-                                _BR_PHR_REG_ProductionOrderTestResult.INDATA_ETCs.Add(new BR_PHR_REG_ProductionOrderTestResult.INDATA_ETC
+                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_ETCs.Add(new BR_BRS_REG_ProductionOrderTestResult.INDATA_ETC
                                 {
                                     COMMENTTYPE = "CM001",
                                     COMMENT = AuthRepositoryViewModel.GetCommentByFunctionCode("OM_ProductionOrder_IPC"),
@@ -218,9 +218,9 @@ namespace 보령
                                 });
 
                                 // 시험상세결과 기록
-                                _BR_PHR_REG_ProductionOrderTestResult.INDATA_ITEMs.Add(new BR_PHR_REG_ProductionOrderTestResult.INDATA_ITEM
+                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEMs.Add(new BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEM
                                 {
-                                    POTSRGUID = _BR_PHR_REG_ProductionOrderTestResult.INDATA_SPECs[0].POTSRGUID,
+                                    POTSRGUID = _BR_BRS_REG_ProductionOrderTestResult.INDATA_SPECs[0].POTSRGUID,
                                     OPTSIGUID = new Guid(_ThicknessIPCData.OPTSIGUID),
                                     POTSIRGUID = Guid.NewGuid(),
                                     ACTVAL = _ThicknessIPCData.GetACTVAL,
@@ -233,9 +233,9 @@ namespace 보령
                                     ISUSE = "Y",
                                     ACTIVEYN = "Y"
                                 });
-                                _BR_PHR_REG_ProductionOrderTestResult.INDATA_ITEMs.Add(new BR_PHR_REG_ProductionOrderTestResult.INDATA_ITEM
+                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEMs.Add(new BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEM
                                 {
-                                    POTSRGUID = _BR_PHR_REG_ProductionOrderTestResult.INDATA_SPECs[0].POTSRGUID,
+                                    POTSRGUID = _BR_BRS_REG_ProductionOrderTestResult.INDATA_SPECs[0].POTSRGUID,
                                     OPTSIGUID = new Guid(_DiameterIPCData.OPTSIGUID),
                                     POTSIRGUID = Guid.NewGuid(),
                                     ACTVAL = _DiameterIPCData.GetACTVAL,
@@ -248,9 +248,9 @@ namespace 보령
                                     ISUSE = "Y",
                                     ACTIVEYN = "Y"
                                 });
-                                _BR_PHR_REG_ProductionOrderTestResult.INDATA_ITEMs.Add(new BR_PHR_REG_ProductionOrderTestResult.INDATA_ITEM
+                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEMs.Add(new BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEM
                                 {
-                                    POTSRGUID = _BR_PHR_REG_ProductionOrderTestResult.INDATA_SPECs[0].POTSRGUID,
+                                    POTSRGUID = _BR_BRS_REG_ProductionOrderTestResult.INDATA_SPECs[0].POTSRGUID,
                                     OPTSIGUID = new Guid(_LongitudeIPCData.OPTSIGUID),
                                     POTSIRGUID = Guid.NewGuid(),
                                     ACTVAL = _LongitudeIPCData.GetACTVAL,
@@ -264,7 +264,7 @@ namespace 보령
                                     ACTIVEYN = "Y"
                                 });
 
-                                if (await _BR_PHR_REG_ProductionOrderTestResult.Execute())
+                                if (await _BR_BRS_REG_ProductionOrderTestResult.Execute())
                                 {
                                     ThicknessIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[0]);
                                     DiameterIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[1]);

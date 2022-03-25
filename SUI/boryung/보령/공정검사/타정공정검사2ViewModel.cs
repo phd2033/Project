@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using System.Linq;
 
 namespace 보령
 {
@@ -23,7 +24,7 @@ namespace 보령
             _BR_BRS_SEL_ProductionOrderIPCResult = new BR_BRS_SEL_ProductionOrderIPCResult();
             _BR_BRS_SEL_ProductionOrderIPCStandard = new BR_BRS_SEL_ProductionOrderIPCStandard();
             _IPCResults = new BR_BRS_SEL_ProductionOrderIPCResult.OUTDATACollection();
-            _BR_PHR_REG_ProductionOrderTestResult = new BR_PHR_REG_ProductionOrderTestResult();
+            _BR_BRS_REG_ProductionOrderTestResult = new BR_BRS_REG_ProductionOrderTestResult();
         }
 
         private 타정공정검사2 _mainWnd;
@@ -75,7 +76,7 @@ namespace 보령
         #region BizRule
         private BR_BRS_SEL_ProductionOrderIPCResult _BR_BRS_SEL_ProductionOrderIPCResult;
         private BR_BRS_SEL_ProductionOrderIPCStandard _BR_BRS_SEL_ProductionOrderIPCStandard;
-        private BR_PHR_REG_ProductionOrderTestResult _BR_PHR_REG_ProductionOrderTestResult;
+        private BR_BRS_REG_ProductionOrderTestResult _BR_BRS_REG_ProductionOrderTestResult;
         #endregion
         #region Command
 
@@ -162,9 +163,9 @@ namespace 보령
                             ///
                             if (_ShapeIPCData.DEVIATIONFLAG.HasValue && _CrumblingIPCData.DEVIATIONFLAG.HasValue && _FriabilityIPCData.DEVIATIONFLAG.HasValue)
                             {
-                                _BR_PHR_REG_ProductionOrderTestResult.INDATA_SPECs.Clear();
-                                _BR_PHR_REG_ProductionOrderTestResult.INDATA_ITEMs.Clear();
-                                _BR_PHR_REG_ProductionOrderTestResult.INDATA_ETCs.Clear();
+                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_SPECs.Clear();
+                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEMs.Clear();
+                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_ETCs.Clear();
 
                                 var authHelper = new iPharmAuthCommandHelper();
                                 authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_IPC");
@@ -186,7 +187,7 @@ namespace 보령
                                 string user = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_IPC");
 
                                 // 시험명세 기록
-                                _BR_PHR_REG_ProductionOrderTestResult.INDATA_SPECs.Add(new BR_PHR_REG_ProductionOrderTestResult.INDATA_SPEC
+                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_SPECs.Add(new BR_BRS_REG_ProductionOrderTestResult.INDATA_SPEC
                                 {
                                     POTSRGUID = Guid.NewGuid(),
                                     POID = _mainWnd.CurrentOrder.ProductionOrderID,
@@ -209,7 +210,7 @@ namespace 보령
                                 });
 
                                 // 전자서명 코멘트
-                                _BR_PHR_REG_ProductionOrderTestResult.INDATA_ETCs.Add(new BR_PHR_REG_ProductionOrderTestResult.INDATA_ETC
+                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_ETCs.Add(new BR_BRS_REG_ProductionOrderTestResult.INDATA_ETC
                                 {
                                     COMMENTTYPE = "CM001",
                                     COMMENT = AuthRepositoryViewModel.GetCommentByFunctionCode("OM_ProductionOrder_IPC"),
@@ -218,9 +219,9 @@ namespace 보령
                                 });
 
                                 // 시험상세결과 기록
-                                _BR_PHR_REG_ProductionOrderTestResult.INDATA_ITEMs.Add(new BR_PHR_REG_ProductionOrderTestResult.INDATA_ITEM
+                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEMs.Add(new BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEM
                                 {
-                                    POTSRGUID = _BR_PHR_REG_ProductionOrderTestResult.INDATA_SPECs[0].POTSRGUID,
+                                    POTSRGUID = _BR_BRS_REG_ProductionOrderTestResult.INDATA_SPECs[0].POTSRGUID,
                                     OPTSIGUID = new Guid(_ShapeIPCData.OPTSIGUID),
                                     POTSIRGUID = Guid.NewGuid(),
                                     ACTVAL = _ShapeIPCData.ACTVAL.ToString(),
@@ -233,9 +234,10 @@ namespace 보령
                                     ISUSE = "Y",
                                     ACTIVEYN = "Y"
                                 });
-                                _BR_PHR_REG_ProductionOrderTestResult.INDATA_ITEMs.Add(new BR_PHR_REG_ProductionOrderTestResult.INDATA_ITEM
+
+                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEMs.Add(new BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEM
                                 {
-                                    POTSRGUID = _BR_PHR_REG_ProductionOrderTestResult.INDATA_SPECs[0].POTSRGUID,
+                                    POTSRGUID = _BR_BRS_REG_ProductionOrderTestResult.INDATA_SPECs[0].POTSRGUID,
                                     OPTSIGUID = new Guid(_CrumblingIPCData.OPTSIGUID),
                                     POTSIRGUID = Guid.NewGuid(),
                                     ACTVAL = _CrumblingIPCData.GetACTVAL,
@@ -248,23 +250,45 @@ namespace 보령
                                     ISUSE = "Y",
                                     ACTIVEYN = "Y"
                                 });
-                                _BR_PHR_REG_ProductionOrderTestResult.INDATA_ITEMs.Add(new BR_PHR_REG_ProductionOrderTestResult.INDATA_ITEM
+
+                                Guid? guidPOTSRGUID = _BR_BRS_REG_ProductionOrderTestResult.INDATA_SPECs[0].POTSRGUID;
+                                Guid? guidOPTSIGUID = new Guid(_FriabilityIPCData.OPTSIGUID);
+                                Guid? guidPOTSIRGUID = Guid.NewGuid();
+                                Guid? guidCOMMENTGUID = new Guid(confirmguid);
+
+                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEMs.Add(new BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEM
                                 {
-                                    POTSRGUID = _BR_PHR_REG_ProductionOrderTestResult.INDATA_SPECs[0].POTSRGUID,
-                                    OPTSIGUID = new Guid(_FriabilityIPCData.OPTSIGUID),
-                                    POTSIRGUID = Guid.NewGuid(),
+                                    POTSRGUID = guidPOTSRGUID,
+                                    OPTSIGUID = guidOPTSIGUID,
+                                    POTSIRGUID = guidPOTSIRGUID,
                                     ACTVAL = _FriabilityIPCData.GetACTVAL,
                                     INSUSER = user,
                                     INSDTTM = curDttm,
                                     EFCTTIMEIN = curDttm,
                                     EFCTTIMEOUT = curDttm,
-                                    COMMENTGUID = new Guid(confirmguid),
+                                    COMMENTGUID = guidCOMMENTGUID,
                                     REASON = null,
                                     ISUSE = "Y",
                                     ACTIVEYN = "Y"
                                 });
+                                foreach (var raw in _FriabilityIPCData.RawDatas)
+                                {
+                                    _BR_BRS_REG_ProductionOrderTestResult.INDATA_RAWs.Add(new BR_BRS_REG_ProductionOrderTestResult.INDATA_RAW
+                                    {
+                                        POTSIRAWGUID = Guid.NewGuid().ToString(),
+                                        POTSIRGUID = guidPOTSIRGUID.ToString(),
+                                        POTSIRVER = 1,
+                                        COLLECTID = raw.COLLECTID,
+                                        ACTVAL = raw.ACTVAL,
+                                        INSUSER = user,
+                                        INSDTTM = curDttm,
+                                        COMMENTGUID = null,
+                                        REASON = null,
+                                        ISUSE = "Y",
+                                    });
+                                }
 
-                                if (await _BR_PHR_REG_ProductionOrderTestResult.Execute())
+                                if (await _BR_BRS_REG_ProductionOrderTestResult.Execute())
                                 {
                                     ShapeIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[0]);
                                     CrumblingIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[1]);
@@ -341,7 +365,7 @@ namespace 보령
                             ds.Tables.Add(dt);
                             dt.Columns.Add(new DataColumn("구분"));
                             dt.Columns.Add(new DataColumn("성상"));
-                            dt.Columns.Add(new DataColumn("분해"));
+                            dt.Columns.Add(new DataColumn("붕해"));
                             dt.Columns.Add(new DataColumn("마손도"));
                             
                             foreach (var item in _IPCResults)
@@ -349,7 +373,7 @@ namespace 보령
                                 var row = dt.NewRow();
                                 row["구분"] = item.GUBUN ?? "";
                                 row["성상"] = item.RSLT1 ?? "";
-                                row["분해"] = item.RSLT2 ?? "";
+                                row["붕해"] = item.RSLT2 ?? "";
                                 row["마손도"] = item.RSLT3 ?? "";
                                 dt.Rows.Add(row);
                             }
@@ -422,8 +446,24 @@ namespace 보령
                         RSLT2 = _CrumblingIPCData.Standard,
                         RSLT3 = _FriabilityIPCData.Standard
                     });
+
                     foreach (BR_BRS_SEL_ProductionOrderIPCResult.OUTDATA item in _BR_BRS_SEL_ProductionOrderIPCResult.OUTDATAs)
+                    {
+                        var rawData = _BR_BRS_SEL_ProductionOrderIPCResult.OUTDATA_RAWs.FirstOrDefault(
+                            o => o.COLLECTID == "결과값설명" && (o.POTSIRGUID == item.RSLTID1 || o.POTSIRGUID == item.RSLTID2 || o.POTSIRGUID == item.RSLTID3));
+                        
+                        if (rawData != null)
+                        {
+                            string actValue = string.IsNullOrEmpty(rawData.ACTVAL) ? item.RSLT1 : rawData.ACTVAL;
+
+                            if (rawData.POTSIRGUID == item.RSLTID1) item.RSLT1 = string.IsNullOrEmpty(rawData.ACTVAL) ? item.RSLT1 : rawData.ACTVAL;
+                            if (rawData.POTSIRGUID == item.RSLTID2) item.RSLT2 = string.IsNullOrEmpty(rawData.ACTVAL) ? item.RSLT2 : rawData.ACTVAL;
+                            if (rawData.POTSIRGUID == item.RSLTID3) item.RSLT3 = string.IsNullOrEmpty(rawData.ACTVAL) ? item.RSLT3 : rawData.ACTVAL;
+                        }
+
+                        item.RSLT1 = item.RSLT1 == "1" ? "적합" : "부적합";
                         _IPCResults.Add(item);
+                    }
 
                     OnPropertyChanged("IPCResults");
                 }

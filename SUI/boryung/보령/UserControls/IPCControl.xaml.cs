@@ -45,7 +45,7 @@ namespace 보령.UserControls
             if(!IPCDATA.DEVIATIONFLAG.HasValue)
             {
                 parent.tbIPCResult.Foreground = new SolidColorBrush(Colors.Black);
-                parent.tbIPCResult.Text = IPCDATA.GetACTVAL;
+                parent.tbIPCResult.Text = String.IsNullOrEmpty(IPCDATA.ACTVALDESC) ? IPCDATA.GetACTVAL: IPCDATA.ACTVALDESC;
                 parent.bdIPCResult.Background = new SolidColorBrush(Colors.LightGray);
                 parent.btnIPCStart.Content = "검사";
             }
@@ -65,14 +65,14 @@ namespace 보령.UserControls
                     if(_IPCDATA.DEVIATIONFLAG.Value)
                     {
                         tbIPCResult.Foreground = new SolidColorBrush(Colors.White);
-                        tbIPCResult.Text = _IPCDATA.GetACTVAL;
+                        tbIPCResult.Text = String.IsNullOrEmpty(_IPCDATA.ACTVALDESC) ? _IPCDATA.GetACTVAL : _IPCDATA.ACTVALDESC;
                         bdIPCResult.Background = new SolidColorBrush(Colors.Green);
                         btnIPCStart.Content = "재검사";
                     }
                     else
                     {
                         tbIPCResult.Foreground = new SolidColorBrush(Colors.White);
-                        tbIPCResult.Text = _IPCDATA.GetACTVAL;
+                        tbIPCResult.Text = String.IsNullOrEmpty(_IPCDATA.ACTVALDESC) ? _IPCDATA.GetACTVAL : _IPCDATA.ACTVALDESC;
                         bdIPCResult.Background = new SolidColorBrush(Colors.Red);
                         btnIPCStart.Content = "재검사";
                     }
@@ -80,7 +80,7 @@ namespace 보령.UserControls
                 else
                 {
                     tbIPCResult.Foreground = new SolidColorBrush(Colors.Black);
-                    tbIPCResult.Text = _IPCDATA.GetACTVAL;
+                    tbIPCResult.Text = String.IsNullOrEmpty(_IPCDATA.ACTVALDESC) ? _IPCDATA.GetACTVAL : _IPCDATA.ACTVALDESC;
                     bdIPCResult.Background = new SolidColorBrush(Colors.LightGray);
                     btnIPCStart.Content = "검사";
                 }

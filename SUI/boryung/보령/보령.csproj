@@ -210,6 +210,7 @@
     <Compile Include="Model.Access\WMS\BR_BRS_SEL_CurrentWeight.Access.cs" />
     <Compile Include="Model.Access\공정검사\BR_BRS_GET_AutoInspection_Reject_Ratio.Access.cs" />
     <Compile Include="Model.Access\공정검사\BR_BRS_GET_ProductionOrderTestSpecificationResult.Access.cs" />
+    <Compile Include="Model.Access\공정검사\BR_BRS_REG_ProductionOrderTestResult.Access.cs" />
     <Compile Include="Model.Access\공정검사\BR_BRS_SEL_ProductionOrderIPCResult.Access.cs" />
     <Compile Include="Model.Access\공정검사\BR_BRS_SEL_ProductionOrderIPCStandard.Access.cs" />
     <Compile Include="Model.Access\레시피확인\BR_BRS_SEL_EquipmentRecipe.Access.cs" />
@@ -416,6 +417,7 @@
       <DependentUpon>칭량IBC반제품무게측정.xaml</DependentUpon>
     </Compile>
     <Compile Include="WMS\칭량IBC반제품무게측정ViewModel.cs" />
+    <Compile Include="WMS\현장칭량실적확인WMS전송ViewModel.cs" />
     <Compile Include="공정검사\IPC검사결과조회.xaml.cs">
       <DependentUpon>IPC검사결과조회.xaml</DependentUpon>
     </Compile>
@@ -772,7 +774,6 @@
     <Compile Include="WMS\Popup\잔량확인.xaml.cs">
       <DependentUpon>잔량확인.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WMS\현장칭량실적확인WMS전송ViewModel.cs" />
     <Compile Include="WMS\현장칭량실적확인WMS전송.xaml.cs">
       <DependentUpon>현장칭량실적확인WMS전송.xaml</DependentUpon>
     </Compile>
