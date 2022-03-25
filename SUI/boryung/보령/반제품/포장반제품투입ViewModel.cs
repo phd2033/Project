@@ -246,7 +246,7 @@ namespace 보령
                             CommandCanExecutes["KeyDownCommand"] = false;
 
                             ///
-                            IsMatchedComponent(Barcode);
+                            IsMatchedComponent(Barcode.ToUpper());
 
                             Barcode = string.Empty;
 
