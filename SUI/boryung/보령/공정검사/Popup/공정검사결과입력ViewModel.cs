@@ -500,7 +500,7 @@ namespace 보령
                                 _FriabilityRslt, _PrevScaleValue.WeightUOMString, _AfterScaleValue.WeightUOMString);
 
                             var actDESC = _curIPCData.RawDatas.FirstOrDefault(o => o.COLLECTID.Equals("결과값설명"));
-                            if (item == null)
+                            if (actDESC == null)
                             {
                                 _curIPCData.RawDatas.Add(new IPCControlRawData()
                                 {
@@ -510,7 +510,7 @@ namespace 보령
                             }
                             else
                             {
-                                item.ACTVAL = _AfterScaleValue.WeightUOMString;
+                                actDESC.ACTVAL = _curIPCData.ACTVALDESC;
                             }
 
                             if (_DispatcherTimer.IsEnabled)
