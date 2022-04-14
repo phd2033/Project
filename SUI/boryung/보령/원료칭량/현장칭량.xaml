@@ -237,6 +237,8 @@
                             Style="{StaticResource btnStyle}" IsEnabled="{Binding ChargebtnEnable}" Command="{Binding ChargingCommandAsync}"/>
                     <Button Margin="5,0" x:Name="btnConfirm" Width="100" Content="{Binding W[CUIDataWriteToEBRButtonText], Source={StaticResource R}, FallbackValue='기록'}" 
                             Style="{StaticResource btnStyle}" Command="{Binding ConfirmCommandAsync}"/>
+                    <Button Margin="5,0" x:Name="btnNoRecordConfirm" Width="100" Content="{Binding W[CUIDefaultDataWriteToEBRButtonText], Source={StaticResource R}, FallbackValue='기록없음'}" 
+                            Style="{StaticResource btnStyle}" Command="{Binding NoRecordConfirmCommand}"/>
                     <Button Margin="5,0" x:Name="btnClose" Width="100" Content="{Binding [CUICloseButtonText], Source={StaticResource R}, FallbackValue='종료'}"
                             Style="{StaticResource btnStyle}" Click="btnClose_Click"/>
                 </StackPanel>

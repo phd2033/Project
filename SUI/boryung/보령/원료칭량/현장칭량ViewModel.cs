@@ -1297,6 +1297,117 @@ namespace 보령
             }
         }
 
+        public ICommand NoRecordConfirmCommand
+        {
+            get
+            {
+                return new AsyncCommandBase(async arg =>
+                {
+                    using (await AwaitableLocks["NoRecordConfirmCommand"].EnterAsync())
+                    {
+                        try
+                        {
+                            IsBusy = true;
+
+                            CommandResults["NoRecordConfirmCommand"] = false;
+                            CommandCanExecutes["NoRecordConfirmCommand"] = false;
+
+                            _DispatcherTimer.Stop();
+
+                            // 전자서명
+                            var authHelper = new iPharmAuthCommandHelper();
+                            if (_mainWnd.CurrentInstruction.Raw.INSERTEDYN.Equals("Y") && _mainWnd.Phase.CurrentPhase.STATE.Equals("COMP")) // 값 수정
+                            {
+                                // 전자서명 요청
+                                authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_SUI");
+
+                                if (await authHelper.ClickAsync(
+                                    Common.enumCertificationType.Function,
+                                    Common.enumAccessType.Create,
+                                    string.Format("기록값을 변경합니다."),
+                                    string.Format("기록값 변경"),
+                                    true,
+                                    "OM_ProductionOrder_SUI",
+                                    "", _mainWnd.CurrentInstruction.Raw.RECIPEISTGUID, null) == false)
+                                {
+                                    throw new Exception(string.Format("서명이 완료되지 않았습니다."));
+                                }
+                            }
+
+                            authHelper.InitializeAsync(Common.enumCertificationType.Function, Common.enumAccessType.Create, "OM_ProductionOrder_Charging");
+                            if (await authHelper.ClickAsync(
+                                Common.enumCertificationType.Function,
+                                Common.enumAccessType.Create,
+                                "투입내용기록",
+                                "투입내용기록",
+                                false,
+                                "OM_ProductionOrder_Charging",
+                                "", null, null) == false)
+                            {
+                                throw new Exception(string.Format("서명이 완료되지 않았습니다."));
+                            }
+
+                            //XML 형식으로 저장
+                            var ds = new DataSet();
+                            var dt = new DataTable("DATA");
+                            ds.Tables.Add(dt);
+                            dt.Columns.Add(new DataColumn("자재ID"));
+                            dt.Columns.Add(new DataColumn("자재명"));
+                            dt.Columns.Add(new DataColumn("원료배치번호"));
+                            dt.Columns.Add(new DataColumn("바코드"));
+                            dt.Columns.Add(new DataColumn("무게"));
+                            dt.Columns.Add(new DataColumn("단위"));
+
+                            var row = dt.NewRow();
+                            row["자재ID"] = "N/A";
+                            row["자재명"] = "N/A";
+                            row["원료배치번호"] = "N/A";
+                            row["바코드"] = "N/A";
+                            row["무게"] = "N/A";
+                            row["단위"] = "N/A";
+                            dt.Rows.Add(row);
+
+                            var xml = BizActorRuleBase.CreateXMLStream(ds);
+                            var bytesArray = System.Text.Encoding.UTF8.GetBytes(xml);
+
+                            _mainWnd.CurrentInstruction.Raw.ACTVAL = _mainWnd.TableTypeName;
+                            _mainWnd.CurrentInstruction.Raw.NOTE = bytesArray;
+
+                            var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction, true);
+                            if (result != enumInstructionRegistErrorType.Ok)
+                            {
+                                throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", _mainWnd.CurrentInstruction.Raw.IRTGUID, result));
+                            }
+
+                            _DispatcherTimer.Stop();
+                            if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
+                            else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
+
+                            _mainWnd.Close();
+
+                            //
+                            CommandResults["NoRecordConfirmCommand"] = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            CommandResults["NoRecordConfirmCommand"] = false;
+                            OnException(ex.Message, ex);
+                        }
+                        finally
+                        {
+                            CommandCanExecutes["NoRecordConfirmCommand"] = true;
+
+                            IsBusy = false;
+                        }
+                    }
+                }, arg =>
+                {
+                    return CommandCanExecutes.ContainsKey("NoRecordConfirmCommand") ?
+                        CommandCanExecutes["NoRecordConfirmCommand"] : (CommandCanExecutes["NoRecordConfirmCommand"] = true);
+                });
+            }
+        }
+
         public ICommand ChangePrintCommand
         {
             get
