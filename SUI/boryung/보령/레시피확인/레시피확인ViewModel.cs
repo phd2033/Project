@@ -404,6 +404,8 @@ namespace 보령
 
                             CommandResults["ConfirmCommand"] = false;
 
+                            _mainWnd.CurrentInstruction.Raw.NOTE = imageToByteArray();
+
                             ///
                             if (_mainWnd.CurrentInstruction.Raw.INSERTEDYN.Equals("Y") && _mainWnd.Phase.CurrentPhase.STATE.Equals("COMP")) // 값 수정
                             {
@@ -422,16 +424,7 @@ namespace 보령
                                 {
                                     throw new Exception(string.Format("서명이 완료되지 않았습니다."));
                                 }
-                            }
-
-
-                            Brush background = _mainWnd.PrintArea.Background;
-                            _mainWnd.PrintArea.BorderBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xD6, 0xD4, 0xD4));
-                            _mainWnd.PrintArea.BorderThickness = new System.Windows.Thickness(1);
-                            _mainWnd.PrintArea.Background = new SolidColorBrush(Colors.White);
-
-
-                            _mainWnd.CurrentInstruction.Raw.NOTE = await imageToByteArray();
+                            }                           
 
                             var dateTimeInstructions = _mainWnd.Instructions.Where(o =>
                             {
@@ -477,19 +470,12 @@ namespace 보령
 
         
 
-        public async Task<byte[]> imageToByteArray()
+        public byte[] imageToByteArray()
         {
             try
-            {
-
+            {                
                 C1Bitmap bitmap = new C1Bitmap(new WriteableBitmap(_mainWnd.PrintArea, null));
-                System.IO.Stream stream = bitmap.GetStream(C1.Silverlight.Imaging.ImageFormat.Png, true);
-
-                Exception exception = await ShowWindowAsync(bitmap);
-                if (exception != null)
-                {
-                    throw exception;
-                }
+                System.IO.Stream stream = bitmap.GetStream(C1.Silverlight.Imaging.ImageFormat.Png, true);              
 
                 int len = (int)stream.Seek(0, SeekOrigin.End);
 
@@ -507,38 +493,7 @@ namespace 보령
                 throw ex;
             }
 
-        }
-
-        private async Task<Exception> ShowWindowAsync(C1Bitmap Img)
-        {
-            var completion = new TaskCompletionSource<Exception>();
-
-            장비이력데이터저장Popup popup = new 장비이력데이터저장Popup(Img);
-
-            popup.Closed += (s, e) =>
-            {
-                try
-                {
-                    if (popup.DialogResult == true)
-                    {
-                        completion.TrySetResult(null);
-                    }
-                    else
-                    {
-                        completion.TrySetResult(new Exception("취소되었습니다."));
-                    }
-                }
-                catch (Exception ex)
-                {
-                    completion.TrySetResult(ex);
-                }
-            };
-
-            popup.Show();
-
-            var result = await completion.Task;
-            return result;
-        }
+        }      
         #endregion
     }
 }

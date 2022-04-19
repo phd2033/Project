@@ -56,7 +56,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
-                <RowDefinition Height="Auto" MinHeight="64"/>
+                <RowDefinition Height="Auto" MinHeight="72"/>
             </Grid.RowDefinitions>
 
             <Grid x:Name="Header" Grid.Row="0" Margin="0,0,0,562" Grid.RowSpan="2">
@@ -101,10 +101,10 @@
                         <TextBox x:Name="txtRecipeName" Text="{Binding RECIPENAME, Mode=OneWay}" IsReadOnly="True" Style="{Binding Source={StaticResource txtEQPT}}" Margin="67,0,1159,582"/>
                         <TextBlock Grid.Row="0" Grid.Column="0" Text="Ver" Margin="226,0,1118,582" VerticalAlignment="Center" HorizontalAlignment="Center" Height="24" Width="36" FontSize="15" RenderTransformOrigin="0.556,0.708"/>
                         <TextBox x:Name="txtRecipeVer" Text="{Binding RECIPEVER, Mode=OneWay}" IsReadOnly="True" Style="{Binding Source={StaticResource txtEQPT}}" Margin="277,0,953,582"/>
-                        <c1:C1DataGrid x:Name="dgCheckMasterRecipeResult" HeadersVisibility="Column" AutoGenerateColumns="True"
+                        <c1:C1DataGrid x:Name="dgCheckMasterRecipeResult" HeadersVisibility="Column" AutoGenerateColumns="True" Width="1372"
                             ScrollBarStyle="{Binding Source={StaticResource dgScroll}}"
                             CanUserAddRows="False" CanUserEditRows="{Binding IsEditable}" CanUserRemoveRows="False" CanUserSort="False"
-                            ItemsSource="{Binding dt.DefaultView}"  Margin="0,34,0,10">
+                            ItemsSource="{Binding dt.DefaultView}"  Margin="0,34,0,0">
                             
                         </c1:C1DataGrid>
 
