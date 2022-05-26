@@ -170,7 +170,7 @@ namespace 보령
                             CommandCanExecutes["BarcodeChangedCommand"] = false;
 
                             ///
-                            if (await IsMatchedComponent(Barcode) == true)
+                            if (await IsMatchedComponent(Barcode.ToUpper()) == true)
                             {
                                 (arg as ChildWindow).DialogResult = true;
                             };

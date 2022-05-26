@@ -30,7 +30,7 @@ namespace 보령
         {
             if (e.Key == Key.Enter)
             {
-                ((칭량반제품투입ViewModel)LayoutRoot.DataContext).SearchCommandAsync.Execute(txtVesselId.Text);
+                ((칭량반제품투입ViewModel)LayoutRoot.DataContext).SearchCommandAsync.Execute(txtVesselId.Text.ToUpper());
             }
         }
 

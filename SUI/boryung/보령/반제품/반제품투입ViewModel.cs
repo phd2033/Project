@@ -302,7 +302,7 @@ namespace 보령
                             CommandCanExecutes["KeyDownCommand"] = false;
 
                             ///
-                            await IsMatchedComponent(Barcode);
+                            await IsMatchedComponent(Barcode.ToUpper());
 
                             Barcode = string.Empty;
 
