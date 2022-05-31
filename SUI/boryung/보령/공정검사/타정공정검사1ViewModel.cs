@@ -39,16 +39,6 @@ namespace 보령
                 OnPropertyChanged("ThicknessIPCData");
             }
         }
-        private IPCControlData _DiameterIPCData;
-        public IPCControlData DiameterIPCData
-        {
-            get { return _DiameterIPCData; }
-            set
-            {
-                _DiameterIPCData = value;
-                OnPropertyChanged("DiameterIPCData");
-            }
-        }
         private IPCControlData _LongitudeIPCData;
         public IPCControlData LongitudeIPCData
         {
@@ -69,8 +59,8 @@ namespace 보령
                 _IPCResults = value;
                 OnPropertyChanged("IPCResults");
             }
-        }
-        
+        } 
+
         #endregion
         #region BizRule
         private BR_BRS_SEL_ProductionOrderIPCResult _BR_BRS_SEL_ProductionOrderIPCResult;
@@ -109,15 +99,12 @@ namespace 보령
                                     TSID = IPC_TSID
                                 });
 
-                                if(await _BR_BRS_SEL_ProductionOrderIPCStandard.Execute() && _BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs.Count == 3)
+                                if (await _BR_BRS_SEL_ProductionOrderIPCStandard.Execute())
                                 {
                                     ThicknessIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[0]);
-                                    DiameterIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[1]);
-                                    LongitudeIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[2]);
-                                    
+                                    LongitudeIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[1]);
                                     await GetIPCResult();
-                                }
-
+                                }                                                                                             
                             } 
                             ///
 
@@ -160,7 +147,7 @@ namespace 보령
                             CommandCanExecutes["RegisterIPCCommandAsync"] = false;
 
                             ///
-                            if (_ThicknessIPCData.DEVIATIONFLAG.HasValue && _DiameterIPCData.DEVIATIONFLAG.HasValue && _LongitudeIPCData.DEVIATIONFLAG.HasValue)
+                            if (_ThicknessIPCData.DEVIATIONFLAG.HasValue && _LongitudeIPCData.DEVIATIONFLAG.HasValue)
                             {
                                 _BR_BRS_REG_ProductionOrderTestResult.INDATA_SPECs.Clear();
                                 _BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEMs.Clear();
@@ -236,21 +223,6 @@ namespace 보령
                                 _BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEMs.Add(new BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEM
                                 {
                                     POTSRGUID = _BR_BRS_REG_ProductionOrderTestResult.INDATA_SPECs[0].POTSRGUID,
-                                    OPTSIGUID = new Guid(_DiameterIPCData.OPTSIGUID),
-                                    POTSIRGUID = Guid.NewGuid(),
-                                    ACTVAL = _DiameterIPCData.GetACTVAL,
-                                    INSUSER = user,
-                                    INSDTTM = curDttm,
-                                    EFCTTIMEIN = curDttm,
-                                    EFCTTIMEOUT = curDttm,
-                                    COMMENTGUID = !string.IsNullOrWhiteSpace(confirmguid) ? new Guid(confirmguid) : (Guid?)null,
-                                    REASON = null,
-                                    ISUSE = "Y",
-                                    ACTIVEYN = "Y"
-                                });
-                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEMs.Add(new BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEM
-                                {
-                                    POTSRGUID = _BR_BRS_REG_ProductionOrderTestResult.INDATA_SPECs[0].POTSRGUID,
                                     OPTSIGUID = new Guid(_LongitudeIPCData.OPTSIGUID),
                                     POTSIRGUID = Guid.NewGuid(),
                                     ACTVAL = _LongitudeIPCData.GetACTVAL,
@@ -267,15 +239,13 @@ namespace 보령
                                 if (await _BR_BRS_REG_ProductionOrderTestResult.Execute())
                                 {
                                     ThicknessIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[0]);
-                                    DiameterIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[1]);
-                                    LongitudeIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[2]);
+                                    LongitudeIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[1]);
 
                                     await GetIPCResult();
                                 }
-                                    
                             }
                             else
-                                OnMessage("시험결과를 확인해주세요.");
+                                OnMessage("시험결과를 확인해주세요.");                           
                             
                             ///
 
@@ -341,15 +311,13 @@ namespace 보령
                             ds.Tables.Add(dt);
                             dt.Columns.Add(new DataColumn("구분"));
                             dt.Columns.Add(new DataColumn("두께"));
-                            dt.Columns.Add(new DataColumn("직경"));
                             dt.Columns.Add(new DataColumn("경도"));
-                            
+
                             foreach (var item in _IPCResults)
                             {
                                 var row = dt.NewRow();
                                 row["구분"] = item.GUBUN ?? "";
                                 row["두께"] = item.RSLT1 ?? "";
-                                row["직경"] = item.RSLT2 ?? "";
                                 row["경도"] = item.RSLT3 ?? "";
                                 dt.Rows.Add(row);
                             }
@@ -370,8 +338,7 @@ namespace 보령
 
                                 if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
                                 else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
-                            }
-                            
+                            }                                                        
                             ///
 
                             CommandResults["ConfirmCommandAsync"] = true;
@@ -405,7 +372,7 @@ namespace 보령
                 _IPCResults.Clear();
                 _BR_BRS_SEL_ProductionOrderIPCResult.INDATAs.Clear();
                 _BR_BRS_SEL_ProductionOrderIPCResult.OUTDATAs.Clear();
-
+                               
                 _BR_BRS_SEL_ProductionOrderIPCResult.INDATAs.Add(new BR_BRS_SEL_ProductionOrderIPCResult.INDATA
                 {
                     POID = _mainWnd.CurrentOrder.ProductionOrderID,
@@ -413,20 +380,20 @@ namespace 보령
                     TSID = IPC_TSID
                 });
 
-                if(await _BR_BRS_SEL_ProductionOrderIPCResult.Execute() && _BR_BRS_SEL_ProductionOrderIPCResult.OUTDATAs.Count > 0 )
+                if (await _BR_BRS_SEL_ProductionOrderIPCResult.Execute() && _BR_BRS_SEL_ProductionOrderIPCResult.OUTDATAs.Count > 0)
                 {
                     _IPCResults.Add(new BR_BRS_SEL_ProductionOrderIPCResult.OUTDATA
                     {
                         GUBUN = "기준",
                         RSLT1 = _ThicknessIPCData.Standard,
-                        RSLT2 = _DiameterIPCData.Standard,
-                        RSLT3 = _LongitudeIPCData.Standard
+                        RSLT2 = _LongitudeIPCData.Standard
                     });
                     foreach (BR_BRS_SEL_ProductionOrderIPCResult.OUTDATA item in _BR_BRS_SEL_ProductionOrderIPCResult.OUTDATAs)
                         _IPCResults.Add(item);
-
-                    OnPropertyChanged("IPCResults");
-                }
+                        
+                    OnPropertyChanged("IPCResults");                        
+                }                
+               
             }
             catch (Exception ex)
             {

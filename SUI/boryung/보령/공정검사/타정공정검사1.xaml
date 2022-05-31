@@ -35,16 +35,14 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>  
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <brs:IPCControl Grid.Row="0" Grid.Column="0" Margin="3" IPCDATA="{Binding ThicknessIPCData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <brs:IPCControl Grid.Row="0" Grid.Column="1" Margin="3" IPCDATA="{Binding DiameterIPCData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <brs:IPCControl Grid.Row="0" Grid.Column="2" Margin="3" IPCDATA="{Binding LongitudeIPCData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button x:Name="btnRegisterIPCResult" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Right" VerticalAlignment="Center" Content="검사결과저장" Width="100" Height="40"
+                <brs:IPCControl Grid.Row="0" Grid.Column="1" Margin="3" IPCDATA="{Binding LongitudeIPCData, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button x:Name="btnRegisterIPCResult" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" HorizontalAlignment="Right" VerticalAlignment="Center" Content="검사결과저장" Width="100" Height="40"
                         Command="{Binding RegisterIPCCommandAsync}"/>
             </Grid>
             <Grid x:Name="IPCHistory" Grid.Row="1">
@@ -55,8 +53,7 @@
                     <c1:C1DataGrid.Columns>
                         <c1:DataGridTextColumn Header="구분" MinWidth="50" Binding="{Binding GUBUN}"/>
                         <c1:DataGridTextColumn Header="두께" MinWidth="100" Binding="{Binding RSLT1}"/>
-                        <c1:DataGridTextColumn Header="직경" MinWidth="100" Binding="{Binding RSLT2}"/>
-                        <c1:DataGridTextColumn Header="경도" MinWidth="100" Binding="{Binding RSLT3}"/>
+                        <c1:DataGridTextColumn Header="경도" MinWidth="100" Binding="{Binding RSLT2}"/>
                     </c1:C1DataGrid.Columns>
                 </c1:C1DataGrid>
             </Grid>
