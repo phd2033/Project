@@ -335,20 +335,20 @@ namespace 보령
                             DataTable dt = new DataTable("DATA");
                             ds.Tables.Add(dt);
 
-                            dt.Columns.Add(new DataColumn("POID"));
-                            dt.Columns.Add(new DataColumn("IBCID"));
-                            dt.Columns.Add(new DataColumn("STRGDAY"));
-                            dt.Columns.Add(new DataColumn("EXPIREDTTM"));
+                            dt.Columns.Add(new DataColumn("배치번호"));
+                            dt.Columns.Add(new DataColumn("용기번호"));
+                            dt.Columns.Add(new DataColumn("보관기간"));
+                            dt.Columns.Add(new DataColumn("유효기한"));
                             // 2021.08.18 박희돈 사용안함. 최병인팀장 확인
                             //dt.Columns.Add(new DataColumn("MLOTID"));
 
                             foreach (var item in _IBCList)
                             {
                                 var row = dt.NewRow();
-                                row["POID"] = item.PoId != null ? item.PoId : "";
-                                row["IBCID"] = item.VesselId != null ? item.VesselId : "";
-                                row["STRGDAY"] = item.STRGDAY != null ? item.STRGDAY : "";
-                                row["EXPIREDTTM"] = item.EXPIREDTTM != null ? item.EXPIREDTTM : "";
+                                row["배치번호"] = item.PoId != null ? item.PoId : "";
+                                row["용기번호"] = item.VesselId != null ? item.VesselId : "";
+                                row["보관기간"] = item.STRGDAY != null ? item.STRGDAY : "";
+                                row["유효기한"] = item.EXPIREDTTM != null ? item.EXPIREDTTM : "";
                                 // 2021.08.18 박희돈 사용안함. 최병인팀장 확인
                                 //row["MLOTID"] = item.MLOTID != null ? item.MLOTID : "";
 

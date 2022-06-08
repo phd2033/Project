@@ -492,24 +492,24 @@ namespace 보령
                             DataSet ds = new DataSet();
                             DataTable dt = new DataTable("DATA");
                             ds.Tables.Add(dt);
-
-                            dt.Columns.Add(new DataColumn("POID"));
-                            dt.Columns.Add(new DataColumn("IBCID"));
-                            dt.Columns.Add(new DataColumn("SCALEID"));
-                            dt.Columns.Add(new DataColumn("TOTALWEIGHT"));
-                            dt.Columns.Add(new DataColumn("TAREWEIGHT"));
-                            dt.Columns.Add(new DataColumn("RAWWEIGHT"));
+                            
+                            dt.Columns.Add(new DataColumn("배치번호"));
+                            dt.Columns.Add(new DataColumn("용기번호"));
+                            dt.Columns.Add(new DataColumn("저울번호"));
+                            dt.Columns.Add(new DataColumn("총무게"));
+                            dt.Columns.Add(new DataColumn("용기무게"));
+                            dt.Columns.Add(new DataColumn("내용물무게"));
 
                             foreach (var item in _IBCList)
                             {
                                 var row = dt.NewRow();
 
-                                row["POID"] = item.PoId != null ? item.PoId : "";
-                                row["IBCID"] = item.VesselId != null ? item.VesselId : "";
-                                row["SCALEID"] = item.ScaleId != null ? item.ScaleId : "";
-                                row["TOTALWEIGHT"] = item != null ? item.GrossWeight.ToString("F" + item.Precision) : "";
-                                row["TAREWEIGHT"] = item != null ? item.TareWeight.ToString("F" + item.Precision) : "";
-                                row["RAWWEIGHT"] = item != null ? item.NetWeight.ToString("F" + item.Precision) : "";
+                                row["배치번호"] = _mainWnd.CurrentOrder.BatchNo;
+                                row["용기번호"] = item.VesselId != null ? item.VesselId : "";
+                                row["저울번호"] = item.ScaleId != null ? item.ScaleId : "";
+                                row["총무게"] = item != null ? item.GrossWeight.ToString("F" + item.Precision) : "";
+                                row["용기무게"] = item != null ? item.TareWeight.ToString("F" + item.Precision) : "";
+                                row["내용물무게"] = item != null ? item.NetWeight.ToString("F" + item.Precision) : "";
 
                                 dt.Rows.Add(row);
                             }

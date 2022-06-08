@@ -719,7 +719,7 @@ namespace 보령
                                 DataTable dt = new DataTable("DATA");
                                 ds.Tables.Add(dt);
 
-                                dt.Columns.Add(new DataColumn("오더번호"));
+                                dt.Columns.Add(new DataColumn("배치번호"));
                                 dt.Columns.Add(new DataColumn("용기번호"));
                                 dt.Columns.Add(new DataColumn("원료코드"));
                                 dt.Columns.Add(new DataColumn("원료명"));
@@ -729,7 +729,7 @@ namespace 보령
                                 foreach (var item in ListContainer)
                                 {
                                     var row = dt.NewRow();
-                                    row["오더번호"] = item.POID ?? "";
+                                    row["배치번호"] = item.BATCHNO ?? "";
                                     row["용기번호"] = item.VESSELID ?? "";
                                     row["원료코드"] = item.MTRLID ?? "";
                                     row["원료명"] = item.MTRLNAME ?? "";

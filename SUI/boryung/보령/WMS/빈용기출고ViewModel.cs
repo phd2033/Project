@@ -552,10 +552,12 @@ namespace 보령
                             ds.Tables.Add(dt);
 
                             dt.Columns.Add(new DataColumn("상태"));
-                            dt.Columns.Add(new DataColumn("오더번호"));
+                            dt.Columns.Add(new DataColumn("배치번호"));
                             dt.Columns.Add(new DataColumn("용기번호"));
-                            dt.Columns.Add(new DataColumn("공정중제품"));
-                            dt.Columns.Add(new DataColumn("공정명"));
+                            // 2022.06.08 박희돈 EBR 제외(최병인팀장 요청)
+                            //dt.Columns.Add(new DataColumn("공정중제품"));
+                            // 2022.06.08 박희돈 EBR 제외(최병인팀장 요청)
+                            //dt.Columns.Add(new DataColumn("공정명"));
                             dt.Columns.Add(new DataColumn("세척일시"));
                             dt.Columns.Add(new DataColumn("세척유효일시"));
 
@@ -566,10 +568,12 @@ namespace 보령
                                     var row = dt.NewRow();
 
                                     row["상태"] = item.STATUS != null ? item.STATUS : "";
-                                    row["오더번호"] = item.PoId != null ? item.PoId : "";
+                                    row["배치번호"] = _mainWnd.CurrentOrder.BatchNo;
                                     row["용기번호"] = item.VesselId != null ? item.VesselId : "";
-                                    row["공정중제품"] = item.OUTPUTID != null ? item.OUTPUTID : "";
-                                    row["공정명"] = item.OPSGNAME != null ? item.OPSGNAME : "";
+                                    // 2022.06.08 박희돈 EBR 제외(최병인팀장 요청)
+                                    //row["공정중제품"] = item.OUTPUTID != null ? item.OUTPUTID : "";
+                                    // 2022.06.08 박희돈 EBR 제외(최병인팀장 요청)
+                                    //row["공정명"] = item.OPSGNAME != null ? item.OPSGNAME : "";
                                     row["세척일시"] = item.WASHINGDTTM != null ? item.WASHINGDTTM : "";
                                     row["세척유효일시"] = item.CLEANEXPIREDTTM != null ? item.CLEANEXPIREDTTM : "";
 

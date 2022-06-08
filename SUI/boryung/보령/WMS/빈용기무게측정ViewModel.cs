@@ -534,19 +534,19 @@ namespace 보령
                             DataSet ds = new DataSet();
                             DataTable dt = new DataTable("DATA");
                             ds.Tables.Add(dt);
-
-                            dt.Columns.Add(new DataColumn("POID"));
-                            dt.Columns.Add(new DataColumn("IBCID"));
-                            dt.Columns.Add(new DataColumn("SCALEID"));
-                            dt.Columns.Add(new DataColumn("TAREWEIGHT"));
+                            
+                            dt.Columns.Add(new DataColumn("배치번호"));
+                            dt.Columns.Add(new DataColumn("용기번호"));
+                            dt.Columns.Add(new DataColumn("저울번호"));
+                            dt.Columns.Add(new DataColumn("용기무게"));
 
                             foreach (var item in IBCList)
                             {
                                 var row = dt.NewRow();
-                                row["POID"] = item.PoId != null ? item.PoId : "";
-                                row["IBCID"] = item.VesselId != null ? item.VesselId : "";
-                                row["SCALEID"] = item.ScaleId != null ? item.ScaleId : "";
-                                row["TAREWEIGHT"] = !string.IsNullOrWhiteSpace(item.TareWeightStr) ? item.TareWeightStr : "";
+                                row["배치번호"] = _mainWnd.CurrentOrder.BatchNo;
+                                row["용기번호"] = item.VesselId != null ? item.VesselId : "";
+                                row["저울번호"] = item.ScaleId != null ? item.ScaleId : "";
+                                row["용기무게"] = !string.IsNullOrWhiteSpace(item.TareWeightStr) ? item.TareWeightStr : "";
 
                                 dt.Rows.Add(row);
                             }
