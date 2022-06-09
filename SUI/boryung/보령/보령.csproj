@@ -185,6 +185,7 @@
     <Compile Include="Model.Access\BR_BRS_REG_ProductionOrderOutput_Scale_Weight_Multi.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_SEL_EquipmentStatusParameter_EQSTID.Access.cs" />
+    <Compile Include="Model.Access\BR_BRS_SEL_EquipmentStatus_PROCEQPT_LIST.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_SEL_EquipmentStatus_PROC_OPSG.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_SEL_ProductionOrderBOM_CHGSEQ.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_SEL_ProductionOrderDispenseSubLot_OPSG_COMPONENT.Access.cs" />
@@ -454,6 +455,10 @@
       <DependentUpon>포장공정반제품분할.xaml</DependentUpon>
     </Compile>
     <Compile Include="반제품\포장공정반제품분할ViewModel.cs" />
+    <Compile Include="설비사용\설비가동시간체크_장비번호.xaml.cs">
+      <DependentUpon>설비가동시간체크_장비번호.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="설비사용\설비가동시간체크_장비번호ViewModel.cs" />
     <Compile Include="수율계산\완제품해체선별수율.xaml.cs">
       <DependentUpon>완제품해체선별수율.xaml</DependentUpon>
     </Compile>
@@ -1030,6 +1035,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="반제품\포장공정반제품분할.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="설비사용\설비가동시간체크_장비번호.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
