@@ -98,6 +98,16 @@ namespace 보령
             }
         }
 
+        private bool _RECORD_ENABLE;
+        public bool RECORD_ENABLE
+        {
+            get { return _RECORD_ENABLE; }
+            set
+            {
+                _RECORD_ENABLE = value;
+                OnPropertyChanged("RECORD_ENABLE");
+            }
+        }
         #endregion
 
         #region [Bizrule]
@@ -148,7 +158,8 @@ namespace 보령
                             ///
                             if (arg != null && arg is 레시피확인)
                             {
-                                _mainWnd = arg as 레시피확인;                               
+                                _mainWnd = arg as 레시피확인;
+                                RECORD_ENABLE = false;
                             }
 
                             
@@ -259,7 +270,7 @@ namespace 보령
 
                             CommandResults["GetEquipmentRecipeAsync"] = false;
                             CommandCanExecutes["GetEquipmentRecipeAsync"] = false;
-
+                            string[] strArray = null;
                             ///
 
 
@@ -361,7 +372,16 @@ namespace 보령
                                         }
                                     }
 
-                                                                        
+                                    strArray = _mainWnd.CurrentInstruction.Raw.TARGETVAL.Split(',');
+                                    if (strArray[0].Trim() == RECIPENAME && strArray[1].Trim() == RECIPEVER)
+                                    {
+                                        RECORD_ENABLE = true;
+                                    }
+                                    else
+                                    {
+                                        RECORD_ENABLE = false;
+                                        OnMessage("레시피 이름, 버젼이 Target 값과 다릅니다.");
+                                    }
                                 }                                
                             }
                             ///
