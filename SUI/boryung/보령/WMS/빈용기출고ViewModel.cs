@@ -552,7 +552,7 @@ namespace 보령
                             ds.Tables.Add(dt);
 
                             dt.Columns.Add(new DataColumn("상태"));
-                            dt.Columns.Add(new DataColumn("배치번호"));
+                            dt.Columns.Add(new DataColumn("제조번호"));
                             dt.Columns.Add(new DataColumn("용기번호"));
                             // 2022.06.08 박희돈 EBR 제외(최병인팀장 요청)
                             //dt.Columns.Add(new DataColumn("공정중제품"));
@@ -568,7 +568,7 @@ namespace 보령
                                     var row = dt.NewRow();
 
                                     row["상태"] = item.STATUS != null ? item.STATUS : "";
-                                    row["배치번호"] = _mainWnd.CurrentOrder.BatchNo;
+                                    row["제조번호"] = _mainWnd.CurrentOrder.BatchNo;
                                     row["용기번호"] = item.VesselId != null ? item.VesselId : "";
                                     // 2022.06.08 박희돈 EBR 제외(최병인팀장 요청)
                                     //row["공정중제품"] = item.OUTPUTID != null ? item.OUTPUTID : "";

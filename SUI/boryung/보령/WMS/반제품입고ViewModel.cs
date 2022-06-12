@@ -335,7 +335,7 @@ namespace 보령
                             DataTable dt = new DataTable("DATA");
                             ds.Tables.Add(dt);
 
-                            dt.Columns.Add(new DataColumn("배치번호"));
+                            dt.Columns.Add(new DataColumn("제조번호"));
                             dt.Columns.Add(new DataColumn("용기번호"));
                             dt.Columns.Add(new DataColumn("보관기간"));
                             dt.Columns.Add(new DataColumn("유효기한"));
@@ -345,7 +345,7 @@ namespace 보령
                             foreach (var item in _IBCList)
                             {
                                 var row = dt.NewRow();
-                                row["배치번호"] = item.PoId != null ? item.PoId : "";
+                                row["제조번호"] = item.PoId != null ? item.PoId : "";
                                 row["용기번호"] = item.VesselId != null ? item.VesselId : "";
                                 row["보관기간"] = item.STRGDAY != null ? item.STRGDAY : "";
                                 row["유효기한"] = item.EXPIREDTTM != null ? item.EXPIREDTTM : "";

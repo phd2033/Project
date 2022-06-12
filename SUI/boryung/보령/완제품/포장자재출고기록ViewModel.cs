@@ -162,7 +162,8 @@ namespace 보령
                                     throw new Exception(string.Format("서명이 완료되지 않았습니다."));
                                 }
 
-                                string ACQUIREUSERID = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_SUI");
+                                string ACQUIREUSERID = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_SUI") 
+                                + "(" + AuthRepositoryViewModel.GetUserNameByFunctionCode("OM_ProductionOrder_SUI") + ")"; 
                                 DateTime ACQUIREDTTM = await AuthRepositoryViewModel.GetDBDateTimeNow();
 
                                 var ds = new DataSet();
@@ -170,33 +171,33 @@ namespace 보령
 
                                 ds.Tables.Add(dt);
 
-                                dt.Columns.Add(new DataColumn("MTRLID"));
-                                dt.Columns.Add(new DataColumn("MTRLNAME"));
-                                dt.Columns.Add(new DataColumn("STDQTY"));
-                                dt.Columns.Add(new DataColumn("MTLOTID"));
-                                dt.Columns.Add(new DataColumn("ADJUSTQTY"));
-                                dt.Columns.Add(new DataColumn("PICKINGQTY"));
-                                dt.Columns.Add(new DataColumn("ADDQTY"));
-                                dt.Columns.Add(new DataColumn("HANDOVERUSERID"));
-                                dt.Columns.Add(new DataColumn("HANDOVERDTTM"));
-                                dt.Columns.Add(new DataColumn("ACQUIREUSERID"));
-                                dt.Columns.Add(new DataColumn("ACQUIREDTTM"));
+                                dt.Columns.Add(new DataColumn("자재코드"));
+                                dt.Columns.Add(new DataColumn("자재명"));
+                                dt.Columns.Add(new DataColumn("이론량"));
+                                dt.Columns.Add(new DataColumn("시험번호"));
+                                dt.Columns.Add(new DataColumn("조정량"));
+                                dt.Columns.Add(new DataColumn("출고량"));
+                                dt.Columns.Add(new DataColumn("추가량"));
+                                dt.Columns.Add(new DataColumn("인계자"));
+                                dt.Columns.Add(new DataColumn("인계시간"));
+                                dt.Columns.Add(new DataColumn("인수자"));
+                                dt.Columns.Add(new DataColumn("인수시간"));
 
                                 foreach (var item in _BR_BRS_SEL_ProductionOrder_Component_PickingInfo.OUTDATAs)
                                 {
                                     var row = dt.NewRow();
 
-                                    row["MTRLID"] = item.MTRLID != null ? item.MTRLID : "";
-                                    row["MTRLNAME"] = item.MTRLNAME != null ? item.MTRLNAME : "";
-                                    row["STDQTY"] = item.STD != null ? item.STD : "";
-                                    row["MTLOTID"] = item.MLOTID != null ? item.MLOTID : "";
-                                    row["ADJUSTQTY"] = item.ADJUSTQTY != null ? item.ADJUSTQTY : "";
-                                    row["PICKINGQTY"] = item.PICKINGQTY != null ? item.PICKINGQTY : "";
-                                    row["ADDQTY"] = item.ADDQTY != null ? item.ADDQTY : "";
-                                    row["HANDOVERUSERID"] = item.HANDOVERUSERID != null ? item.HANDOVERUSERID : "";
-                                    row["HANDOVERDTTM"] = item.HANDOVERDTTM != null ? item.HANDOVERDTTM : "";
-                                    row["ACQUIREUSERID"] = ACQUIREUSERID;
-                                    row["ACQUIREDTTM"] = ACQUIREDTTM.ToString("yyyy-MM-dd HH:mm:ss");
+                                    row["자재코드"] = item.MTRLID != null ? item.MTRLID : "";
+                                    row["자재명"] = item.MTRLNAME != null ? item.MTRLNAME : "";
+                                    row["이론량"] = item.STD != null ? item.STD : "";
+                                    row["시험번호"] = item.MLOTID != null ? item.MLOTID : "";
+                                    row["조정량"] = item.ADJUSTQTY != null ? item.ADJUSTQTY : "";
+                                    row["출고량"] = item.PICKINGQTY != null ? item.PICKINGQTY : "";
+                                    row["추가량"] = item.ADDQTY != null ? item.ADDQTY : "";
+                                    row["인계자"] = item.HANDOVERUSERID != null ? item.HANDOVERUSERID : "";
+                                    row["인계시간"] = item.HANDOVERDTTM != null ? Convert.ToDateTime(item.HANDOVERDTTM).ToString("yyyy-MM-dd HH:mm") : "";
+                                    row["인수자"] = ACQUIREUSERID;
+                                    row["인수시간"] = ACQUIREDTTM.ToString("yyyy-MM-dd HH:mm");
 
                                     dt.Rows.Add(row);
                                 }

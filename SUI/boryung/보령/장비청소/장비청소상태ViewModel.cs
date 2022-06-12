@@ -266,7 +266,7 @@ namespace 보령
                             dt.Columns.Add(new DataColumn("관리번호"));
                             dt.Columns.Add(new DataColumn("이름"));
                             dt.Columns.Add(new DataColumn("이전제품명"));
-                            dt.Columns.Add(new DataColumn("이전배치번호"));
+                            dt.Columns.Add(new DataColumn("이전제조번호"));
                             dt.Columns.Add(new DataColumn("청소상태"));
                             dt.Columns.Add(new DataColumn("청소일시"));
                             dt.Columns.Add(new DataColumn("점검일시"));
@@ -278,7 +278,7 @@ namespace 보령
                                 row["관리번호"] = item.EQPTID;
                                 row["이름"] = item.EQPTNAME;
                                 row["이전제품명"] = item.MTRLNAME != null ? item.MTRLNAME : "";
-                                row["이전배치번호"] = item.BATCHNO != null ? item.BATCHNO : "";
+                                row["이전제조번호"] = item.BATCHNO != null ? item.BATCHNO : "";
                                 row["청소상태"] = item.STATUS != null ? item.STATUS : "";
                                 row["청소일시"] = item.CLEANING_ONTIME != null ? string.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CLEANING_ONTIME) : "";
                                 row["점검일시"] = item.CHECKEDDTTM != null ? string.Format("{0:yyyy-MM-dd HH:mm:ss}", item.CHECKEDDTTM) : "";
