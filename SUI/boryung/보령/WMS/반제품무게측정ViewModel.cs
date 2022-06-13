@@ -493,7 +493,6 @@ namespace 보령
                             DataTable dt = new DataTable("DATA");
                             ds.Tables.Add(dt);
                             
-                            dt.Columns.Add(new DataColumn("제조번호"));
                             dt.Columns.Add(new DataColumn("용기번호"));
                             dt.Columns.Add(new DataColumn("저울번호"));
                             dt.Columns.Add(new DataColumn("총무게"));
@@ -503,8 +502,7 @@ namespace 보령
                             foreach (var item in _IBCList)
                             {
                                 var row = dt.NewRow();
-
-                                row["제조번호"] = _mainWnd.CurrentOrder.BatchNo;
+                                
                                 row["용기번호"] = item.VesselId != null ? item.VesselId : "";
                                 row["저울번호"] = item.ScaleId != null ? item.ScaleId : "";
                                 row["총무게"] = item != null ? item.GrossWeight.ToString("F" + item.Precision) : "";

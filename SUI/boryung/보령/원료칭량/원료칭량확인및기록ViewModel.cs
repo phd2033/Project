@@ -231,7 +231,6 @@ namespace 보령
 
                                 DataSet ds = new DataSet();
                                 DataTable dt = new DataTable("DATA");
-                                dt.Columns.Add(new DataColumn("제조번호"));
                                 dt.Columns.Add(new DataColumn("원료코드"));
                                 dt.Columns.Add(new DataColumn("원료명"));
                                 dt.Columns.Add(new DataColumn("규격"));
@@ -303,7 +302,6 @@ namespace 보령
             {
                 var dt = new DataTable("DATA");
                 
-                dt.Columns.Add(new DataColumn("제조번호"));
                 dt.Columns.Add(new DataColumn("원료코드"));
                 dt.Columns.Add(new DataColumn("원료명"));
                 dt.Columns.Add(new DataColumn("규격"));
@@ -321,8 +319,7 @@ namespace 보령
                 foreach (var item in _BR_BRS_SEL_ProductionOrderDispense_Result.OUTDATAs)
                 {
                     var row = dt.NewRow();
-
-                    row["제조번호"] = _mainWnd.CurrentOrder.BatchNo;
+                    
                     row["원료코드"] = item.MTRLID != null ? item.MTRLID.ToString() : "";
                     row["원료명"] = item.MTRLNAME != null ? item.MTRLNAME.ToString() : "";
                     row["규격"] = item.STANDARD != null ? item.STANDARD.ToString() : "";

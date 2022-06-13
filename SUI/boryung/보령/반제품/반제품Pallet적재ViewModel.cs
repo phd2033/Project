@@ -674,7 +674,6 @@ namespace 보령
                                 DataTable dt = new DataTable("DATA");
                                 ds.Tables.Add(dt);
                                 
-                                dt.Columns.Add(new DataColumn("제조번호"));
                                 dt.Columns.Add(new DataColumn("Pallet번호"));
                                 dt.Columns.Add(new DataColumn("용기번호"));
                                 dt.Columns.Add(new DataColumn("무게"));
@@ -683,7 +682,7 @@ namespace 보령
                                 foreach (var item in _LoadedPalletMaterialSubLot.OUTDATAs)
                                 {
                                     var row = dt.NewRow();
-                                    row["제조번호"] = item.BATCHNO ?? "";
+
                                     row["Pallet번호"] = item.LOADED_VESSELID ?? "";
                                     row["용기번호"] = item.VESSELID ?? "";
                                     row["무게"] = Convert.ToString(item.MSUBLOTQTY) ?? "";

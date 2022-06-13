@@ -150,8 +150,7 @@ namespace 보령
                                 var ds = new DataSet();
                                 var dt = new DataTable("DATA");
                                 ds.Tables.Add(dt);
-
-                                dt.Columns.Add(new DataColumn("제조번호"));
+                                
                                 dt.Columns.Add(new DataColumn("자재코드"));
                                 dt.Columns.Add(new DataColumn("자재명"));
                                 dt.Columns.Add(new DataColumn("유효기한"));
@@ -160,8 +159,7 @@ namespace 보령
                                 foreach (var item in _BR_BRS_SEL_ProductionOrder_HALB.OUTDATAs)
                                 {
                                     var row = dt.NewRow();
-
-                                    row["제조번호"] = item.BATCHNO != null ? item.BATCHNO : "";
+                                    
                                     row["자재코드"] = item.MTRLID != null ? item.MTRLID : "";
                                     row["자재명"] = item.MTRLNAME != null ? item.MTRLNAME : "";
                                     row["유효기한"] = item.VALIDDATE != null ? item.VALIDDATE : "";
