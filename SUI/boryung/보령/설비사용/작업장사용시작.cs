@@ -12,6 +12,7 @@ using ShopFloorUI;
 using System.Threading.Tasks;
 using System.ComponentModel;
 using LGCNS.iPharmMES.Common;
+using C1.Silverlight.Data;
 
 namespace 보령
 {
@@ -30,34 +31,83 @@ namespace 보령
 
             if (inputValues.Count > 0 && !string.IsNullOrWhiteSpace(inputValues[0].Raw.ACTVAL))
             {
-                roomId = inputValues[0].Raw.ACTVAL ?? "";
+                var inputValue = inputValues[0];
+                if (inputValue.Raw.NOTE != null)
+                {
+                    DataSet ds = new DataSet();
+                    DataTable dt = new DataTable();
+                    var bytearray = inputValue.Raw.NOTE;
+                    string xml = System.Text.Encoding.UTF8.GetString(bytearray, 0, bytearray.Length);
 
-                bizRule.INDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_ROOM.INDATA()
-                {
-                    ROOMNO = roomId,
-                    USER = AuthRepositoryViewModel.GetUserIDByFunctionCode("EM_BRS_EquipmentAction_PROCSTART"),
-                    LANGID = AuthRepositoryViewModel.Instance.LangID,
-                    DTTM = null
-                });
+                    ds.ReadXmlFromString(xml);
+                    dt = ds.Tables["DATA"];
 
-                bizRule.PARAMDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_ROOM.PARAMDATA()
-                {
-                    EQPAID = LGCNS.iPharmMES.Common.AuthRepositoryViewModel.GetSystemOptionValue("LOGBOOK_PRODUCTION_ORDER"),
-                    PAVAL = this.CurrentOrder.OrderID,
-                    ROOMNO = roomId
-                });
-                bizRule.PARAMDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_ROOM.PARAMDATA()
-                {
-                    EQPAID = LGCNS.iPharmMES.Common.AuthRepositoryViewModel.GetSystemOptionValue("LOGBOOK_PRODUCTION_BATCHNO"),
-                    PAVAL = this.CurrentOrder.BatchNo,
-                    ROOMNO = roomId
-                });
-                bizRule.PARAMDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_ROOM.PARAMDATA()
-                {
-                    EQPAID = LGCNS.iPharmMES.Common.AuthRepositoryViewModel.GetSystemOptionValue("LOGBOOK_PRODUCTION_PROCESS"),
-                    PAVAL = this.CurrentOrder.OrderProcessSegmentID,
-                    ROOMNO = roomId
-                });
+                    foreach (var row in dt.Rows)
+                    {
+                        if (row["작업장번호"] != null)
+                        {
+                            roomId = row["작업장번호"].ToString();
+
+                            bizRule.INDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_ROOM.INDATA()
+                            {
+                                ROOMNO = roomId,
+                                USER = AuthRepositoryViewModel.GetUserIDByFunctionCode("EM_BRS_EquipmentAction_PROCSTART"),
+                                LANGID = AuthRepositoryViewModel.Instance.LangID,
+                                DTTM = null
+                            });
+
+                            bizRule.PARAMDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_ROOM.PARAMDATA()
+                            {
+                                EQPAID = LGCNS.iPharmMES.Common.AuthRepositoryViewModel.GetSystemOptionValue("LOGBOOK_PRODUCTION_ORDER"),
+                                PAVAL = this.CurrentOrder.OrderID,
+                                ROOMNO = roomId
+                            });
+                            bizRule.PARAMDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_ROOM.PARAMDATA()
+                            {
+                                EQPAID = LGCNS.iPharmMES.Common.AuthRepositoryViewModel.GetSystemOptionValue("LOGBOOK_PRODUCTION_BATCHNO"),
+                                PAVAL = this.CurrentOrder.BatchNo,
+                                ROOMNO = roomId
+                            });
+                            bizRule.PARAMDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_ROOM.PARAMDATA()
+                            {
+                                EQPAID = LGCNS.iPharmMES.Common.AuthRepositoryViewModel.GetSystemOptionValue("LOGBOOK_PRODUCTION_PROCESS"),
+                                PAVAL = this.CurrentOrder.OrderProcessSegmentID,
+                                ROOMNO = roomId
+                            });
+                        }
+                    }
+                }
+
+                #region 작업장청소점검 기록 지시문의 정보로 Room 사용 시작 하도록 변경
+                //roomId = inputValues[0].Raw.ACTVAL ?? "";
+
+                //bizRule.INDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_ROOM.INDATA()
+                //{
+                //    ROOMNO = roomId,
+                //    USER = AuthRepositoryViewModel.GetUserIDByFunctionCode("EM_BRS_EquipmentAction_PROCSTART"),
+                //    LANGID = AuthRepositoryViewModel.Instance.LangID,
+                //    DTTM = null
+                //});
+
+                //bizRule.PARAMDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_ROOM.PARAMDATA()
+                //{
+                //    EQPAID = LGCNS.iPharmMES.Common.AuthRepositoryViewModel.GetSystemOptionValue("LOGBOOK_PRODUCTION_ORDER"),
+                //    PAVAL = this.CurrentOrder.OrderID,
+                //    ROOMNO = roomId
+                //});
+                //bizRule.PARAMDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_ROOM.PARAMDATA()
+                //{
+                //    EQPAID = LGCNS.iPharmMES.Common.AuthRepositoryViewModel.GetSystemOptionValue("LOGBOOK_PRODUCTION_BATCHNO"),
+                //    PAVAL = this.CurrentOrder.BatchNo,
+                //    ROOMNO = roomId
+                //});
+                //bizRule.PARAMDATAs.Add(new BR_BRS_UPD_EquipmentAction_ShopFloor_PROCSTRT_ROOM.PARAMDATA()
+                //{
+                //    EQPAID = LGCNS.iPharmMES.Common.AuthRepositoryViewModel.GetSystemOptionValue("LOGBOOK_PRODUCTION_PROCESS"),
+                //    PAVAL = this.CurrentOrder.OrderProcessSegmentID,
+                //    ROOMNO = roomId
+                //});
+                #endregion
             }
             else
             {

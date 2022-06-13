@@ -403,6 +403,7 @@ namespace 보령
                                 dt.Columns.Add(new DataColumn("청소완료일시"));
                                 dt.Columns.Add(new DataColumn("청소유효일시"));
                                 dt.Columns.Add(new DataColumn("SOP문서번호"));
+                                dt.Columns.Add(new DataColumn("룸장비여부"));
 
                                 foreach (var item in BR_BRS_SEL_EquipmentStatus_PROCEQPT.OUTDATAs)
                                 {
@@ -418,6 +419,20 @@ namespace 보령
                                     row["청소완료일시"] = item.CLEANDTTM != null ? item.CLEANDTTM : "";
                                     row["청소유효일시"] = item.EXPIREDTTM != null ? item.EXPIREDTTM : "";
                                     row["SOP문서번호"] = item.SOPDOC ?? "";
+
+                                    //2022.06.13 박희돈 룸에 포함되지 않은 설비에 대한 구분자 추가.(생산설비사용시작에서 사용하기 위해)
+                                    foreach (InstructionModel Inst in refInst)
+                                    {
+                                        if (item.EQPTID != null && item.EQPTID.ToString().ToUpper().Equals(Inst.Raw.ACTVAL.ToString().ToUpper()))
+                                        {
+                                            row["룸장비여부"] = "N";
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            row["룸장비여부"] = "Y";
+                                        }
+                                    }
 
                                     dt.Rows.Add(row);
                                 }
