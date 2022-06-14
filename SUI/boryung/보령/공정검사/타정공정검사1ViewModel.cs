@@ -318,7 +318,7 @@ namespace 보령
                                 var row = dt.NewRow();
                                 row["구분"] = item.GUBUN ?? "";
                                 row["두께"] = item.RSLT1 ?? "";
-                                row["경도"] = item.RSLT3 ?? "";
+                                row["경도"] = item.RSLT2 ?? "";
                                 dt.Rows.Add(row);
                             }
 
