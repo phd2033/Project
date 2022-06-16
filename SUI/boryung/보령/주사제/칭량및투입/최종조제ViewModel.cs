@@ -28,7 +28,6 @@ namespace 보령
             _BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID = new BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID();
             _BR_PHR_REG_ScaleSetTare = new BR_PHR_REG_ScaleSetTare();
             _BR_PHR_SEL_ProductionOrderOutput_Define = new BR_PHR_SEL_ProductionOrderOutput_Define();
-            _BR_BRS_SEL_Charging_Solvent = new BR_BRS_SEL_Charging_Solvent();
             _BR_BRS_REG_ProductionOrderOutput_LastSoluction = new BR_BRS_REG_ProductionOrderOutput_LastSoluction();
             _BR_PHR_SEL_PRINT_LabelImage = new BR_PHR_SEL_PRINT_LabelImage();
             _BR_BRS_SEL_ProductionOrderOutputSubLot = new BR_BRS_SEL_ProductionOrderOutputSubLot();
@@ -286,7 +285,6 @@ namespace 보령
         private BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID _BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID;
         private BR_PHR_REG_ScaleSetTare _BR_PHR_REG_ScaleSetTare;
         private BR_PHR_SEL_ProductionOrderOutput_Define _BR_PHR_SEL_ProductionOrderOutput_Define;
-        private BR_BRS_SEL_Charging_Solvent _BR_BRS_SEL_Charging_Solvent;
         private BR_BRS_REG_ProductionOrderOutput_LastSoluction _BR_BRS_REG_ProductionOrderOutput_LastSoluction;
         private BR_PHR_SEL_PRINT_LabelImage _BR_PHR_SEL_PRINT_LabelImage;
         private BR_BRS_SEL_ProductionOrderOutputSubLot _BR_BRS_SEL_ProductionOrderOutputSubLot;
@@ -334,20 +332,7 @@ namespace 보령
                                         _StandardWeight.Uom = "g";
                                 }
                                 else
-                                    throw new Exception("최종조제기준량이 설정되지 않았습니다.");                              
-
-                                // 보충원료 정보 조회
-                                _BR_BRS_SEL_Charging_Solvent.INDATAs.Add(new BR_BRS_SEL_Charging_Solvent.INDATA
-                                {
-                                    POID = _mainWnd.CurrentOrder.ProductionOrderID,
-                                    OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
-                                    CHGSEQ = _mainWnd.CurrentInstruction.Raw.EXPRESSION,
-                                    ROOMNO = AuthRepositoryViewModel.Instance.RoomID,
-                                    MTRLID = _mainWnd.CurrentInstruction.Raw.BOMID
-                                });
-
-                                if(!(await _BR_BRS_SEL_Charging_Solvent.Execute() && _BR_BRS_SEL_Charging_Solvent.OUTDATAs.Count > 0 && _BR_BRS_SEL_Charging_Solvent.OUTDATA_BOMs.Count > 0))
-                                     throw new Exception("보충 원료 정보를 조회하지 못했습니다.");
+                                    throw new Exception("최종조제기준량이 설정되지 않았습니다.");
 
                                 // 공정중제품 정보 조회
                                 _BR_PHR_SEL_ProductionOrderOutput_Define.INDATAs.Add(new BR_PHR_SEL_ProductionOrderOutput_Define.INDATA
@@ -874,29 +859,6 @@ namespace 보령
                             _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_SOLUTIONs.Clear();
                             _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_SOLUTIONs.Add(_BR_BRS_REG_ProductionOrderOutput_LastSoluction_ori.Copy());
 
-                            _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_WATERs.Clear();
-                            _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_WATER_INVs.Clear();
-                            _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_WATERs.Add(new BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_WATER
-                            {
-                                INSUSER = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_Charging"),
-                                LANGID = AuthRepositoryViewModel.Instance.LangID,
-                                MSUBLOTBCD = _BR_BRS_SEL_Charging_Solvent.OUTDATAs[0].MSUBLOTBCD,
-                                MSUBLOTQTY = _AddWeight.Value,
-                                POID = _mainWnd.CurrentOrder.ProductionOrderID,
-                                OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
-                                IS_NEED_CHKWEIGHT = "N",
-                                IS_FULL_CHARGE = "Y",
-                                IS_CHECKONLY = "N",
-                                IS_INVEN_CHARGE = "Y",
-                                IS_OUTPUT = "N",
-                                MSUBLOTID = _BR_BRS_SEL_Charging_Solvent.OUTDATAs[0].MSUBLOTID,
-                                CHECKINUSER = AuthRepositoryViewModel.GetSecondUserIDByFunctionCode("OM_ProductionOrder_Charging"),
-                            });
-                            _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_WATER_INVs.Add(new BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA_WATER_INV
-                            {
-                                COMPONENTGUID = _BR_BRS_SEL_Charging_Solvent.OUTDATA_BOMs[0].COMPONENTGUID
-                            });
-
                             _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATAs.Clear();
                             _BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATAs.Add(new BR_BRS_REG_ProductionOrderOutput_LastSoluction.INDATA
                             {
@@ -932,10 +894,17 @@ namespace 보령
                             //    }
                             //}
 
-                            await _BR_BRS_REG_ProductionOrderOutput_LastSoluction.Execute();
+                            if(await _BR_BRS_REG_ProductionOrderOutput_LastSoluction.Execute())
+                            {
+                                DispensingbtnEnable = false;
+                                ConfirmbtnEnable = true;
+                            }                            
+                            else
+                            {
+                                DispensingbtnEnable = true;
+                                ConfirmbtnEnable = false;
+                            }
 
-                            DispensingbtnEnable = false;
-                            ConfirmbtnEnable = true;
                             CommandResults["DispensingCommandAsync"] = true;
                         }
                         catch (Exception ex)
