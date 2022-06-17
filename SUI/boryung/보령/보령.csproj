@@ -174,6 +174,7 @@
       <DependentUpon>LIMS샘플링확인.xaml</DependentUpon>
     </Compile>
     <Compile Include="LIMS\LIMS샘플링확인ViewModel.cs" />
+    <Compile Include="Model.Access\BR_BRS_GET_CommonCode_LineClearance.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_GET_Equipment_LineClearance.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_GET_FILTERINFO.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_GET_MaterialSublot_Sample.Access.cs" />

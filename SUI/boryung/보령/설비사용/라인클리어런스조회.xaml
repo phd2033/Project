@@ -32,11 +32,28 @@
             <Grid Grid.Row="0" x:Name="MainSection">
                 <c1:C1DataGrid x:Name="MainDataGrid" HeadersVisibility="Column"
                                AutoGenerateColumns="False" CanUserAddRows="False" CanUserEditRows="False" CanUserRemoveRows="False" CanUserResizeRows="False"
-                               ItemsSource="{Binding BR_BRS_GET_Equipment_LineClearance.OUTDATAs}">
+                               RowHeight="40"
+                               ItemsSource="{Binding LINECLEARANCEOUTDATA}">
                     <c1:C1DataGrid.Columns>
                         <!--<c1:DataGridTextColumn Header="순번" Binding="{Binding Path=NO}" HeaderStyle="{StaticResource HeaderStyle}" HorizontalAlignment="Center" Width="0.5*"/>-->
                         <c1:DataGridTextColumn Header="점검사항" Binding="{Binding Path=ITEMNAME}" HeaderStyle="{StaticResource HeaderStyle}" HorizontalAlignment="Center" Width="3*"/>
-                        <c1:DataGridTextColumn Header="결과" Binding="{Binding Path=RESULT}" HeaderStyle="{StaticResource HeaderStyle}" HorizontalAlignment="Center" Width="1*"/>
+                        <!--<c1:DataGridTextColumn Header="결과" Binding="{Binding Path=RESULT}" HeaderStyle="{StaticResource HeaderStyle}" HorizontalAlignment="Center" Width="1*"/>-->
+                        <c1:DataGridTemplateColumn Header="결과">
+                            <c1:DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Grid VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="50"/>
+                                            <ColumnDefinition Width="50"/>
+                                            <ColumnDefinition Width="50"/>
+                                        </Grid.ColumnDefinitions>
+                                        <RadioButton  Grid.Column="0" IsChecked="{Binding RESULTYES, Mode=TwoWay}" Content="YES"></RadioButton>
+                                        <RadioButton  Grid.Column="1" IsChecked="{Binding RESULTNO, Mode=TwoWay}" Content="NO"></RadioButton>
+                                        <RadioButton  Grid.Column="2" IsChecked="{Binding RESULTNA, Mode=TwoWay}" Content="N/A" ></RadioButton>
+                                    </Grid>
+                                </DataTemplate>
+                            </c1:DataGridTemplateColumn.CellTemplate>
+                        </c1:DataGridTemplateColumn>
                     </c1:C1DataGrid.Columns>
                 </c1:C1DataGrid>
             </Grid>
