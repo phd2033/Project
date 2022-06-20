@@ -423,11 +423,14 @@ namespace 보령
                                     //2022.06.13 박희돈 룸에 포함되지 않은 설비에 대한 구분자 추가.(생산설비사용시작에서 사용하기 위해)
                                     foreach (InstructionModel Inst in refInst)
                                     {
-                                        if (item.EQPTID != null && item.EQPTID.ToString().ToUpper().Equals(Inst.Raw.ACTVAL.ToString().ToUpper()))
+                                        if (item.EQPTID != null && Inst.Raw.ACTVAL != null)
                                         {
-                                            row["룸장비여부"] = "N";
-                                            break;
-                                        }
+                                            if(item.EQPTID.ToString().ToUpper().Equals(Inst.Raw.ACTVAL.ToString().ToUpper()))
+                                            {
+                                                    row["룸장비여부"] = "N";
+                                                    break;
+                                            }
+                                        }                                            
                                         else
                                         {
                                             row["룸장비여부"] = "Y";
