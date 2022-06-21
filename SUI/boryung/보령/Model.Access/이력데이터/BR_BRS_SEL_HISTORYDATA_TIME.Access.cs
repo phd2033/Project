@@ -289,6 +289,38 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
+            private string _EQPTID;
+            [BizActorOutputItemAttribute()]
+            public string EQPTID
+            {
+                get
+                {
+                    return this._EQPTID;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._EQPTID = value;
+                        this.CheckIsOriginal("EQPTID", value);
+                        this.OnPropertyChanged("EQPTID");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
         }
         public BR_BRS_SEL_HISTORYDATA_TIME()
         {

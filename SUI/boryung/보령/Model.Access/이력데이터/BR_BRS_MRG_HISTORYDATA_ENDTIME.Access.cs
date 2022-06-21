@@ -133,6 +133,102 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
+            private string _ROOMNO;
+            [BizActorInputItemAttribute()]
+            public string ROOMNO
+            {
+                get
+                {
+                    return this._ROOMNO;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._ROOMNO = value;
+                        this.CheckIsOriginal("ROOMNO", value);
+                        this.OnPropertyChanged("ROOMNO");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+            private string _POID;
+            [BizActorInputItemAttribute()]
+            public string POID
+            {
+                get
+                {
+                    return this._POID;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._POID = value;
+                        this.CheckIsOriginal("POID", value);
+                        this.OnPropertyChanged("POID");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+            private string _OPSGGUID;
+            [BizActorInputItemAttribute()]
+            public string OPSGGUID
+            {
+                get
+                {
+                    return this._OPSGGUID;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._OPSGGUID = value;
+                        this.CheckIsOriginal("OPSGGUID", value);
+                        this.OnPropertyChanged("OPSGGUID");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
         }
         public BR_BRS_MRG_HISTORYDATA_ENDTIME()
         {

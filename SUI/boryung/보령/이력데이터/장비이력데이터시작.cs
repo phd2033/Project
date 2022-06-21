@@ -72,7 +72,10 @@ namespace 보령
                 bizRule.INDATAs.Add(new BR_BRS_MRG_HISTORYDATA_STARTTIME.INDATA()
                 {
                     EQPTID = indata.Raw.EQPTID,
-                    STARTTIME = STARTDt.ToString()
+                    STARTTIME = STARTDt.ToString(),
+                    ROOMNO = AuthRepositoryViewModel.Instance.RoomID,
+                    POID = this.CurrentOrder.ProductionOrderID,
+                    OPSGGUID = this.CurrentOrder.OrderProcessSegmentID
                 });
             }
 

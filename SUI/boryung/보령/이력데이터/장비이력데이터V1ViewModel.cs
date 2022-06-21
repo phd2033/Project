@@ -162,7 +162,7 @@ namespace 보령
 
                             if (await bizrule.Execute() == true)
                             {
-                                txtEQPTID = _mainWnd.CurrentInstruction.Raw.EQPTID;                                
+                                txtEQPTID = bizrule.OUTDATAs[0].EQPTID;                                
                                 FromDt = Convert.ToDateTime(bizrule.OUTDATAs[0].EQATVAL1);
                                 ToDt = Convert.ToDateTime(bizrule.OUTDATAs[1].EQATVAL1);                               
                             }
