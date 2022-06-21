@@ -262,6 +262,9 @@
     <Compile Include="Model.Access\완제품\BR_PHR_INS_MaterialSubLotCustomAttributes_Multi.Access.cs" />
     <Compile Include="Model.Access\완제품\BR_BRS_SEL_ProductionOrder_Component_PickingInfo.Access.cs" />
     <Compile Include="Model.Access\이력데이터\BR_BRS_GET_ROOM_BMS_INFO.Access.cs" />
+    <Compile Include="Model.Access\이력데이터\BR_BRS_MRG_HISTORYDATA_ENDTIME.Access.cs" />
+    <Compile Include="Model.Access\이력데이터\BR_BRS_MRG_HISTORYDATA_STARTTIME.Access.cs" />
+    <Compile Include="Model.Access\이력데이터\BR_BRS_SEL_HISTORYDATA_TIME.Access.cs" />
     <Compile Include="Model.Access\장비청소\BR_BRS_SEL_EquipmentList_CleanCheck.Access.cs" />
     <Compile Include="Model.Access\장비청소\BR_BRS_SEL_EquipmentStatus_CheckCleaned_Multi.Access.cs" />
     <Compile Include="Model.Access\장비청소\BR_BRS_SEL_EquipmentStatus_PROCEQPT.Access.cs" />
@@ -743,9 +746,11 @@
       <DependentUpon>장비이력데이터멀티.xaml</DependentUpon>
     </Compile>
     <Compile Include="이력데이터\장비이력데이터멀티ViewModel.cs" />
+    <Compile Include="이력데이터\장비이력데이터시작.cs" />
     <Compile Include="이력데이터\장비이력데이터저장Popup.xaml.cs">
       <DependentUpon>장비이력데이터저장Popup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="이력데이터\장비이력데이터종료.cs" />
     <Compile Include="장비청소\Popup\설비상태팝업.xaml.cs">
       <DependentUpon>설비상태팝업.xaml</DependentUpon>
     </Compile>

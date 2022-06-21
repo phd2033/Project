@@ -118,6 +118,7 @@ namespace 보령
 
         BR_PHR_SEL_Element_ELMNAME _BR_PHR_SEL_Element_ELMNAME;
         BR_PHR_SEL_Element_Variable _BR_PHR_SEL_Element_Variable;
+        BR_BRS_SEL_HISTORYDATA_TIME _BR_BRS_SEL_HISTORYDATA_TIME;
         ObservableCollection<BR_PHR_SEL_Element_Variable.OUTDATA> _BR_PHR_SEL_Element_VariableOUTDATAs;
 
 
@@ -149,33 +150,25 @@ namespace 보령
                             FromDt = (await AuthRepositoryViewModel.GetDBDateTimeNow()).AddHours(-1);
                             ToDt = await AuthRepositoryViewModel.GetDBDateTimeNow();
 
+                            var bizrule = new BR_BRS_SEL_HISTORYDATA_TIME();
+
+                            bizrule.INDATAs.Add(new BR_BRS_SEL_HISTORYDATA_TIME.INDATA()
+                            {
+                                EQPTID = _mainWnd.CurrentInstruction.Raw.EQPTID,
+                                ROOMNO = AuthRepositoryViewModel.Instance.RoomID,
+                                POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID
+                            });
+
+                            if (await bizrule.Execute() == true)
+                            {
+                                txtEQPTID = _mainWnd.CurrentInstruction.Raw.EQPTID;                                
+                                FromDt = Convert.ToDateTime(bizrule.OUTDATAs[0].EQATVAL1);
+                                ToDt = Convert.ToDateTime(bizrule.OUTDATAs[1].EQATVAL1);                               
+                            }
+
+
                             _ReceiveValues = InstructionModel.GetParameterSender(_mainWnd.CurrentInstruction, _mainWnd.Instructions);
-
-                            List<InstructionModel> equipmentRunTime = _ReceiveValues.Where(o => o.Raw.IRTTYPE.Equals("IT004")).OrderBy(o => o.Raw.IRTSEQ).ToList();
-                            if (equipmentRunTime != null && equipmentRunTime.Count() == 2)
-                            {
-                                DateTime instFromDT;
-                                DateTime instToDT;
-
-                                if (!DateTime.TryParse(equipmentRunTime[0].Raw.ACTVAL, out instFromDT))
-                                {
-                                    OnMessage("설비 가동 시작일시 또는 종료일시가 기록되지않았습니다!");
-                                }
-                                else if (!DateTime.TryParse(equipmentRunTime[1].Raw.ACTVAL, out instToDT))
-                                {
-                                    OnMessage("설비 가동 시작일시 또는 종료일시가 기록되지않았습니다!");
-                                }
-                                else
-                                {
-                                    FromDt = instFromDT;
-                                    ToDt = instToDT;
-                                }
-                            }
-                            else
-                            {
-                                OnMessage("설비 가동 시작일시 또는 종료일시가 기록되지않았습니다!");
-                            }
-
                             _inputValues = InstructionModel.GetParameterSender(_mainWnd.CurrentInstruction, _mainWnd.Instructions);
 
                             _inputValues = _ReceiveValues.Where(o => !Convert.ToString(o.Raw.TAGID).Equals("")).OrderBy(o => o.Raw.IRTSEQ).ToList();
@@ -1075,6 +1068,7 @@ namespace 보령
             _BR_PHR_SEL_Element_ELMNAME = new BR_PHR_SEL_Element_ELMNAME();
             _BR_PHR_SEL_Element_Variable = new BR_PHR_SEL_Element_Variable();
             _BR_PHR_SEL_Element_VariableOUTDATAs = new ObservableCollection<BR_PHR_SEL_Element_Variable.OUTDATA>();
+            _BR_BRS_SEL_HISTORYDATA_TIME = new BR_BRS_SEL_HISTORYDATA_TIME();
 
             _filteredComponents = new BR_BRS_SEL_HistoryData.OUTDATA_SUMMARYCollection();
         }

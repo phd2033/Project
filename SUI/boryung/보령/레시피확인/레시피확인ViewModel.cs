@@ -87,17 +87,6 @@ namespace 보령
             }
         }
 
-        private string _RECIPEVER;
-        public string RECIPEVER
-        {
-            get { return _RECIPEVER; }
-            set
-            {
-                _RECIPEVER = value;
-                OnPropertyChanged("RECIPEVER");
-            }
-        }
-
         private bool _RECORD_ENABLE;
         public bool RECORD_ENABLE
         {
@@ -270,7 +259,7 @@ namespace 보령
 
                             CommandResults["GetEquipmentRecipeAsync"] = false;
                             CommandCanExecutes["GetEquipmentRecipeAsync"] = false;
-                            string[] strArray = null;
+                            string rcpName = null;
                             ///
 
 
@@ -294,19 +283,25 @@ namespace 보령
                                 {
                                     dt = new DataTable();
 
-                                    // ROWSEQ가 0은 레시피명, 레시피 버젼
+                                    // ROWSEQ가 0은 레시피명
                                     foreach (var item in _BR_BRS_SEL_EquipmentRecipe.OUTDATAs.Where(o => o.ROWSEQ == 0).OrderBy(o => o.COLUMNSEQ))
                                     {
                                         if (item.COLUMNSEQ == 0)
                                         {
                                             RECIPENAME = item.ACTVAL;
                                         }
+                                    }
 
-                                        if (item.COLUMNSEQ == 1)
-                                        {
-                                            RECIPEVER = item.ACTVAL;
-                                        }
-
+                                    rcpName = _mainWnd.CurrentInstruction.Raw.TARGETVAL;
+                                    if (rcpName.Trim() == RECIPENAME)
+                                    {
+                                        RECORD_ENABLE = true;
+                                    }
+                                    else
+                                    {
+                                        RECORD_ENABLE = false;
+                                        OnMessage("레시피 이름: " + RECIPENAME + ", Target : " + rcpName + "\r\n레시피이름과 Target이 다릅니다.");
+                                        return;
                                     }
 
                                     // ROWSEQ가 1부터는 스탭. dt 컬럼 추출하기 위해 ROWSEQ 가 1인 데이터들 조회
@@ -319,7 +314,7 @@ namespace 보령
                                         dt.Columns.Add(item.COLUMNNAME);                                        
                                     }
 
-                                    // ROWSEQ가 0은 레시피명, 레시피 버젼. ROWSEQ가 1부터는 스탭
+                                    // ROWSEQ가 0은 레시피명. ROWSEQ가 1부터는 스탭
                                     foreach (var item in _BR_BRS_SEL_EquipmentRecipe.OUTDATAs.Where(o => o.ROWSEQ != 0).OrderBy(o => o.ROWSEQ).ThenBy(o => o.COLUMNSEQ))
                                     {
                                         if (item.COLUMNSEQ == 0)
@@ -370,17 +365,6 @@ namespace 보령
                                         {
                                             dt.Rows.RemoveAt(i);
                                         }
-                                    }
-
-                                    strArray = _mainWnd.CurrentInstruction.Raw.TARGETVAL.Split(',');
-                                    if (strArray[0].Trim() == RECIPENAME && strArray[1].Trim() == RECIPEVER)
-                                    {
-                                        RECORD_ENABLE = true;
-                                    }
-                                    else
-                                    {
-                                        RECORD_ENABLE = false;
-                                        OnMessage("레시피 이름, 버젼이 Target 값과 다릅니다.");
                                     }
                                 }                                
                             }
