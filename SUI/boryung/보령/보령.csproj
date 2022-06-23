@@ -459,6 +459,10 @@
       <DependentUpon>포장공정반제품분할.xaml</DependentUpon>
     </Compile>
     <Compile Include="반제품\포장공정반제품분할ViewModel.cs" />
+    <Compile Include="설비사용\라인클리어런스기록.xaml.cs">
+      <DependentUpon>라인클리어런스기록.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="설비사용\라인클리어런스기록ViewModel.cs" />
     <Compile Include="설비사용\생산장비점검사용시작.cs" />
     <Compile Include="설비사용\설비가동시간체크_장비번호.xaml.cs">
       <DependentUpon>설비가동시간체크_장비번호.xaml</DependentUpon>
@@ -1045,6 +1049,10 @@
     <Page Include="반제품\포장공정반제품분할.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="설비사용\라인클리어런스기록.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="설비사용\설비가동시간체크_장비번호.xaml">
       <SubType>Designer</SubType>

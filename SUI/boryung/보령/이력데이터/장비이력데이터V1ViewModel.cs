@@ -163,8 +163,10 @@ namespace 보령
                             if (await bizrule.Execute() == true)
                             {
                                 txtEQPTID = bizrule.OUTDATAs[0].EQPTID;                                
-                                FromDt = Convert.ToDateTime(bizrule.OUTDATAs[0].EQATVAL1);
-                                ToDt = Convert.ToDateTime(bizrule.OUTDATAs[1].EQATVAL1);                               
+                                FromDt = Convert.ToDateTime(bizrule.OUTDATAs[0].STARTTIME);
+                                ToDt = Convert.ToDateTime(bizrule.OUTDATAs[0].ENDTIME);
+                                SelectedFromDt = bizrule.OUTDATAs[0].STARTTIME;
+                                SelectedToDt = bizrule.OUTDATAs[0].ENDTIME;
                             }
 
 
