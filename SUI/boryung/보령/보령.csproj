@@ -908,6 +908,10 @@
       <DependentUpon>개별질량측정.xaml</DependentUpon>
     </Compile>
     <Compile Include="칭량\개별질량측정ViewModel.cs" />
+    <Compile Include="칭량\개별질량측정_2.xaml.cs">
+      <DependentUpon>개별질량측정_2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="칭량\개별질량측정_2ViewModel.cs" />
     <Compile Include="칭량\칭량원료Pallet적재.xaml.cs">
       <DependentUpon>칭량원료Pallet적재.xaml</DependentUpon>
     </Compile>
@@ -1487,6 +1491,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="칭량\개별질량측정.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="칭량\개별질량측정_2.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
