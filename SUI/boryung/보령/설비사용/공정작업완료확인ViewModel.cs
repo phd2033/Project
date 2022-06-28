@@ -143,7 +143,7 @@ namespace 보령
                             var xml = BizActorRuleBase.CreateXMLStream(ds);
                             var bytesArray = System.Text.Encoding.UTF8.GetBytes(xml);
 
-                            _mainWnd.CurrentInstruction.Raw.ACTVAL = "공정작업완료 확인";
+                            _mainWnd.CurrentInstruction.Raw.ACTVAL = "TABLE,공정작업완료 확인";
                             _mainWnd.CurrentInstruction.Raw.NOTE = bytesArray;
 
                             var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction, true);
