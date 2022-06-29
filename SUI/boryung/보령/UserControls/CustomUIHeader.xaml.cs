@@ -62,7 +62,7 @@ namespace 보령.UserControls
             CustomUIHeader parent = (CustomUIHeader)d;
             //값을 전달할 타겟지정
             var orderlist = (BR_BRS_SEL_ProductionOrder_RECIPEISTGUID.OUTDATACollection)e.NewValue;
-            if(orderlist != null && orderlist.Count > 0)
+            if(orderlist != null && orderlist.Count > 1)
             {
                 parent.cboOrderList.ItemsSource = orderlist;
                 parent.cboOrderList.Visibility = Visibility.Visible;
