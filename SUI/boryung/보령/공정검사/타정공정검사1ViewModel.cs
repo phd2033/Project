@@ -147,106 +147,102 @@ namespace 보령
                             CommandCanExecutes["RegisterIPCCommandAsync"] = false;
 
                             ///
-                            if (_ThicknessIPCData.DEVIATIONFLAG.HasValue && _LongitudeIPCData.DEVIATIONFLAG.HasValue)
-                            {
-                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_SPECs.Clear();
-                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEMs.Clear();
-                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_ETCs.Clear();
-
-                                var authHelper = new iPharmAuthCommandHelper();
-                                authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_IPC");
-
-                                if (await authHelper.ClickAsync(
-                                    Common.enumCertificationType.Function,
-                                    Common.enumAccessType.Create,
-                                    string.Format("IPC 결과를 기록합니다."),
-                                    string.Format("IPC 결과를 기록합니다."),
-                                    false,
-                                    "OM_ProductionOrder_IPC",
-                                    "", null, null) == false)
-                                {
-                                    throw new Exception(string.Format("서명이 완료되지 않았습니다."));
-                                }
-
-                                string confirmguid = AuthRepositoryViewModel.Instance.ConfirmedGuid;
-                                DateTime curDttm = await AuthRepositoryViewModel.GetDBDateTimeNow();
-                                string user = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_IPC");
-
-                                // 시험명세 기록
-                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_SPECs.Add(new BR_BRS_REG_ProductionOrderTestResult.INDATA_SPEC
-                                {
-                                    POTSRGUID = Guid.NewGuid(),
-                                    POID = _mainWnd.CurrentOrder.ProductionOrderID,
-                                    OPTSGUID = new Guid(_ThicknessIPCData.OPTSGUID),
-                                    OPSGGUID = new Guid(_mainWnd.CurrentOrder.OrderProcessSegmentID),
-                                    TESTSEQ = null,
-                                    STRDTTM = curDttm,
-                                    ENDDTTM = curDttm,
-                                    EQPTID = null,
-                                    INSUSER = user,
-                                    INSDTTM = curDttm,
-                                    EFCTTIMEIN = curDttm,
-                                    EFCTTIMEOUT = curDttm,
-                                    MSUBLOTID = null,
-                                    REASON = null,
-                                    ISUSE = "Y",
-                                    ACTIVEYN = "Y",
-                                    SMPQTY = _ThicknessIPCData.SMPQTY,
-                                    SMPQTYUOMID = _ThicknessIPCData.SMPQTYUOMID,
-                                });
-
-                                // 전자서명 코멘트
-                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_ETCs.Add(new BR_BRS_REG_ProductionOrderTestResult.INDATA_ETC
-                                {
-                                    COMMENTTYPE = "CM001",
-                                    COMMENT = AuthRepositoryViewModel.GetCommentByFunctionCode("OM_ProductionOrder_IPC"),
-                                    TSTYPE = _ThicknessIPCData.TSTYPE,
-                                    LOCATIONID = AuthRepositoryViewModel.Instance.RoomID
-                                });
-
-                                // 시험상세결과 기록
-                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEMs.Add(new BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEM
-                                {
-                                    POTSRGUID = _BR_BRS_REG_ProductionOrderTestResult.INDATA_SPECs[0].POTSRGUID,
-                                    OPTSIGUID = new Guid(_ThicknessIPCData.OPTSIGUID),
-                                    POTSIRGUID = Guid.NewGuid(),
-                                    ACTVAL = _ThicknessIPCData.GetACTVAL,
-                                    INSUSER = user,
-                                    INSDTTM = curDttm,
-                                    EFCTTIMEIN = curDttm,
-                                    EFCTTIMEOUT = curDttm,
-                                    COMMENTGUID = !string.IsNullOrWhiteSpace(confirmguid) ? new Guid(confirmguid) : (Guid?)null,
-                                    REASON = null,
-                                    ISUSE = "Y",
-                                    ACTIVEYN = "Y"
-                                });
-                                _BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEMs.Add(new BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEM
-                                {
-                                    POTSRGUID = _BR_BRS_REG_ProductionOrderTestResult.INDATA_SPECs[0].POTSRGUID,
-                                    OPTSIGUID = new Guid(_LongitudeIPCData.OPTSIGUID),
-                                    POTSIRGUID = Guid.NewGuid(),
-                                    ACTVAL = _LongitudeIPCData.GetACTVAL,
-                                    INSUSER = user,
-                                    INSDTTM = curDttm,
-                                    EFCTTIMEIN = curDttm,
-                                    EFCTTIMEOUT = curDttm,
-                                    COMMENTGUID = new Guid(confirmguid),
-                                    REASON = null,
-                                    ISUSE = "Y",
-                                    ACTIVEYN = "Y"
-                                });
-
-                                if (await _BR_BRS_REG_ProductionOrderTestResult.Execute())
-                                {
-                                    ThicknessIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[0]);
-                                    LongitudeIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[1]);
-
-                                    await GetIPCResult();
-                                }
-                            }
-                            else
-                                OnMessage("시험결과를 확인해주세요.");                           
                             
+                            _BR_BRS_REG_ProductionOrderTestResult.INDATA_SPECs.Clear();
+                            _BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEMs.Clear();
+                            _BR_BRS_REG_ProductionOrderTestResult.INDATA_ETCs.Clear();
+
+                            var authHelper = new iPharmAuthCommandHelper();
+                            authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_IPC");
+
+                            if (await authHelper.ClickAsync(
+                                Common.enumCertificationType.Function,
+                                Common.enumAccessType.Create,
+                                string.Format("IPC 결과를 기록합니다."),
+                                string.Format("IPC 결과를 기록합니다."),
+                                false,
+                                "OM_ProductionOrder_IPC",
+                                "", null, null) == false)
+                            {
+                                throw new Exception(string.Format("서명이 완료되지 않았습니다."));
+                            }
+
+                            string confirmguid = AuthRepositoryViewModel.Instance.ConfirmedGuid;
+                            DateTime curDttm = await AuthRepositoryViewModel.GetDBDateTimeNow();
+                            string user = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_IPC");
+
+                            // 시험명세 기록
+                            _BR_BRS_REG_ProductionOrderTestResult.INDATA_SPECs.Add(new BR_BRS_REG_ProductionOrderTestResult.INDATA_SPEC
+                            {
+                                POTSRGUID = Guid.NewGuid(),
+                                POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                OPTSGUID = new Guid(_ThicknessIPCData.OPTSGUID),
+                                OPSGGUID = new Guid(_mainWnd.CurrentOrder.OrderProcessSegmentID),
+                                TESTSEQ = null,
+                                STRDTTM = curDttm,
+                                ENDDTTM = curDttm,
+                                EQPTID = null,
+                                INSUSER = user,
+                                INSDTTM = curDttm,
+                                EFCTTIMEIN = curDttm,
+                                EFCTTIMEOUT = curDttm,
+                                MSUBLOTID = null,
+                                REASON = null,
+                                ISUSE = "Y",
+                                ACTIVEYN = "Y",
+                                SMPQTY = _ThicknessIPCData.SMPQTY,
+                                SMPQTYUOMID = _ThicknessIPCData.SMPQTYUOMID,
+                            });
+
+                            // 전자서명 코멘트
+                            _BR_BRS_REG_ProductionOrderTestResult.INDATA_ETCs.Add(new BR_BRS_REG_ProductionOrderTestResult.INDATA_ETC
+                            {
+                                COMMENTTYPE = "CM001",
+                                COMMENT = AuthRepositoryViewModel.GetCommentByFunctionCode("OM_ProductionOrder_IPC"),
+                                TSTYPE = _ThicknessIPCData.TSTYPE,
+                                LOCATIONID = AuthRepositoryViewModel.Instance.RoomID
+                            });
+
+                            // 시험상세결과 기록
+                            _BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEMs.Add(new BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEM
+                            {
+                                POTSRGUID = _BR_BRS_REG_ProductionOrderTestResult.INDATA_SPECs[0].POTSRGUID,
+                                OPTSIGUID = new Guid(_ThicknessIPCData.OPTSIGUID),
+                                POTSIRGUID = Guid.NewGuid(),
+                                ACTVAL = _ThicknessIPCData.GetACTVAL,
+                                INSUSER = user,
+                                INSDTTM = curDttm,
+                                EFCTTIMEIN = curDttm,
+                                EFCTTIMEOUT = curDttm,
+                                COMMENTGUID = !string.IsNullOrWhiteSpace(confirmguid) ? new Guid(confirmguid) : (Guid?)null,
+                                REASON = null,
+                                ISUSE = "Y",
+                                ACTIVEYN = "Y"
+                            });
+                            _BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEMs.Add(new BR_BRS_REG_ProductionOrderTestResult.INDATA_ITEM
+                            {
+                                POTSRGUID = _BR_BRS_REG_ProductionOrderTestResult.INDATA_SPECs[0].POTSRGUID,
+                                OPTSIGUID = new Guid(_LongitudeIPCData.OPTSIGUID),
+                                POTSIRGUID = Guid.NewGuid(),
+                                ACTVAL = _LongitudeIPCData.GetACTVAL,
+                                INSUSER = user,
+                                INSDTTM = curDttm,
+                                EFCTTIMEIN = curDttm,
+                                EFCTTIMEOUT = curDttm,
+                                COMMENTGUID = new Guid(confirmguid),
+                                REASON = null,
+                                ISUSE = "Y",
+                                ACTIVEYN = "Y"
+                            });
+
+                            if (await _BR_BRS_REG_ProductionOrderTestResult.Execute())
+                            {
+                                ThicknessIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[0]);
+                                LongitudeIPCData = IPCControlData.SetIPCControlData(_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[1]);
+
+                                await GetIPCResult();
+                            }
+                                                                                
                             ///
 
                             CommandResults["RegisterIPCCommandAsync"] = true;
