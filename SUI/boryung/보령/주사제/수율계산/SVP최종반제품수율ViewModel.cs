@@ -197,6 +197,16 @@ namespace 보령
                                 INSUSER = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_Yield")
                             });
 
+                            _BR_BRS_MRG_ProductionOrderDetailAttributeValue_Multi.INDATAs.Add(new BR_BRS_MRG_ProductionOrderDetailAttributeValue_Multi.INDATA
+                            {
+                                POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
+                                VERSION = 1m,
+                                PODETAID = "GOOD_QTY",
+                                PODETAVAL1 = Result_OUT,
+                                INSUSER = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_Yield")
+                            });
+
                             if (await _BR_BRS_MRG_ProductionOrderDetailAttributeValue_Multi.Execute())
                             {
                                 // 수율기록

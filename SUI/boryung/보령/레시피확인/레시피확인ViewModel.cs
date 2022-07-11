@@ -29,6 +29,8 @@ namespace 보령
             _BR_PHR_SEL_CODE = new BR_PHR_SEL_CODE();
             _BR_BRS_SEL_EquipmentRecipe = new BR_BRS_SEL_EquipmentRecipe();
             _BR_BRS_SEL_EquipmentRecipeStepType = new BR_BRS_SEL_EquipmentRecipeStepType();
+            _filteredComponents = new BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL.OUTDATACollection();
+            _BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL = new BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL();
         }
 
         레시피확인 _mainWnd;
@@ -124,7 +126,27 @@ namespace 보령
             }
         }
 
+        private BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL _BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL;
+        public BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL
+        {
+            get { return _BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL; }
+            set
+            {
+                _BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL = value;
+                OnPropertyChanged("BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL");
+            }
+        }
 
+        private BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL.OUTDATACollection _filteredComponents;
+        public BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL.OUTDATACollection filteredComponents
+        {
+            get { return _filteredComponents; }
+            set
+            {
+                _filteredComponents = value;
+                NotifyPropertyChanged();
+            }
+        }
         #endregion
 
         #region [Command]
@@ -262,7 +284,7 @@ namespace 보령
                             string rcpName = null;
                             ///
 
-
+                            filteredComponents.Clear();
                             _BR_BRS_SEL_EquipmentRecipe.INDATAs.Clear();
                             _BR_BRS_SEL_EquipmentRecipe.OUTDATAs.Clear();
                             _BR_BRS_SEL_EquipmentRecipe.INDATAs.Add(new BR_BRS_SEL_EquipmentRecipe.INDATA
@@ -279,12 +301,131 @@ namespace 보령
                                 {
                                     EQPTID = EQPTID
                                 });
+
+                                //여러 태그를 한번에 조회했을때 타임아웃 에러가 나서 로직 수정
+                                //if (await _BR_BRS_SEL_EquipmentRecipeStepType.Execute())
+                                //{
+                                //    dt = new DataTable();
+
+                                //    // ROWSEQ가 0은 레시피명
+                                //    foreach (var item in _BR_BRS_SEL_EquipmentRecipe.OUTDATAs.Where(o => o.ROWSEQ == 0).OrderBy(o => o.COLUMNSEQ))
+                                //    {
+                                //        if (item.COLUMNSEQ == 0)
+                                //        {
+                                //            RECIPENAME = item.ACTVAL;
+                                //        }
+                                //    }
+
+                                //    rcpName = _mainWnd.CurrentInstruction.Raw.TARGETVAL;
+                                //    if (rcpName.Trim() == RECIPENAME)
+                                //    {
+                                //        RECORD_ENABLE = true;
+                                //    }
+                                //    else
+                                //    {
+                                //        RECORD_ENABLE = false;
+                                //        OnMessage("레시피 이름: " + RECIPENAME + ", Target : " + rcpName + "\r\n레시피이름과 Target이 다릅니다.");
+                                //        return;
+                                //    }
+
+                                //    // ROWSEQ가 1부터는 스탭. dt 컬럼 추출하기 위해 ROWSEQ 가 1인 데이터들 조회
+                                //    foreach (var item in _BR_BRS_SEL_EquipmentRecipe.OUTDATAs.Where(o => o.ROWSEQ == 1).OrderBy(o => o.COLUMNSEQ))
+                                //    {
+                                //        // Column 규칙 설비명.2.B1_태크명
+                                //        // EX) OBFG4001.2.B1_AirVolumeSetpoint
+                                //        //     OBFG4001.2.B2_AirVolumeSetpoint
+                                //        // TAGID에서 컬럼명만 가져와서 dt에 저장
+                                //        dt.Columns.Add(item.COLUMNNAME);
+                                //    }
+
+                                //    // ROWSEQ가 0은 레시피명. ROWSEQ가 1부터는 스탭
+                                //    foreach (var item in _BR_BRS_SEL_EquipmentRecipe.OUTDATAs.Where(o => o.ROWSEQ != 0).OrderBy(o => o.ROWSEQ).ThenBy(o => o.COLUMNSEQ))
+                                //    {
+                                //        if (item.COLUMNSEQ == 0)
+                                //        {
+                                //            dt.Rows.Add();
+                                //        }
+                                //        for (int i = 0; i < dt.Columns.Count; i++)
+                                //        {
+                                //            //각 설비군마다 StepType에 따른 값 변경
+                                //            if (dt.Columns[i].ColumnName == item.COLUMNNAME && dt.Columns[i].ColumnName == _BR_BRS_SEL_EquipmentRecipeStepType.OUTDATAs[0].COLUMNNAME)
+                                //            {
+                                //                //StepType에 등록된 값이 있는 경우면 등록된 값으로 보여줌, 등록되지 않은 값이 올라올 수도 있음. EX) -1
+                                //                if (_BR_BRS_SEL_EquipmentRecipeStepType.OUTDATAs.Where(o => o.ACTIVAL == item.ACTVAL).Count() > 0)
+                                //                {
+                                //                    dt.Rows[Convert.ToInt32(item.ROWSEQ) - 1][i] = _BR_BRS_SEL_EquipmentRecipeStepType.OUTDATAs[Convert.ToInt32(item.ACTVAL)].STEPNAME;
+                                //                }
+                                //                else
+                                //                {
+                                //                    dt.Rows[Convert.ToInt32(item.ROWSEQ) - 1][i] = item.ACTVAL;
+                                //                }
+                                //                break;
+                                //            }
+                                //            else if (dt.Columns[i].ColumnName == item.COLUMNNAME)
+                                //            {
+                                //                dt.Rows[Convert.ToInt32(item.ROWSEQ) - 1][i] = item.ACTVAL;
+                                //                break;
+                                //            }
+                                //        }
+                                //    }
+
+                                //    // 팀장님 요청사항. ROW의 데이터가 전부 0이면 해당 ROW 삭제. 사유는 실제 사용하는 태그 값은 매번 다르기 때문에 태그 등록을 많이 해둠.                                    
+                                //    for (int i = dt.Rows.Count - 1; 0 <= i; i--)
+                                //    {
+                                //        bool activalFlag = false;
+                                //        for (int j = 0; j < dt.Columns.Count; j++)
+                                //        {
+                                //            if (dt.Rows[i][j].ToString() != "0" && dt.Rows[i][j].ToString() != _BR_BRS_SEL_EquipmentRecipeStepType.OUTDATAs[0].STEPNAME && dt.Rows[i][j].ToString() != "")
+                                //            {
+                                //                activalFlag = true;
+                                //                break;
+                                //            }
+                                //        }
+                                //        if (activalFlag)
+                                //        {
+                                //            continue;
+                                //        }
+                                //        else
+                                //        {
+                                //            dt.Rows.RemoveAt(i);
+                                //        }
+                                //    }
+                                //}
+
                                 if (await _BR_BRS_SEL_EquipmentRecipeStepType.Execute())
                                 {
+                                    for (int i = 0; i < _BR_BRS_SEL_EquipmentRecipe.OUTDATAs.Count; i++)
+                                    {
+                                        _BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL.INDATAs.Clear();
+                                        _BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL.OUTDATAs.Clear();
+                                        _BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL.INDATAs.Add(new BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL.INDATA
+                                        {
+                                            EQPTID = _BR_BRS_SEL_EquipmentRecipe.OUTDATAs[i].EQPTID,
+                                            TAGID = _BR_BRS_SEL_EquipmentRecipe.OUTDATAs[i].TAGID,
+                                            COLUMNNAME = _BR_BRS_SEL_EquipmentRecipe.OUTDATAs[i].COLUMNNAME,
+                                            COLUMNSEQ = _BR_BRS_SEL_EquipmentRecipe.OUTDATAs[i].COLUMNSEQ,
+                                            ROWSEQ = _BR_BRS_SEL_EquipmentRecipe.OUTDATAs[i].ROWSEQ
+                                        });
+
+                                        if (await _BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL.Execute())
+                                        {
+                                            var temp = new BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL.OUTDATA
+                                            {
+                                                EQPTID = _BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL.OUTDATAs[0].EQPTID,
+                                                TAGID = _BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL.OUTDATAs[0].TAGID,
+                                                ACTVAL = _BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL.OUTDATAs[0].ACTVAL,
+                                                COLUMNNAME = _BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL.OUTDATAs[0].COLUMNNAME,
+                                                COLUMNSEQ = _BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL.OUTDATAs[0].COLUMNSEQ,
+                                                ROWSEQ = _BR_BRS_SEL_EquipmentRecipe_TAG_ACTVAL.OUTDATAs[0].ROWSEQ
+                                            };
+                                            filteredComponents.Add(temp);
+                                        }                                        
+                                    }
+
                                     dt = new DataTable();
 
                                     // ROWSEQ가 0은 레시피명
-                                    foreach (var item in _BR_BRS_SEL_EquipmentRecipe.OUTDATAs.Where(o => o.ROWSEQ == 0).OrderBy(o => o.COLUMNSEQ))
+                                    foreach (var item in filteredComponents.Where(o => o.ROWSEQ == 0).OrderBy(o => o.COLUMNSEQ))
                                     {
                                         if (item.COLUMNSEQ == 0)
                                         {
@@ -305,17 +446,17 @@ namespace 보령
                                     }
 
                                     // ROWSEQ가 1부터는 스탭. dt 컬럼 추출하기 위해 ROWSEQ 가 1인 데이터들 조회
-                                    foreach (var item in _BR_BRS_SEL_EquipmentRecipe.OUTDATAs.Where(o => o.ROWSEQ == 1).OrderBy(o => o.COLUMNSEQ))
+                                    foreach (var item in filteredComponents.Where(o => o.ROWSEQ == 1).OrderBy(o => o.COLUMNSEQ))
                                     {
                                         // Column 규칙 설비명.2.B1_태크명
                                         // EX) OBFG4001.2.B1_AirVolumeSetpoint
                                         //     OBFG4001.2.B2_AirVolumeSetpoint
                                         // TAGID에서 컬럼명만 가져와서 dt에 저장
-                                        dt.Columns.Add(item.COLUMNNAME);                                        
+                                        dt.Columns.Add(item.COLUMNNAME);
                                     }
 
                                     // ROWSEQ가 0은 레시피명. ROWSEQ가 1부터는 스탭
-                                    foreach (var item in _BR_BRS_SEL_EquipmentRecipe.OUTDATAs.Where(o => o.ROWSEQ != 0).OrderBy(o => o.ROWSEQ).ThenBy(o => o.COLUMNSEQ))
+                                    foreach (var item in filteredComponents.Where(o => o.ROWSEQ != 0).OrderBy(o => o.ROWSEQ).ThenBy(o => o.COLUMNSEQ))
                                     {
                                         if (item.COLUMNSEQ == 0)
                                         {
@@ -337,7 +478,7 @@ namespace 보령
                                                 }
                                                 break;
                                             }
-                                            else if(dt.Columns[i].ColumnName == item.COLUMNNAME)
+                                            else if (dt.Columns[i].ColumnName == item.COLUMNNAME)
                                             {
                                                 dt.Rows[Convert.ToInt32(item.ROWSEQ) - 1][i] = item.ACTVAL;
                                                 break;
@@ -345,14 +486,14 @@ namespace 보령
                                         }
                                     }
 
-                                    // 팀장님 요청사항. ROW의 데이터가 전부 0이면 해당 ROW 삭제. 사유는 실제 사용하는 태크 값은 매번 다르기 때문에 태그 등록을 많이 해둠.                                    
+                                    // 팀장님 요청사항. ROW의 데이터가 전부 0이면 해당 ROW 삭제. 사유는 실제 사용하는 태그 값은 매번 다르기 때문에 태그 등록을 많이 해둠.                                    
                                     for (int i = dt.Rows.Count - 1; 0 <= i; i--)
                                     {
                                         bool activalFlag = false;
                                         for (int j = 0; j < dt.Columns.Count; j++)
                                         {
                                             if (dt.Rows[i][j].ToString() != "0" && dt.Rows[i][j].ToString() != _BR_BRS_SEL_EquipmentRecipeStepType.OUTDATAs[0].STEPNAME && dt.Rows[i][j].ToString() != "")
-                                            {                                               
+                                            {
                                                 activalFlag = true;
                                                 break;
                                             }
@@ -366,7 +507,7 @@ namespace 보령
                                             dt.Rows.RemoveAt(i);
                                         }
                                     }
-                                }                                
+                                }                                  
                             }
                             ///
 

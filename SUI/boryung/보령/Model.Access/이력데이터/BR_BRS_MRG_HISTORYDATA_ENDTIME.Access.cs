@@ -229,6 +229,38 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
+            private string _OPSGNAME;
+            [BizActorInputItemAttribute()]
+            public string OPSGNAME
+            {
+                get
+                {
+                    return this._OPSGNAME;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._OPSGNAME = value;
+                        this.CheckIsOriginal("OPSGNAME", value);
+                        this.OnPropertyChanged("OPSGNAME");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
         }
         public BR_BRS_MRG_HISTORYDATA_ENDTIME()
         {

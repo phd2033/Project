@@ -75,7 +75,8 @@ namespace 보령
                     ENDTIME = ENDDt.ToString(),
                     ROOMNO = AuthRepositoryViewModel.Instance.RoomID,
                     POID = this.CurrentOrder.ProductionOrderID,
-                    OPSGGUID = this.CurrentOrder.OrderProcessSegmentID
+                    OPSGGUID = this.CurrentOrder.OrderProcessSegmentID,
+                    OPSGNAME = this.CurrentOrder.OrderProcessSegmentName
                 });
             }
 

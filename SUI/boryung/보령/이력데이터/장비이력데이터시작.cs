@@ -75,10 +75,11 @@ namespace 보령
                     STARTTIME = STARTDt.ToString(),
                     ROOMNO = AuthRepositoryViewModel.Instance.RoomID,
                     POID = this.CurrentOrder.ProductionOrderID,
-                    OPSGGUID = this.CurrentOrder.OrderProcessSegmentID
+                    OPSGGUID = this.CurrentOrder.OrderProcessSegmentID,
+                    OPSGNAME = this.CurrentOrder.OrderProcessSegmentName
                 });
             }
-
+            
             if (await bizRule.Execute() == false) throw bizRule.Exception;
 
             this.CurrentInstruction.Raw.ACTVAL = string.Format("장비시작시간");
