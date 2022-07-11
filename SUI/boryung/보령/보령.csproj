@@ -182,6 +182,7 @@
     <Compile Include="Model.Access\BR_BRS_REG_EM_EQPT_MONITOR.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_REG_INSTPCTION_FAILQTY.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_REG_MaterialSublot_Sample.Access.cs" />
+    <Compile Include="Model.Access\BR_BRS_REG_ProductionOrderCustomValue.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_REG_ProductionOrderOutput_Conditional.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_REG_ProductionOrderOutput_Scale_Weight_Multi.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_SEL_EquipmentCustomAttributeValue_ScaleInfo_EQPTID.Access.cs" />
@@ -189,6 +190,7 @@
     <Compile Include="Model.Access\BR_BRS_SEL_EquipmentStatus_PROCEQPT_LIST.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_SEL_EquipmentStatus_PROC_OPSG.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_SEL_ProductionOrderBOM_CHGSEQ.Access.cs" />
+    <Compile Include="Model.Access\BR_BRS_SEL_ProductionOrderCustomValue.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_SEL_ProductionOrderDispenseSubLot_OPSG_COMPONENT.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_SEL_ProductionOrder_Component_Summary.Access.cs" />
     <Compile Include="Model.Access\BR_BRS_SEL_ProductionOrder_RECIPEISTGUID.Access.cs" />
@@ -818,6 +820,10 @@
       <DependentUpon>SVP캡핑IPC.xaml</DependentUpon>
     </Compile>
     <Compile Include="주사제\공정검사\SVP캡핑IPCViewModel.cs" />
+    <Compile Include="주사제\공정검사\조제FIL결과.xaml.cs">
+      <DependentUpon>조제FIL결과.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="주사제\공정검사\조제FIL결과ViewModel.cs" />
     <Compile Include="주사제\공정검사\중요간섭상황기록ViewModel.cs" />
     <Compile Include="주사제\반제품\SVP반제품생성.xaml.cs">
       <DependentUpon>SVP반제품생성.xaml</DependentUpon>
@@ -1399,6 +1405,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="주사제\공정검사\SVP캡핑IPC.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="주사제\공정검사\조제FIL결과.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
