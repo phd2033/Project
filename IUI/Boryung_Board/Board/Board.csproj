@@ -169,6 +169,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model.Access\iPharm.Report\BR.Performance\BR_BRS_INS_TST_APPROVAL_CANCELL.Access.cs" />
+    <Compile Include="Model.Access\iPharm.Report\BR.Performance\BR_BRS_REG_UDT_OperationProcessSegmentReady.Access.cs" />
+    <Compile Include="Model.Access\iPharm.Report\BR.Performance\BR_BRS_SEL_CleanningSettingList.Access.cs" />
     <Compile Include="Model.Access\iPharm.Report\BR.Performance\BR_BRS_SEL_TST_REQUEST_NUMBER_CONFIRM.Access.cs" />
     <Compile Include="Model.Access\iPharm.Report\BR.ProductionOrderReport\BR_PHR_RPT_ProductionOrderDetail_Result.Access.cs" />
     <Compile Include="Model.Access\iPharm.Report\BR.ProductionOrderReport\BR_PHR_RPT_ProductionOrderDetail_WorkTime.Access.cs" />
@@ -184,6 +186,7 @@
     <Compile Include="Model.Access\iPharm.Report\BR_MaterialReport\BR_BRS_SEL_MaterialPickingInfoList.Access.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\BoardSettingPopupViewModel.cs" />
+    <Compile Include="ViewModel\CleanningSettingViewModel.cs" />
     <Compile Include="ViewModel\DetailSearch\FacilitiesOperationStatusViewModel.cs" />
     <Compile Include="ViewModel\DetailSearch\IPCTestResultViewModel.cs" />
     <Compile Include="ViewModel\DetailSearch\ManufacturingProcessStatusViewModel.cs" />
@@ -203,6 +206,9 @@
     </Compile>
     <Compile Include="View\BoardSettingPopup.xaml.cs">
       <DependentUpon>BoardSettingPopup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\CleanningSetting.xaml.cs">
+      <DependentUpon>CleanningSetting.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\DetailSearch\FacilitiesOperationStatusView.xaml.cs">
       <DependentUpon>FacilitiesOperationStatusView.xaml</DependentUpon>
@@ -282,6 +288,10 @@
     <Page Include="View\BoardSettingPopup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\CleanningSetting.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\DetailSearch\FacilitiesOperationStatusView.xaml">
       <SubType>Designer</SubType>
