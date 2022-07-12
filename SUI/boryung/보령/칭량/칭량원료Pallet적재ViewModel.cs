@@ -78,7 +78,7 @@ namespace 보령
 
         #region Data
 
-        private BR_PHR_SEL_Equipment_GetInfo _BR_PHR_SEL_Equipment_GetInfo;
+        private BR_BRS_SEL_Equipment_GetInfo _BR_BRS_SEL_Equipment_GetInfo;
 
         private BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging _BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging;
         public BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging BR_BRS_GET_MaterialSubLot_ContainerInfo_LayerCharging
@@ -163,7 +163,7 @@ namespace 보령
             _BR_PHR_UPD_MaterialSubLot_ChangeVesselID_MULTI = new BR_PHR_UPD_MaterialSubLot_ChangeVesselID_MULTI();
             _BR_UDB_REG_PMS_FILLED_BIN_IN = new BR_UDB_REG_PMS_FILLED_BIN_IN();
             _BR_BRS_GET_DispenseSubLot_VESSID_ISNULL = new BR_BRS_GET_DispenseSubLot_VESSID_ISNULL();
-            _BR_PHR_SEL_Equipment_GetInfo = new BR_PHR_SEL_Equipment_GetInfo();
+            _BR_BRS_SEL_Equipment_GetInfo = new BR_BRS_SEL_Equipment_GetInfo();
             _BR_PHR_SEL_System_Option_OPTIONTYPE = new BR_PHR_SEL_System_Option_OPTIONTYPE();
             ListContainer = new ObservableCollection<보령.칭량원료Pallet적재ViewModel.LayerCharging>();
             //_DtLayerCharging = new DataTable();
@@ -246,21 +246,22 @@ namespace 보령
                             ///
                             _mainWnd.txtContainer.Text = _mainWnd.txtContainer.Text.ToUpper();
 
-                            _BR_PHR_SEL_Equipment_GetInfo.INDATAs.Clear();
-                            _BR_PHR_SEL_Equipment_GetInfo.OUTDATAs.Clear();
+                            _BR_BRS_SEL_Equipment_GetInfo.INDATAs.Clear();
+                            _BR_BRS_SEL_Equipment_GetInfo.OUTDATAs.Clear();
 
-                            _BR_PHR_SEL_Equipment_GetInfo.INDATAs.Add(new BR_PHR_SEL_Equipment_GetInfo.INDATA()
+                            _BR_BRS_SEL_Equipment_GetInfo.INDATAs.Add(new BR_BRS_SEL_Equipment_GetInfo.INDATA()
                             {
                                EQPTID = _mainWnd.txtContainer.Text
                             });
 
                             lblEqptID = null;
 
-                            if (await _BR_PHR_SEL_Equipment_GetInfo.Execute() && _BR_PHR_SEL_Equipment_GetInfo.OUTDATAs.Count > 0)
+                            if (await _BR_BRS_SEL_Equipment_GetInfo.Execute() && _BR_BRS_SEL_Equipment_GetInfo.OUTDATAs.Count > 0)
                             {
-                                if(string.IsNullOrWhiteSpace(_mainWnd.CurrentInstruction.Raw.EQCLID) || _mainWnd.CurrentInstruction.Raw.EQCLID == _BR_PHR_SEL_Equipment_GetInfo.OUTDATAs[0].EQCLID)
+                                if(string.IsNullOrWhiteSpace(_mainWnd.CurrentInstruction.Raw.EQCLID) || 
+                                    (_mainWnd.CurrentInstruction.Raw.EQCLID == _BR_BRS_SEL_Equipment_GetInfo.OUTDATAs[0].EQCLID || _mainWnd.CurrentInstruction.Raw.EQCLID == _BR_BRS_SEL_Equipment_GetInfo.OUTDATAs[0].PARENTEQCLID))
                                 {
-                                    lblEqptID = _BR_PHR_SEL_Equipment_GetInfo.OUTDATAs[0].EQPTID;
+                                    lblEqptID = _BR_BRS_SEL_Equipment_GetInfo.OUTDATAs[0].EQPTID;
                                     await RetrieveMaterialSublotWithVessel();
                                     _mainWnd.txtMaterial.Focus();
                                 }
@@ -718,7 +719,7 @@ namespace 보령
                                 DataSet ds = new DataSet();
                                 DataTable dt = new DataTable("DATA");
                                 ds.Tables.Add(dt);
-                                
+
                                 dt.Columns.Add(new DataColumn("용기번호"));
                                 dt.Columns.Add(new DataColumn("원료코드"));
                                 dt.Columns.Add(new DataColumn("원료명"));
