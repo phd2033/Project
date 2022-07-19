@@ -822,10 +822,10 @@
       <DependentUpon>SVP캡핑IPC.xaml</DependentUpon>
     </Compile>
     <Compile Include="주사제\공정검사\SVP캡핑IPCViewModel.cs" />
-    <Compile Include="주사제\공정검사\조제FIL결과.xaml.cs">
-      <DependentUpon>조제FIL결과.xaml</DependentUpon>
+    <Compile Include="주사제\공정검사\조제FIT결과.xaml.cs">
+      <DependentUpon>조제FIT결과.xaml</DependentUpon>
     </Compile>
-    <Compile Include="주사제\공정검사\조제FIL결과ViewModel.cs" />
+    <Compile Include="주사제\공정검사\조제FIT결과ViewModel.cs" />
     <Compile Include="주사제\공정검사\중요간섭상황기록ViewModel.cs" />
     <Compile Include="주사제\반제품\SVP반제품생성.xaml.cs">
       <DependentUpon>SVP반제품생성.xaml</DependentUpon>
@@ -1410,7 +1410,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="주사제\공정검사\조제FIL결과.xaml">
+    <Page Include="주사제\공정검사\조제FIT결과.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

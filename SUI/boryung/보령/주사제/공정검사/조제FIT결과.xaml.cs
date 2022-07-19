@@ -13,16 +13,16 @@ using ShopFloorUI;
 
 namespace 보령
 {
-    public partial class 조제FIL결과 : ShopFloorCustomWindow
+    public partial class 조제FIT결과 : ShopFloorCustomWindow
     {
-        public 조제FIL결과()
+        public 조제FIT결과()
         {
             InitializeComponent();
         }
 
         public override string TableTypeName
         {
-            get { return "TABLE,조제FIL결과"; }
+            get { return "TABLE,조제FIT결과"; }
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
@@ -39,14 +39,14 @@ namespace 보령
             DialogResult = false;
         }
 
-        private void txtFILCount_ValueChanged(object sender, EventArgs e)
+        private void txtFITCount_ValueChanged(object sender, EventArgs e)
         {
-            (LayoutRoot.DataContext as 조제FIL결과ViewModel).isFILInput();
+            (LayoutRoot.DataContext as 조제FIT결과ViewModel).isFITInput();
         }
 
         private void Confirm_Click(object sender, RoutedEventArgs e)
         {
-            (LayoutRoot.DataContext as 조제FIL결과ViewModel).isConfirmInput();
+            (LayoutRoot.DataContext as 조제FIT결과ViewModel).isConfirmInput();
         }
     }
 }
