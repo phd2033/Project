@@ -144,7 +144,7 @@ namespace 보령
                     if (ParentVM.BR_BRS_SEL_Charging_Solvent.OUTDATAs.Count > 0)
                     {
 
-                        var item = ParentVM.FilteredComponents.Where(o => o.MSUBLOTBCD == Barcode).FirstOrDefault();
+                        var item = ParentVM.FilteredComponents.Where(o => o.MSUBLOTBCD == Barcode).LastOrDefault();
 
                         if (item != null)
                         {

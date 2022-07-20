@@ -54,6 +54,7 @@ namespace 보령
         용매확인및투입 _mainWnd;
         public decimal? NumericScaleValue = 0;
         DispatcherTimer _DispatcherTimer = new DispatcherTimer(); // 저울값 타이머
+        public List<string> _mSubLotIDList = new List<string>();
 
         #region [기준정보]
         string _batchNo;
@@ -375,6 +376,11 @@ namespace 보령
                                         foreach (var outdata in _BR_BRS_SEL_Charging_Solvent.OUTDATAs.Where(o => o.MTRLID == BomID && o.CHGSEQ == ChgSeq).ToList())
                                         {
                                             outdata.CHECK = "투입대기";
+                                            //20210120 김호연 기존 로직에서 SEQ 값을 사용하지 않기때문에 분할투입을 위해 모든 시험번호의 No는 1로 변경
+                                            outdata.SEQ = "1";
+                                            //20210120 김호연 분할투입하고 기록할 때 분할투입한 원료들이 있는지 체크하기 위해 사용
+                                            _mSubLotIDList.Add(outdata.MSUBLOTID);
+
                                             _filteredComponents.Add(outdata);
                                         }
                                     }
@@ -598,10 +604,19 @@ namespace 보령
 
                             _BR_BRS_REG_Dispense_Charging_Solvent.INDATAs.Clear();
 
+                            //20220120 김호연 기존 원료 수랑 기록할 때 원료수가 다르다면 분할투입 기능을 사용한걸로 판단
+                            if (FilteredComponents.Count != _mSubLotIDList.Count)
+                            {
+                                //20220120 김호연 분할 투입된 시험번호의 수량 합
+                                DivisionChargingSUM();
+                            }
+
                             var bizruleData = FilteredComponents.OrderBy(x => x.TOTALQTY);
+
+
                             foreach (var item in bizruleData)
                             {
-                                if (item.CHECK == "투입완료")
+                                if (item.CHECK == "투입완료" || item.CHECK == "분할투입")
                                 {
                                     _BR_BRS_REG_Dispense_Charging_Solvent.INDATAs.Add(new BR_BRS_REG_Dispense_Charging_Solvent.INDATA
                                     {
@@ -837,6 +852,131 @@ namespace 보령
                 OnException(ex.Message, ex);
             }
         }
+        public void DivisionChargingMTRL()
+        {
+            try
+            {
+                IsBusy = true;
+
+
+                ///
+                _DispatcherTimer.Stop();
+
+                if (_curSeletedItem.CHECK == "투입가능" && NumericScaleValue.HasValue)
+                {
+                    if (NumericScaleValue.Value > OLDscaleValue)
+                    {
+                        decimal TOTALQTY = NumericScaleValue.Value;
+                        decimal CHGQTY = NumericScaleValue.Value - OLDscaleValue;
+
+
+                        _curSeletedItem.CHECK = "분할투입";
+                        _curSeletedItem.REALQTY = CHGQTY;
+                        _curSeletedItem.TOTALQTY = TOTALQTY;
+
+                        var temp = new BR_BRS_SEL_Charging_Solvent.OUTDATA
+                        {
+                            MTRLID = _curSeletedItem.MTRLID,
+                            MTRLNAME = _curSeletedItem.MTRLNAME,
+                            MLOTID = _curSeletedItem.MLOTID,
+                            MSUBLOTID = _curSeletedItem.MSUBLOTID,
+                            MSUBLOTQTY = _curSeletedItem.MSUBLOTQTY,
+                            UOMNAME = _curSeletedItem.UOMNAME,
+                            ACTID = _curSeletedItem.ACTID,
+                            COMPONENTGUID = _curSeletedItem.COMPONENTGUID,
+                            MSUBLOTBCD = _curSeletedItem.MSUBLOTBCD,
+                            CHECK = "투입가능",
+                            SEQ = (Convert.ToInt32(_curSeletedItem.SEQ) + 1).ToString(),
+                            CHGSEQ = _curSeletedItem.CHGSEQ,
+                            UPPERQTY = _curSeletedItem.UPPERQTY,
+                            LOWERQTY = _curSeletedItem.LOWERQTY,
+                            ISBCDSCAN = _curSeletedItem.ISBCDSCAN,
+                            REALQTY = 0m,
+                            TOTALQTY = _curSeletedItem.TOTALQTY
+                        };
+                        int i = _filteredComponents.IndexOf(curSeletedItem);
+                        _filteredComponents.Insert(i + 1, temp);
+
+                        curSeletedItem = _filteredComponents[i + 1];
+
+                        OLDscaleValue = NumericScaleValue.Value;
+                    }
+                }
+
+                _DispatcherTimer.Start();
+
+                ///
+
+                CommandResults["ChargingCommandAsync"] = true;
+            }
+            catch (Exception ex)
+            {
+                CommandResults["ChargingCommandAsync"] = false;
+                OnException(ex.Message, ex);
+            }
+            finally
+            {
+                CommandCanExecutes["ChargingCommandAsync"] = true;
+                IsBusy = false;
+            }
+
+        }
+
+        /// <summary>
+        /// 분할 투입한 원료들을 합하는 로직
+        /// </summary>
+        public void DivisionChargingSUM()
+        {
+            try
+            {
+                decimal REALQTYSUM;
+                decimal TOTALQTY;
+                int FIRSTSEQ = 0;
+
+                //분할 투입으로 생성된 시험의뢰들의 실 수량 합한 후 해당 시험의뢰의 첫번째 데이터에 합한 수량 값 넣기
+                foreach (var list in _mSubLotIDList)
+                {
+                    int i = 0;
+                    REALQTYSUM = 0;
+                    TOTALQTY = 0;
+
+                    foreach (var item in FilteredComponents)
+                    {
+                        if (item.MSUBLOTID == list && item.SEQ == "1")
+                        {
+                            FIRSTSEQ = i;
+                        }
+
+                        if (item.MSUBLOTID == list)
+                        {
+                            REALQTYSUM = REALQTYSUM + item.REALQTY;
+                            // TOTALQTY의 경우 마지막에 넣은 값이 제일 크다
+                            TOTALQTY = item.TOTALQTY;
+                        }
+                        i++;
+                    }
+
+                    FilteredComponents[FIRSTSEQ].REALQTY = REALQTYSUM;
+                    FilteredComponents[FIRSTSEQ].TOTALQTY = TOTALQTY;
+
+                }
+
+                // 분할 투입으로 생성된 시험의뢰들 삭제
+                for (int i = FilteredComponents.Count - 1; 0 <= i; i--)
+                {
+                    if (FilteredComponents[i].SEQ != "1")
+                    {
+                        FilteredComponents.RemoveAt(i);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                OnException(ex.Message, ex);
+            }
+
+        }
+
         public void ButtonControl()
         {
             try

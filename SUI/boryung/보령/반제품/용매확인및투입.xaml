@@ -111,6 +111,7 @@
                     <c1:C1DataGrid.Columns>
                         <c1:DataGridTextColumn  Header="시험번호" Binding="{Binding Path=MLOTID}" HeaderStyle="{StaticResource HeaderStyle}"/>
                         <c1:DataGridTextColumn  Header="원료배치번호" Width="150" Binding="{Binding Path=MSUBLOTID}" IsReadOnly="True" HorizontalAlignment="Center" HeaderStyle="{StaticResource HeaderStyle}"/>
+                        <c1:DataGridTextColumn  Header="No" Width="40"  Binding="{Binding Path=SEQ}" IsReadOnly="True" HorizontalAlignment="Center" HeaderStyle="{StaticResource HeaderStyle}"/>
                         <c1:DataGridTextColumn  Header="단위"  Width="50"  Binding="{Binding Path=UOMNAME}" IsReadOnly="True" HorizontalAlignment="Center" HeaderStyle="{StaticResource HeaderStyle}"/>
                         <c1:DataGridTextColumn  Header="출고량"  Width="80"  Binding="{Binding Path=MSUBLOTQTY, StringFormat='0.##0'}" IsReadOnly="True" HorizontalAlignment="Right" HeaderStyle="{StaticResource HeaderStyle}"/>
                         <c1:DataGridTextColumn  Header="실제투입량"  Width="80"  Binding="{Binding Path=REALQTY, StringFormat='0.##0'}" IsReadOnly="True" HorizontalAlignment="Right" HeaderStyle="{StaticResource HeaderStyle}"/>
@@ -125,13 +126,14 @@
                         <ColumnDefinition Width="200"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="btnCharging" Content="투입" Grid.Column="2" Margin="26,10,56,0" Click="btnCharging_Click" IsEnabled="{Binding CANCHARGEFLAG}"/>
-                    <Button x:Name="btnConfirm" Content="기록" Grid.Column="2" Margin="148,10,134,0" Command="{Binding ConfirmCommandAsync}" IsEnabled="{Binding CANRECORDFLAG}" Grid.ColumnSpan="2"/>
-                    <Button x:Name="btnClose" Content="닫기"  Grid.Column="3" Margin="73,10,10,0" Click="btnClose_Click"/>
+                    <Button x:Name="btnCharging" Content="투입" Grid.Column="1" Margin="176,10,124,0" Click="btnCharging_Click" IsEnabled="{Binding CANCHARGEFLAG}" Grid.ColumnSpan="2"/>
+                    <Button x:Name="btnDivisionCharging" Content="분할투입" Grid.Column="2" Margin="82,10,18,0" Click="btnDivisionCharging_Click" IsEnabled="{Binding CANDIVISIONCHARGEFLAG}"/>
+                    <Button x:Name="btnConfirm" Content="기록" Grid.Column="2" Margin="191,10,109,0" Command="{Binding ConfirmCommandAsync}" IsEnabled="{Binding CANRECORDFLAG}" Grid.ColumnSpan="2"/>
+                    <Button x:Name="btnClose" Content="닫기"  Grid.Column="3" Margin="100,10,0,0" Click="btnClose_Click"/>
                     <TextBlock Text="{Binding W[CUICurrentPrintName], FallbackValue=프린트명, Source={StaticResource viewModel}}" Margin="0,34,46,0"/>
                     <TextBlock Text="{Binding curPrintName, FallbackValue='N/A', UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2" Margin="49,34,129,0"/>
-                    <Button Margin="104,10,178,0" x:Name="btnChangePrint" Content="{Binding W[CUIChangePrintButtonText], FallbackValue=프린터변경, Source={StaticResource viewModel}}" 
-                        Command="{Binding ChangePrintCommand}" Grid.Column="1" Grid.ColumnSpan="2"/>
+                    <Button Margin="71,10,29,0" x:Name="btnChangePrint" Content="{Binding W[CUIChangePrintButtonText], FallbackValue=프린터변경, Source={StaticResource viewModel}}" 
+                        Command="{Binding ChangePrintCommand}" Grid.Column="1"/>
                 </Grid>
             </Grid>
         </toolkit:BusyIndicator>

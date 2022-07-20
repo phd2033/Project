@@ -70,5 +70,9 @@ namespace 보령
         {
             (this.LayoutRoot.DataContext as 용매확인및투입ViewModel).ChargingMTRL();
         }
+        private void btnDivisionCharging_Click(object sender, RoutedEventArgs e)
+        {
+            (this.LayoutRoot.DataContext as 용매확인및투입ViewModel).DivisionChargingMTRL();
+        }
     }
 }
