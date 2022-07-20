@@ -21,9 +21,9 @@ using System.IO;
 
 namespace 보령
 {
-    public class 조제FIL결과ViewModel : ViewModelBase
+    public class 조제FIT결과ViewModel : ViewModelBase
     {
-        private 조제FIL결과 _mainWnd;
+        private 조제FIT결과 _mainWnd;
 
         #region [Property]
         private string _curLotNo;
@@ -47,14 +47,14 @@ namespace 보령
                 OnPropertyChanged("curUnderVal");
             }
         }
-        private decimal _curFilCount;
-        public decimal curFilCount
+        private decimal _curFitCount;
+        public decimal curFitCount
         {
-            get { return _curFilCount; }
+            get { return _curFitCount; }
             set
             {
-                _curFilCount = value;
-                OnPropertyChanged("curFilCount");
+                _curFitCount = value;
+                OnPropertyChanged("curFitCount");
             }
         }
         private decimal _curUpperVal;
@@ -78,14 +78,14 @@ namespace 보령
             }
         }
 
-        private bool _isFilCountEnable;
-        public bool isFilCountEnable
+        private bool _isFitCountEnable;
+        public bool isFitCountEnable
         {
-            get { return _isFilCountEnable; }
+            get { return _isFitCountEnable; }
             set
             {
-                _isFilCountEnable = value;
-                OnPropertyChanged("isFilCountEnable");
+                _isFitCountEnable = value;
+                OnPropertyChanged("isFitCountEnable");
             }
         }
 
@@ -124,7 +124,7 @@ namespace 보령
         #endregion
 
         #region [Constructor]
-        public 조제FIL결과ViewModel()
+        public 조제FIT결과ViewModel()
         {
             _BR_BRS_REG_ProductionOrderCustomValue = new 보령.BR_BRS_REG_ProductionOrderCustomValue();
             _BR_BRS_SEL_ProductionOrderCustomValue = new 보령.BR_BRS_SEL_ProductionOrderCustomValue();
@@ -170,9 +170,9 @@ namespace 보령
                             CommandCanExecutes["LoadCommandAsync"] = false;
                             IsBusy = true;
 
-                            if(arg != null && arg is 조제FIL결과)
+                            if(arg != null && arg is 조제FIT결과)
                             {
-                                _mainWnd = arg as 조제FIL결과;
+                                _mainWnd = arg as 조제FIT결과;
 
                                 _BR_BRS_SEL_ProductionOrderCustomValue.INDATAs.Clear();
                                 _BR_BRS_SEL_ProductionOrderCustomValue.OUTDATAs.Clear();
@@ -180,7 +180,7 @@ namespace 보령
                                 {
                                     POID = _mainWnd.CurrentOrder.ProductionOrderID,
                                     OPSGNAME = "조제",
-                                    POCDID = "FIL_RESULT"
+                                    POCDID = "FIT_RESULT"
                                 });
 
                                 if (await _BR_BRS_SEL_ProductionOrderCustomValue.Execute())
@@ -190,7 +190,7 @@ namespace 보령
                                         var outData = _BR_BRS_SEL_ProductionOrderCustomValue.OUTDATAs[0];
                                         curLotNo = outData.POCDVAL1;
                                         curUnderVal = Convert.ToInt32(outData.POCDVAL2);
-                                        curFilCount = Convert.ToInt32(outData.POCDVAL3);
+                                        curFitCount = Convert.ToInt32(outData.POCDVAL3);
                                         curUpperVal = Convert.ToInt32(outData.POCDVAL4);
                                         curResult = outData.POCDVAL5;
 
@@ -220,14 +220,14 @@ namespace 보령
                                 if(_mainWnd.CurrentOrder.OrderProcessSegmentName.Equals("조제"))
                                 {
                                     isLotNoEnable = true;
-                                    isFilCountEnable = true;
+                                    isFitCountEnable = true;
                                     isSaveEnable = false;
                                     isConfirmEnable = false;
                                 }
                                 else
                                 {
                                     isLotNoEnable = false;
-                                    isFilCountEnable = false;
+                                    isFitCountEnable = false;
                                     isSaveEnable = true;
                                     isConfirmEnable = false;
                                 }
@@ -274,10 +274,10 @@ namespace 보령
                             if(string.IsNullOrEmpty(curLotNo))
                             {
                                 isLotNoEnable = true;
-                                throw new Exception(string.Format("FIL Lot No를 입력해 주세요."));
+                                throw new Exception(string.Format("FIT Lot No를 입력해 주세요."));
                             }
 
-                            if (curUnderVal <= curFilCount && curUpperVal >= curFilCount)
+                            if (curUnderVal <= curFitCount && curUpperVal >= curFitCount)
                             {
                                 curResult = "적합";
                             }
@@ -354,8 +354,8 @@ namespace 보령
                             if (await authHelper.ClickAsync(
                                 Common.enumCertificationType.Function,
                                 Common.enumAccessType.Create,
-                                "조제FIL결과",
-                                "조제FIL결과",
+                                "조제FIT결과",
+                                "조제FIT결과",
                                 false,
                                 "OM_ProductionOrder_SUI",
                                 "", null, null) == false)
@@ -373,10 +373,10 @@ namespace 보령
                                     POID = _mainWnd.CurrentOrder.ProductionOrderID,
                                     OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
                                     OPSGNAME = _mainWnd.CurrentOrder.OrderProcessSegmentName,
-                                    POCDID = "FIL_RESULT",
+                                    POCDID = "FIT_RESULT",
                                     POCDVAL1 = curLotNo,
                                     POCDVAL2 = curUnderVal.ToString(),
-                                    POCDVAL3 = curFilCount.ToString(),
+                                    POCDVAL3 = curFitCount.ToString(),
                                     POCDVAL4 = curUpperVal.ToString(),
                                     POCDVAL5 = curResult,
                                     USERID = AuthRepositoryViewModel.Instance.LoginedUserID
@@ -389,16 +389,16 @@ namespace 보령
                             var dt = new DataTable("DATA");
                             ds.Tables.Add(dt);
 
-                            dt.Columns.Add(new DataColumn("FilLotNo"));
+                            dt.Columns.Add(new DataColumn("FitLotNo"));
                             dt.Columns.Add(new DataColumn("하한값"));
-                            dt.Columns.Add(new DataColumn("Fil결과값"));
+                            dt.Columns.Add(new DataColumn("FIT결과값"));
                             dt.Columns.Add(new DataColumn("상한값"));
                             dt.Columns.Add(new DataColumn("적부판단"));
 
                             DataRow row = dt.NewRow();
-                            row["FilLotNo"] = curLotNo;
+                            row["FitLotNo"] = curLotNo;
                             row["하한값"] = curUnderVal;
-                            row["Fil결과값"] = curFilCount;
+                            row["FIT결과값"] = curFitCount;
                             row["상한값"] = curUpperVal;
                             row["적부판단"] = curResult;
 
@@ -409,7 +409,7 @@ namespace 보령
                             var xml = BizActorRuleBase.CreateXMLStream(ds);
                             var bytesArray = System.Text.Encoding.UTF8.GetBytes(xml);
 
-                            //_mainWnd.CurrentInstruction.Raw.ACTVAL = curFilCount.ToString();
+                            //_mainWnd.CurrentInstruction.Raw.ACTVAL = curFitCount.ToString();
                             //_mainWnd.CurrentInstruction.Raw.NOTE = imageToByteArray();
                             _mainWnd.CurrentInstruction.Raw.ACTVAL = _mainWnd.TableTypeName;
                             _mainWnd.CurrentInstruction.Raw.NOTE = bytesArray;
@@ -424,7 +424,7 @@ namespace 보령
                             if ("조제".Equals(_mainWnd.CurrentOrder.OrderProcessSegmentName))
                             {
                                 var outputValues = InstructionModel.GetResultReceiver(_mainWnd.CurrentInstruction, _mainWnd.Instructions);
-                                outputValues[0].Raw.ACTVAL = curFilCount.ToString();
+                                outputValues[0].Raw.ACTVAL = curFitCount.ToString();
 
                                 foreach (var item in outputValues)
                                 {
@@ -461,7 +461,7 @@ namespace 보령
         #endregion
         
         #region [User Define Function]
-        public void isFILInput()
+        public void isFITInput()
         {
             isConfirmEnable = true;
             isSaveEnable = false;
@@ -469,7 +469,7 @@ namespace 보령
         public void isConfirmInput()
         {
             isLotNoEnable = false;
-            isFilCountEnable = false;
+            isFitCountEnable = false;
             isConfirmEnable = false;
             isSaveEnable = true;
         }
