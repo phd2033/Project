@@ -164,99 +164,99 @@ namespace 보령
             get
             {
                 return new AsyncCommandBase(async arg =>
-              {
-                  try
-                  {
-                      CommandResults["LoadedCommandAsync"] = false;
-                      CommandCanExecutes["LoadedCommandAsync"] = false;
+                {
+                    try
+                    {
+                        CommandResults["LoadedCommandAsync"] = false;
+                        CommandCanExecutes["LoadedCommandAsync"] = false;
 
                         ///
                         IsBusy = true;
 
-                      if (arg != null && arg is WMS일반자재환입처리)
-                      {
-                          _mainWnd = arg as WMS일반자재환입처리;
+                        if (arg != null && arg is WMS일반자재환입처리)
+                        {
+                            _mainWnd = arg as WMS일반자재환입처리;
 
                             // 현재 작업장의 프린터 정보 조회
                             _BR_PHR_SEL_System_Printer.INDATAs.Clear();
-                          _BR_PHR_SEL_System_Printer.OUTDATAs.Clear();
-                          _BR_PHR_SEL_System_Printer.INDATAs.Add(new BR_PHR_SEL_System_Printer.INDATA
-                          {
-                              LANGID = AuthRepositoryViewModel.Instance.LangID,
-                              ROOMID = AuthRepositoryViewModel.Instance.RoomID,
-                              IPADDRESS = Common.ClientIP
-                          });
+                            _BR_PHR_SEL_System_Printer.OUTDATAs.Clear();
+                            _BR_PHR_SEL_System_Printer.INDATAs.Add(new BR_PHR_SEL_System_Printer.INDATA
+                            {
+                                LANGID = AuthRepositoryViewModel.Instance.LangID,
+                                ROOMID = AuthRepositoryViewModel.Instance.RoomID,
+                                IPADDRESS = Common.ClientIP
+                            });
 
-                          if (await _BR_PHR_SEL_System_Printer.Execute() && _BR_PHR_SEL_System_Printer.OUTDATAs.Count > 0)
-                              _selectedPrint = _BR_PHR_SEL_System_Printer.OUTDATAs[0];
-                          else
-                              _selectedPrint = null;
-                          OnPropertyChanged("curPrintName");
+                            if (await _BR_PHR_SEL_System_Printer.Execute() && _BR_PHR_SEL_System_Printer.OUTDATAs.Count > 0)
+                                _selectedPrint = _BR_PHR_SEL_System_Printer.OUTDATAs[0];
+                            else
+                                _selectedPrint = null;
+                            OnPropertyChanged("curPrintName");
 
                             // 피킹된 자재목록 조회
                             _BR_BRS_GET_UDT_ProductionOrderPickingInfo.INDATAs.Clear();
-                          _BR_BRS_GET_UDT_ProductionOrderPickingInfo.OUTDATAs.Clear();
+                            _BR_BRS_GET_UDT_ProductionOrderPickingInfo.OUTDATAs.Clear();
                             // 현재지시문
                             if (!(string.IsNullOrWhiteSpace(_mainWnd.CurrentInstruction.Raw.EXPRESSION) || string.IsNullOrWhiteSpace(_mainWnd.CurrentInstruction.Raw.BOMID)))
-                          {
-                              _BR_BRS_GET_UDT_ProductionOrderPickingInfo.INDATAs.Add(new BR_BRS_GET_UDT_ProductionOrderPickingInfo.INDATA
-                              {
-                                  POID = _mainWnd.CurrentOrder.OrderID,
-                                  OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
-                                  CHGSEQ = Convert.ToInt32(_mainWnd.CurrentInstruction.Raw.EXPRESSION),
-                                  MTRLID = _mainWnd.CurrentInstruction.Raw.BOMID
-                              });
-                          }
+                            {
+                                _BR_BRS_GET_UDT_ProductionOrderPickingInfo.INDATAs.Add(new BR_BRS_GET_UDT_ProductionOrderPickingInfo.INDATA
+                                {
+                                    POID = _mainWnd.CurrentOrder.OrderID,
+                                    OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
+                                    CHGSEQ = Convert.ToInt32(_mainWnd.CurrentInstruction.Raw.EXPRESSION),
+                                    MTRLID = _mainWnd.CurrentInstruction.Raw.BOMID
+                                });
+                            }
                             // REF지시문
                             var inputValues = InstructionModel.GetParameterSender(_mainWnd.CurrentInstruction, _mainWnd.Instructions);
 
-                          foreach (var item in inputValues)
-                          {
-                              _BR_BRS_GET_UDT_ProductionOrderPickingInfo.INDATAs.Add(new BR_BRS_GET_UDT_ProductionOrderPickingInfo.INDATA
-                              {
-                                  POID = _mainWnd.CurrentOrder.OrderID,
-                                  OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
-                                  CHGSEQ = Convert.ToInt32(item.Raw.EXPRESSION),
-                                  MTRLID = item.Raw.BOMID
-                              });
-                          }
+                            foreach (var item in inputValues)
+                            {
+                                _BR_BRS_GET_UDT_ProductionOrderPickingInfo.INDATAs.Add(new BR_BRS_GET_UDT_ProductionOrderPickingInfo.INDATA
+                                {
+                                    POID = _mainWnd.CurrentOrder.OrderID,
+                                    OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
+                                    CHGSEQ = Convert.ToInt32(item.Raw.EXPRESSION),
+                                    MTRLID = item.Raw.BOMID
+                                });
+                            }
 
-                          if (await _BR_BRS_GET_UDT_ProductionOrderPickingInfo.Execute())
-                          {
-                              foreach (var item in _BR_BRS_GET_UDT_ProductionOrderPickingInfo.OUTDATAs)
-                              {
-                                  _PickingSourceContainers.Add(new WMSPickingSource
-                                  {
-                                      MTRLID = item.MTRLID,
-                                      MTRLNAME = item.MTRLNAME,
-                                      MSUBLOTBCD = item.MSUBLOTBCD
-                                  });
-                              }
+                            if (await _BR_BRS_GET_UDT_ProductionOrderPickingInfo.Execute())
+                            {
+                                foreach (var item in _BR_BRS_GET_UDT_ProductionOrderPickingInfo.OUTDATAs)
+                                {
+                                    _PickingSourceContainers.Add(new WMSPickingSource
+                                    {
+                                        MTRLID = item.MTRLID,
+                                        MTRLNAME = item.MTRLNAME,
+                                        MSUBLOTBCD = item.MSUBLOTBCD
+                                    });
+                                }
 
-                              OnPropertyChanged("PickingSourceContainers");
-                          }
+                                OnPropertyChanged("PickingSourceContainers");
+                            }
 
-                          btnReturnEnable = false;
-                      }
+                            btnReturnEnable = false;
+                        }
                         ///
 
                         CommandResults["LoadedCommandAsync"] = true;
-                  }
-                  catch (Exception ex)
-                  {
-                      CommandResults["LoadedCommandAsync"] = false;
-                      OnException(ex.Message, ex);
-                  }
-                  finally
-                  {
-                      IsBusy = false;
-                      CommandCanExecutes["LoadedCommandAsync"] = true;
-                  }
-              }, arg =>
-                  {
-                      return CommandCanExecutes.ContainsKey("LoadedCommandAsync") ?
-                        CommandCanExecutes["LoadedCommandAsync"] : (CommandCanExecutes["LoadedCommandAsync"] = true);
-                  });
+                    }
+                    catch (Exception ex)
+                    {
+                        CommandResults["LoadedCommandAsync"] = false;
+                        OnException(ex.Message, ex);
+                    }
+                    finally
+                    {
+                        IsBusy = false;
+                        CommandCanExecutes["LoadedCommandAsync"] = true;
+                    }
+                }, arg =>
+                {
+                    return CommandCanExecutes.ContainsKey("LoadedCommandAsync") ?
+                      CommandCanExecutes["LoadedCommandAsync"] : (CommandCanExecutes["LoadedCommandAsync"] = true);
+                });
             }
         }
         public ICommand BCDCheckCommandAsync
@@ -351,13 +351,13 @@ namespace 보령
                         CommandCanExecutes["ChangeReturnQtyCommand"] = false;
 
                         ///
-                        if(arg != null && arg is string)
+                        if (arg != null && arg is string)
                         {
                             string returnqty = arg as string;
 
                             decimal chk;
-                            if (decimal.TryParse(returnqty, out chk))                            
-                                RETURNQTY = chk;                                                            
+                            if (decimal.TryParse(returnqty, out chk))
+                                RETURNQTY = chk;
                         }
                         ///
 
@@ -375,10 +375,10 @@ namespace 보령
                         IsBusy = false;
                     }
                 }, arg =>
-               {
-                   return CommandCanExecutes.ContainsKey("ChangeReturnQtyCommand") ?
-                       CommandCanExecutes["ChangeReturnQtyCommand"] : (CommandCanExecutes["ChangeReturnQtyCommand"] = true);
-               });
+                {
+                    return CommandCanExecutes.ContainsKey("ChangeReturnQtyCommand") ?
+                        CommandCanExecutes["ChangeReturnQtyCommand"] : (CommandCanExecutes["ChangeReturnQtyCommand"] = true);
+                });
             }
         }
 
@@ -400,7 +400,7 @@ namespace 보령
                         popup.Value = RETURNQTY.ToString();
                         popup.Closed += (s, e) =>
                         {
-                            if(popup.DialogResult.GetValueOrDefault())
+                            if (popup.DialogResult.GetValueOrDefault())
                             {
                                 decimal chk;
                                 if (decimal.TryParse(popup.Value, out chk))
@@ -426,10 +426,10 @@ namespace 보령
                         IsBusy = false;
                     }
                 }, arg =>
-               {
-                   return CommandCanExecutes.ContainsKey("KeyPadPopupCommand") ?
-                       CommandCanExecutes["KeyPadPopupCommand"] : (CommandCanExecutes["KeyPadPopupCommand"] = true);
-               });
+                {
+                    return CommandCanExecutes.ContainsKey("KeyPadPopupCommand") ?
+                        CommandCanExecutes["KeyPadPopupCommand"] : (CommandCanExecutes["KeyPadPopupCommand"] = true);
+                });
             }
         }
 
@@ -450,14 +450,14 @@ namespace 보령
                             CommandCanExecutes["SetReturnQtyCommandAsync"] = false;
 
                             ///
-                            
-                            if(_CurSourceContainer != null)
+
+                            if (_CurSourceContainer != null)
                             {
-                                if(await OnMessageAsync(string.Format("[{0}] 자재를 {1:#,0} {2} 환입합니다.",_CurSourceContainer.MSUBLOTBCD, _RETURNQTY, _CurSourceContainer.UOM), true))
+                                if (await OnMessageAsync(string.Format("[{0}] 자재를 {1:#,0} {2} 환입합니다.", _CurSourceContainer.MSUBLOTBCD, _RETURNQTY, _CurSourceContainer.UOM), true))
                                 {
                                     _CurSourceContainer.RETURNQTY = _RETURNQTY;
                                     _CurSourceContainer.STATUS = "환입대상";
-                                }       
+                                }
                             }
 
                             ///
@@ -476,10 +476,10 @@ namespace 보령
                         }
                     }
                 }, arg =>
-               {
-                   return CommandCanExecutes.ContainsKey("SetReturnQtyCommandAsync") ?
-                       CommandCanExecutes["SetReturnQtyCommandAsync"] : (CommandCanExecutes["SetReturnQtyCommandAsync"] = true);
-               });
+                {
+                    return CommandCanExecutes.ContainsKey("SetReturnQtyCommandAsync") ?
+                        CommandCanExecutes["SetReturnQtyCommandAsync"] : (CommandCanExecutes["SetReturnQtyCommandAsync"] = true);
+                });
             }
         }
 
@@ -545,6 +545,15 @@ namespace 보령
                             throw new Exception(string.Format("서명이 완료되지 않았습니다."));
                         }
 
+                        var viewmodel = new WMS일반자재환입처리팝업ViewModel();
+
+                        WMS일반자재환입처리팝업 popup = new WMS일반자재환입처리팝업()
+                        {
+                            DataContext = viewmodel
+                        };
+
+
+
                         // 환입처리
                         _BR_BRS_REG_WMS_S_MATERIALRETURN_MULTI.INDATAs.Clear();
                         _BR_BRS_REG_WMS_S_MATERIALRETURN_MULTI.OUTDATAs.Clear();
@@ -562,104 +571,121 @@ namespace 보령
                                     RTN_NOTE = "",
                                     USERID = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_SUI")
                                 });
+
+                                viewmodel.MaterialReturn.Add(new WMS일반자재환입처리팝업ViewModel.WMSPickingSource
+                                {
+                                    MTRLID = item.MTRLID,
+                                    MTRLNAME = item.MTRLNAME,
+                                    MSUBLOTBCD = item.MSUBLOTBCD,
+                                    RETURNQTY = item.RETURNQTY
+                                });
                             }
                         }
 
-                        if (await _BR_BRS_REG_WMS_S_MATERIALRETURN_MULTI.Execute() == true)
+
+                        popup.Closed += async (s, e) =>
                         {
-                            // 포장자재반납라벨 출력
-                            if (curPrintName != "N/A")
+                            if (popup.DialogResult == true)
                             {
-                                foreach (var item in _PickingSourceContainers)
+                                if (await _BR_BRS_REG_WMS_S_MATERIALRETURN_MULTI.Execute() == true)
                                 {
-                                    if (item.STATUS == "환입대상")
+                                    // 포장자재반납라벨 출력
+                                    if (curPrintName != "N/A")
                                     {
-                                        _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Clear();
-                                        _BR_PHR_SEL_PRINT_LabelImage.OUTDATAs.Clear();
-                                        DateTime NOW = await AuthRepositoryViewModel.GetDBDateTimeNow();
-                                        _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Add(new BR_PHR_SEL_PRINT_LabelImage.INDATA
+                                        foreach (var item in _PickingSourceContainers)
                                         {
-                                            ReportPath = "/Reports/LOGBOOK/LABEL_C0402_018_4",
-                                            PrintName = curPrintName,
-                                            USERID = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_SUI")
-                                        });
-                                        _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
-                                        {
-                                            ParamName = "MSUBLOTBCD",
-                                            ParamValue = item.MSUBLOTBCD
-                                        });
-                                        _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
-                                        {
-                                            ParamName = "PACKING",
-                                            ParamValue = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_SUI")
-                                        });
-                                        _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
-                                        {
-                                            ParamName = "TRANSPORTDATE",
-                                            ParamValue = NOW.ToString("yyyy-MM-dd HH:mm:ss")
-                                        });
-                                        _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
-                                        {
-                                            ParamName = "TRANSPORTTIME",
-                                            ParamValue = NOW.ToString("HHmm")
-                                        });
+                                            if (item.STATUS == "환입대상")
+                                            {
+                                                _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Clear();
+                                                _BR_PHR_SEL_PRINT_LabelImage.OUTDATAs.Clear();
+                                                DateTime NOW = await AuthRepositoryViewModel.GetDBDateTimeNow();
+                                                _BR_PHR_SEL_PRINT_LabelImage.INDATAs.Add(new BR_PHR_SEL_PRINT_LabelImage.INDATA
+                                                {
+                                                    ReportPath = "/Reports/LOGBOOK/LABEL_C0402_018_4",
+                                                    PrintName = curPrintName,
+                                                    USERID = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_SUI")
+                                                });
+                                                _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
+                                                {
+                                                    ParamName = "MSUBLOTBCD",
+                                                    ParamValue = item.MSUBLOTBCD
+                                                });
+                                                _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
+                                                {
+                                                    ParamName = "PACKING",
+                                                    ParamValue = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_SUI")
+                                                });
+                                                _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
+                                                {
+                                                    ParamName = "TRANSPORTDATE",
+                                                    ParamValue = NOW.ToString("yyyy-MM-dd HH:mm:ss")
+                                                });
+                                                _BR_PHR_SEL_PRINT_LabelImage.Parameterss.Add(new BR_PHR_SEL_PRINT_LabelImage.Parameters
+                                                {
+                                                    ParamName = "TRANSPORTTIME",
+                                                    ParamValue = NOW.ToString("HHmm")
+                                                });
 
-                                        // 라벨 발행이 실패해도 exception 발생하지 않도록 설정
-                                        await _BR_PHR_SEL_PRINT_LabelImage.Execute(Common.enumBizRuleOutputClearMode.Always, Common.enumBizRuleXceptionHandleType.FailEvent);
+                                                // 라벨 발행이 실패해도 exception 발생하지 않도록 설정
+                                                await _BR_PHR_SEL_PRINT_LabelImage.Execute(Common.enumBizRuleOutputClearMode.Always, Common.enumBizRuleXceptionHandleType.FailEvent);
+                                            }
+                                        }
                                     }
+
+                                    // XML 생성
+                                    DataSet ds = new DataSet();
+                                    DataTable dt = new DataTable("DATA");
+                                    ds.Tables.Add(dt);
+
+                                    dt.Columns.Add(new DataColumn("MTRLID"));
+                                    dt.Columns.Add(new DataColumn("MTRLNAME"));
+                                    dt.Columns.Add(new DataColumn("MSUBLOTBCD"));
+                                    dt.Columns.Add(new DataColumn("RETURNQTY"));
+                                    dt.Columns.Add(new DataColumn("UOM"));
+                                    dt.Columns.Add(new DataColumn("STATUS"));
+
+                                    foreach (var item in _PickingSourceContainers)
+                                    {
+                                        if (item.STATUS == "환입대상")
+                                        {
+                                            var row = dt.NewRow();
+                                            row["MTRLID"] = item.MTRLID ?? "";
+                                            row["MTRLNAME"] = item.MTRLNAME ?? "";
+                                            row["MSUBLOTBCD"] = item.MSUBLOTBCD ?? "";
+                                            row["RETURNQTY"] = item.RETURNQTY.ToString("#,0");
+                                            row["UOM"] = item.UOM ?? "";
+                                            row["STATUS"] = "환입완료";
+                                            dt.Rows.Add(row);
+                                        }
+                                    }
+
+                                    var xml = BizActorRuleBase.CreateXMLStream(ds);
+                                    var bytesArray = System.Text.Encoding.UTF8.GetBytes(xml);
+
+                                    if (ds.Tables["DATA"].Rows.Count > 0)
+                                    {
+                                        _mainWnd.CurrentInstruction.Raw.ACTVAL = _mainWnd.TableTypeName;
+                                        _mainWnd.CurrentInstruction.Raw.NOTE = bytesArray;
+                                    }
+                                    else
+                                    {
+                                        _mainWnd.CurrentInstruction.Raw.ACTVAL = "자재환입없음";
+                                        _mainWnd.CurrentInstruction.Raw.NOTE = null;
+                                    }
+
+                                    var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction, true);
+                                    if (result != enumInstructionRegistErrorType.Ok)
+                                    {
+                                        throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", _mainWnd.CurrentInstruction.Raw.IRTGUID, result));
+                                    }
+
+                                    if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
+                                    else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
                                 }
                             }
 
-                            // XML 생성
-                            DataSet ds = new DataSet();
-                            DataTable dt = new DataTable("DATA");
-                            ds.Tables.Add(dt);
-
-                            dt.Columns.Add(new DataColumn("MTRLID"));
-                            dt.Columns.Add(new DataColumn("MTRLNAME"));
-                            dt.Columns.Add(new DataColumn("MSUBLOTBCD"));
-                            dt.Columns.Add(new DataColumn("RETURNQTY"));
-                            dt.Columns.Add(new DataColumn("UOM"));
-                            dt.Columns.Add(new DataColumn("STATUS"));
-
-                            foreach (var item in _PickingSourceContainers)
-                            {
-                                if (item.STATUS == "환입대상")
-                                {
-                                    var row = dt.NewRow();
-                                    row["MTRLID"] = item.MTRLID ?? "";
-                                    row["MTRLNAME"] = item.MTRLNAME ?? "";
-                                    row["MSUBLOTBCD"] = item.MSUBLOTBCD ?? "";
-                                    row["RETURNQTY"] = item.RETURNQTY.ToString("#,0");
-                                    row["UOM"] = item.UOM ?? "";
-                                    row["STATUS"] = "환입완료";
-                                    dt.Rows.Add(row);
-                                }
-                            }
-
-                            var xml = BizActorRuleBase.CreateXMLStream(ds);
-                            var bytesArray = System.Text.Encoding.UTF8.GetBytes(xml);
-
-                            if (ds.Tables["DATA"].Rows.Count > 0)
-                            {
-                                _mainWnd.CurrentInstruction.Raw.ACTVAL = _mainWnd.TableTypeName;
-                                _mainWnd.CurrentInstruction.Raw.NOTE = bytesArray;
-                            }
-                            else
-                            {
-                                _mainWnd.CurrentInstruction.Raw.ACTVAL = "자재환입없음";
-                                _mainWnd.CurrentInstruction.Raw.NOTE = null;
-                            }
-
-                            var result = await _mainWnd.Phase.RegistInstructionValue(_mainWnd.CurrentInstruction, true);
-                            if (result != enumInstructionRegistErrorType.Ok)
-                            {
-                                throw new Exception(string.Format("값 등록 실패, ID={0}, 사유={1}", _mainWnd.CurrentInstruction.Raw.IRTGUID, result));
-                            }
-
-                            if (_mainWnd.Dispatcher.CheckAccess()) _mainWnd.DialogResult = true;
-                            else _mainWnd.Dispatcher.BeginInvoke(() => _mainWnd.DialogResult = true);
-                        }
+                        };
+                        popup.Show();
 
                         IsBusy = false;
                         ///

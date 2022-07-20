@@ -368,6 +368,10 @@
       <DependentUpon>SelectPrinterPopup.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\SelectPrinterPopupViewModel.cs" />
+    <Compile Include="WMS\Popup\WMS일반자재환입처리팝업.xaml.cs">
+      <DependentUpon>WMS일반자재환입처리팝업.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WMS\Popup\WMS일반자재환입처리팝업ViewModel.cs" />
     <Compile Include="WMS\Popup\WMS칭량자재투입팝업.xaml.cs">
       <DependentUpon>WMS칭량자재투입팝업.xaml</DependentUpon>
     </Compile>
@@ -967,6 +971,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\SelectPrinterPopup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WMS\Popup\WMS일반자재환입처리팝업.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
