@@ -353,6 +353,134 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
+            private string _RSLT4;
+            [BizActorOutputItemAttribute()]
+            public string RSLT4
+            {
+                get
+                {
+                    return this._RSLT4;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._RSLT4 = value;
+                        this.CheckIsOriginal("RSLT4", value);
+                        this.OnPropertyChanged("RSLT4");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+            private string _RSLT5;
+            [BizActorOutputItemAttribute()]
+            public string RSLT5
+            {
+                get
+                {
+                    return this._RSLT5;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._RSLT5 = value;
+                        this.CheckIsOriginal("RSLT5", value);
+                        this.OnPropertyChanged("RSLT5");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+            private string _RSLT6;
+            [BizActorOutputItemAttribute()]
+            public string RSLT6
+            {
+                get
+                {
+                    return this._RSLT6;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._RSLT6 = value;
+                        this.CheckIsOriginal("RSLT6", value);
+                        this.OnPropertyChanged("RSLT6");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
+            private string _RSLT7;
+            [BizActorOutputItemAttribute()]
+            public string RSLT7
+            {
+                get
+                {
+                    return this._RSLT7;
+                }
+                set
+                {
+                    if ((this.IsValid(value) == LGCNS.iPharmMES.Common.Common.enumValidationLevel.Error))
+                    {
+                    }
+                    else
+                    {
+                        this._RSLT7 = value;
+                        this.CheckIsOriginal("RSLT7", value);
+                        this.OnPropertyChanged("RSLT7");
+                        if (RowLoadedFlag)
+                        {
+                            if (this.CheckIsOriginalRow())
+                            {
+                                RowEditSec = "SEL";
+                            }
+                            else
+                            {
+                                RowEditSec = "UPD";
+                            }
+                        }
+                    }
+                }
+            }
             private string _RSLTID1;
             [BizActorOutputItemAttribute()]
             public string RSLTID1
@@ -801,6 +929,7 @@ namespace LGCNS.iPharmMES.Common
         public BR_BRS_SEL_ProductionOrderIPCResult()
         {
             RuleName = "BR_BRS_SEL_ProductionOrderIPCResult";
+            BizName = "BR_BRS_SEL_ProductionOrderIPCResult";
             _INDATAs = new INDATACollection();
             _OUTDATAs = new OUTDATACollection();
             _OUTDATA_RAWs = new OUTDATA_RAWCollection();

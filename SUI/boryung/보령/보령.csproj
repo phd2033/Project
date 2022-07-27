@@ -439,6 +439,12 @@
       <DependentUpon>공정검사결과입력.xaml</DependentUpon>
     </Compile>
     <Compile Include="공정검사\Popup\공정검사결과입력ViewModel.cs" />
+    <Compile Include="공정검사\공정별성상.xaml.cs">
+      <DependentUpon>공정별성상.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="공정검사\공정별성상ViewModel.cs" />
+    <Compile Include="공정검사\비정량적시험.xam.cs" />
+    <Compile Include="공정검사\비정량적시험ViewModel.cs" />
     <Compile Include="공정검사\선별공정불량확인.xaml.cs">
       <DependentUpon>선별공정불량확인.xaml</DependentUpon>
     </Compile>
@@ -1039,6 +1045,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="공정검사\Popup\공정검사결과입력.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="공정검사\공정별성상.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="공정검사\비정량적시험.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
