@@ -452,17 +452,17 @@ namespace 보령
                     foreach (BR_BRS_SEL_ProductionOrderIPCResult.OUTDATA item in _BR_BRS_SEL_ProductionOrderIPCResult.OUTDATAs)
                     {
                         //2022.07.26 김호연 성상 등록할때 등록 데이터 변경으로 인해 주석
-                        //var rawData = _BR_BRS_SEL_ProductionOrderIPCResult.OUTDATA_RAWs.FirstOrDefault(
-                        //    o => o.COLLECTID == "결과값설명" && (o.POTSIRGUID == item.RSLTID1 || o.POTSIRGUID == item.RSLTID2 || o.POTSIRGUID == item.RSLTID3));
-                        
-                        //if (rawData != null)
-                        //{
-                        //    string actValue = string.IsNullOrEmpty(rawData.ACTVAL) ? item.RSLT1 : rawData.ACTVAL;
+                        var rawData = _BR_BRS_SEL_ProductionOrderIPCResult.OUTDATA_RAWs.FirstOrDefault(
+                            o => o.COLLECTID == "결과값설명" && (o.POTSIRGUID == item.RSLTID1 || o.POTSIRGUID == item.RSLTID2 || o.POTSIRGUID == item.RSLTID3));
 
-                        //    if (rawData.POTSIRGUID == item.RSLTID1) item.RSLT1 = string.IsNullOrEmpty(rawData.ACTVAL) ? item.RSLT1 : rawData.ACTVAL;
-                        //    if (rawData.POTSIRGUID == item.RSLTID2) item.RSLT2 = string.IsNullOrEmpty(rawData.ACTVAL) ? item.RSLT2 : rawData.ACTVAL;
-                        //    if (rawData.POTSIRGUID == item.RSLTID3) item.RSLT3 = string.IsNullOrEmpty(rawData.ACTVAL) ? item.RSLT3 : rawData.ACTVAL;
-                        //}
+                        if (rawData != null)
+                        {
+                            string actValue = string.IsNullOrEmpty(rawData.ACTVAL) ? item.RSLT1 : rawData.ACTVAL;
+
+                            if (rawData.POTSIRGUID == item.RSLTID1) item.RSLT1 = string.IsNullOrEmpty(rawData.ACTVAL) ? item.RSLT1 : rawData.ACTVAL;
+                            if (rawData.POTSIRGUID == item.RSLTID2) item.RSLT2 = string.IsNullOrEmpty(rawData.ACTVAL) ? item.RSLT2 : rawData.ACTVAL;
+                            if (rawData.POTSIRGUID == item.RSLTID3) item.RSLT3 = string.IsNullOrEmpty(rawData.ACTVAL) ? item.RSLT3 : rawData.ACTVAL;
+                        }
 
                         //item.RSLT1 = item.RSLT1 == "1" ? "적합" : "부적합";
                         _IPCResults.Add(item);
