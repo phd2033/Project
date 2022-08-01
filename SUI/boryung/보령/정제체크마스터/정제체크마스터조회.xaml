@@ -60,7 +60,7 @@
             </Grid.RowDefinitions>
 
             <Grid x:Name="Header" Grid.Row="0">
-                
+
             </Grid>
 
             <Grid x:Name="MainSection" Grid.Row="1">
@@ -89,7 +89,7 @@
                         </TextBox>
                         <TextBox x:Name="txtEqptName" Text="{Binding EQPTNAME, Mode=OneWay}" IsReadOnly="True" Style="{Binding Source={StaticResource txtEQPT}}"/>
                     </StackPanel>
-                    
+
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="점검 일시" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     <Grid Grid.Row="1" Grid.Column="1">
                         <Grid.ColumnDefinitions>
@@ -109,7 +109,7 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        
+
                         <TextBlock Grid.Column="0" Text="From" Margin="5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                         <c1:C1DatePicker Grid.Column="1" SelectedDate="{Binding FROMDATE, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedDateFormat="Custom" CustomFormat="yyyy-MM-dd"/>
                         <Button Grid.Column="2" Style="{Binding Source={StaticResource BtnTime}}" Command="{Binding NumericPopupCommand}" CommandParameter="{Binding ElementName=txtFromHour}"/>
@@ -139,12 +139,23 @@
                                    ItemsSource="{Binding Path=BR_BRS_GET_Selector_Check_Master.OUTDATAs}">
                         <c1:C1DataGrid.Columns>
                             <c1:DataGridTextColumn Header="No" Width="40" Binding="{Binding SEQ}"/>
-                            <c1:DataGridTextColumn Header="점검일시" MinWidth="150" Binding="{Binding STDATETIME}"/>
+                            <c1:DataGridTextColumn Header="점검 일시" MinWidth="150" Binding="{Binding STDATETIME}"/>
+
                             <c1:DataGridTextColumn Header="평균질량" MinWidth="100" Binding="{Binding AVG_WEIGHT}"/>
-                            <c1:DataGridTextColumn Header="개별최소질량" MinWidth="100" Binding="{Binding MIN_WEIGHT}"/>
-                            <c1:DataGridTextColumn Header="개별최대질량" MinWidth="100" Binding="{Binding MAX_WEIGHT}"/>
-                            <c1:DataGridTextColumn Header="평균두께" MinWidth="100" Binding="{Binding AVG_THICKNESS}"/>
-                            <c1:DataGridTextColumn Header="평균경도" MinWidth="100" Binding="{Binding AVG_HARDNESS}"/>
+                            <c1:DataGridTextColumn Header="개개질량(최소)" MinWidth="100" Binding="{Binding MIN_WEIGHT}"/>
+                            <c1:DataGridTextColumn Header="개개질량(최대)" MinWidth="100" Binding="{Binding MAX_WEIGHT}"/>
+
+                            <c1:DataGridTextColumn Header="두께(평균)" MinWidth="100" Binding="{Binding AVG_THICK}"/>
+                            <c1:DataGridTextColumn Header="두께(최소)" MinWidth="100" Binding="{Binding MIN_THICK}"/>
+                            <c1:DataGridTextColumn Header="두께(최대)" MinWidth="100" Binding="{Binding MAX_THICK}"/>
+
+                            <c1:DataGridTextColumn Header="경도(평균)" MinWidth="100" Binding="{Binding AVG_HARDNESS}"/>
+                            <c1:DataGridTextColumn Header="경도(최소)" MinWidth="100" Binding="{Binding MIN_HARDNESS}"/>
+                            <c1:DataGridTextColumn Header="경도(최대)" MinWidth="100" Binding="{Binding MAX_HARDNESS}"/>
+
+                            <c1:DataGridTextColumn Header="직경(평균)" MinWidth="100" Binding="{Binding AVG_DIAMETER}"/>
+                            <c1:DataGridTextColumn Header="직경(최소)" MinWidth="100" Binding="{Binding MIN_DIAMETER}"/>
+                            <c1:DataGridTextColumn Header="직경(최대)" MinWidth="100" Binding="{Binding MAX_DIAMETER}"/>
                         </c1:C1DataGrid.Columns>
                     </c1:C1DataGrid>
                 </Grid>
@@ -160,7 +171,7 @@
                             Click="btnCancel_Click"/>
                 </StackPanel>
             </Grid>
-            
+
         </Grid>
     </toolkit:BusyIndicator>
 </ShopFloorUI:ShopFloorCustomWindow>

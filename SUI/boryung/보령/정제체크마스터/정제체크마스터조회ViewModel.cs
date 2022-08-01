@@ -204,10 +204,10 @@ namespace 보령
                         }
                     }
                 }, arg =>
-               {
-                   return CommandCanExecutes.ContainsKey("LoadedCommandAsync") ?
-                       CommandCanExecutes["LoadedCommandAsync"] : (CommandCanExecutes["LoadedCommandAsync"] = true);
-               });
+                {
+                    return CommandCanExecutes.ContainsKey("LoadedCommandAsync") ?
+                        CommandCanExecutes["LoadedCommandAsync"] : (CommandCanExecutes["LoadedCommandAsync"] = true);
+                });
             }
         }
 
@@ -242,7 +242,7 @@ namespace 보령
                                     CODE = id
                                 });
 
-                                if(await _BR_PHR_SEL_CODE.Execute() && _BR_PHR_SEL_CODE.OUTDATAs.Count > 0)
+                                if (await _BR_PHR_SEL_CODE.Execute() && _BR_PHR_SEL_CODE.OUTDATAs.Count > 0)
                                 {
                                     EQPTID = _BR_PHR_SEL_CODE.OUTDATAs[0].CODE;
                                     EQPTNAME = _BR_PHR_SEL_CODE.OUTDATAs[0].NAME.Replace("[" + _EQPTID + "]", "");
@@ -269,10 +269,10 @@ namespace 보령
                         }
                     }
                 }, arg =>
-               {
-                   return CommandCanExecutes.ContainsKey("SearchEquipmentCommandAsync") ?
-                       CommandCanExecutes["SearchEquipmentCommandAsync"] : (CommandCanExecutes["SearchEquipmentCommandAsync"] = true);
-               });
+                {
+                    return CommandCanExecutes.ContainsKey("SearchEquipmentCommandAsync") ?
+                        CommandCanExecutes["SearchEquipmentCommandAsync"] : (CommandCanExecutes["SearchEquipmentCommandAsync"] = true);
+                });
             }
         }
 
@@ -291,7 +291,7 @@ namespace 보령
                         CommandCanExecutes["NumericPopupCommand"] = false;
 
                         ///
-                        if(arg != null && arg is TextBox)
+                        if (arg != null && arg is TextBox)
                         {
                             TextBox tar = arg as TextBox;
 
@@ -301,7 +301,7 @@ namespace 보령
                                 if (popup.DialogResult.GetValueOrDefault())
                                 {
                                     int chk;
-                                    if(Int32.TryParse(popup.Value, out chk))
+                                    if (Int32.TryParse(popup.Value, out chk))
                                     {
                                         if (tar.Name == "txtFromHour" || tar.Name == "txtToHour")
                                         {
@@ -309,7 +309,7 @@ namespace 보령
                                             {
                                                 if (tar.Name == "txtFromHour")
                                                     FROMHOUR = chk.ToString("00");
-                                                else if(tar.Name == "txtToHour")
+                                                else if (tar.Name == "txtToHour")
                                                     TOHOUR = chk.ToString("00");
                                             }
                                             else
@@ -348,10 +348,10 @@ namespace 보령
                         IsBusy = false;
                     }
                 }, arg =>
-               {
-                   return CommandCanExecutes.ContainsKey("NumericPopupCommand") ?
-                       CommandCanExecutes["NumericPopupCommand"] : (CommandCanExecutes["NumericPopupCommand"] = true);
-               });
+                {
+                    return CommandCanExecutes.ContainsKey("NumericPopupCommand") ?
+                        CommandCanExecutes["NumericPopupCommand"] : (CommandCanExecutes["NumericPopupCommand"] = true);
+                });
             }
         }
 
@@ -383,12 +383,9 @@ namespace 보령
                                 OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID
                             });
 
-                            if(await BR_BRS_GET_Selector_Check_Master.Execute())
+                            if (await BR_BRS_GET_Selector_Check_Master.Execute())
                             {
-                                if (BR_BRS_GET_Selector_Check_Master.OUTDATA_TESTSPECs.Count != 1)
-                                    OnMessage("공정검사 정보 조회실패");
-                                else
-                                    RECORD_ENABLE = true;
+                                RECORD_ENABLE = true;
                             }
                             else
                             {
@@ -411,10 +408,10 @@ namespace 보령
                         }
                     }
                 }, arg =>
-               {
-                   return CommandCanExecutes.ContainsKey("GetIPCResultCommandAsync") ?
-                       CommandCanExecutes["GetIPCResultCommandAsync"] : (CommandCanExecutes["GetIPCResultCommandAsync"] = true);
-               });
+                {
+                    return CommandCanExecutes.ContainsKey("GetIPCResultCommandAsync") ?
+                        CommandCanExecutes["GetIPCResultCommandAsync"] : (CommandCanExecutes["GetIPCResultCommandAsync"] = true);
+                });
             }
         }
 
@@ -470,42 +467,37 @@ namespace 보령
                                     throw new Exception(string.Format("서명이 완료되지 않았습니다."));
                                 }
 
-                                string curUser = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_SUI");
-                                string confirmGuid = AuthRepositoryViewModel.Instance.ConfirmedGuid;
-                                string comment = AuthRepositoryViewModel.GetCommentByFunctionCode("OM_ProductionOrder_SUI");
-
                                 // BR_BRS_REG_IPC_CHECKMASTER_MULTI IPC 결과 테이블에 저장
                                 _BR_BRS_REG_IPC_CHECKMASTER_MULTI.INDATAs.Clear();
                                 foreach (var item in BR_BRS_GET_Selector_Check_Master.OUTDATAs)
                                 {
-                                    if(item.SEQ > 0)
+                                    decimal chk;
+                                    decimal avgWeight = 0, avgThick = 0, avgHardness = 0, avgDiameter = 0;
+
+                                    if (decimal.TryParse(item.AVG_WEIGHT.Replace(item.WEIGHTUOM, ""), out chk))
+                                        avgWeight = chk;
+                                    if (decimal.TryParse(item.AVG_THICK.Replace(item.THICKUOM, ""), out chk))
+                                        avgThick = chk;
+                                    if (decimal.TryParse(item.AVG_HARDNESS.Replace(item.HARDNESSUOM, ""), out chk))
+                                        avgHardness = chk;
+                                    if (decimal.TryParse(item.AVG_DIAMETER.Replace(item.DIAMETERUOM, ""), out chk))
+                                        avgDiameter = chk;
+
+                                    _BR_BRS_REG_IPC_CHECKMASTER_MULTI.INDATAs.Add(new BR_BRS_REG_IPC_CHECKMASTER_MULTI.INDATA
                                     {
-                                        _BR_BRS_REG_IPC_CHECKMASTER_MULTI.INDATAs.Add(new BR_BRS_REG_IPC_CHECKMASTER_MULTI.INDATA
-                                        {
-                                            POID = _mainWnd.CurrentOrder.ProductionOrderID,
-                                            OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
-                                            OPTSGUID = BR_BRS_GET_Selector_Check_Master.OUTDATA_TESTSPECs[0].OPTSGUID,
-                                            TSTYPE = BR_BRS_GET_Selector_Check_Master.OUTDATA_TESTSPECs[0].TSTYPE,
-                                            SMPQTY = BR_BRS_GET_Selector_Check_Master.OUTDATA_TESTSPECs[0].SMPQTY,
-                                            SMPQTYUOMID = BR_BRS_GET_Selector_Check_Master.OUTDATA_TESTSPECs[0].SMPQTYUOMID,
-                                            INSDTTM = item.STDTTM,
-                                            EQPTID = item.EQPTID,
-                                            INSUSER = curUser,
-                                            COMMENT = comment,
-                                            LOCATIONID = AuthRepositoryViewModel.Instance.RoomID,
-                                            CONFIRMGUID = confirmGuid,
-                                            MINWEIGHT_TIID = BR_BRS_GET_Selector_Check_Master.OUTDATA_TESTSPECs[0].MINWEIGHT_TIID,
-                                            MINWEIGHT = item.MIN_WEIGHT.Replace(BR_BRS_GET_Selector_Check_Master.OUTDATA_TESTSPECs[0].MINWEIGHT_NOTATION, ""),
-                                            AVGWEIGHT_TIID = BR_BRS_GET_Selector_Check_Master.OUTDATA_TESTSPECs[0].AVGWEIGHT_TIID,
-                                            AVGWEIGHT = item.AVG_WEIGHT.Replace(BR_BRS_GET_Selector_Check_Master.OUTDATA_TESTSPECs[0].AVGWEIGHT_NOTATION, ""),
-                                            MAXWEIGHT_TIID = BR_BRS_GET_Selector_Check_Master.OUTDATA_TESTSPECs[0].MAXWEIGHT_TIID,
-                                            MAXWEIGHT = item.MAX_WEIGHT.Replace(BR_BRS_GET_Selector_Check_Master.OUTDATA_TESTSPECs[0].MAXWEIGHT_NOTATION, ""),
-                                            AVGTHICKNESS_TIID = BR_BRS_GET_Selector_Check_Master.OUTDATA_TESTSPECs[0].AVGTHICKNESS_TIID,
-                                            AVGTHICKNESS = item.AVG_THICKNESS.Replace(BR_BRS_GET_Selector_Check_Master.OUTDATA_TESTSPECs[0].AVGTHICKNESS_NOTATION, ""),
-                                            AVGHARDNESS_TIID = BR_BRS_GET_Selector_Check_Master.OUTDATA_TESTSPECs[0].AVGHARDNESS_TIID,
-                                            AVGHARDNESS = item.AVG_HARDNESS.Replace(BR_BRS_GET_Selector_Check_Master.OUTDATA_TESTSPECs[0].AVGHARDNESS_NOTATION, "")
-                                        });
-                                    }
+                                        EQPTID = item.EQPTID != null ? item.EQPTID : "",
+                                        POID = _mainWnd.CurrentOrder.ProductionOrderID,
+                                        OPSGGUID = _mainWnd.CurrentOrder.OrderProcessSegmentID,
+                                        SMPQTY = item.SMPQTY,
+                                        USERID = AuthRepositoryViewModel.GetUserIDByFunctionCode("OM_ProductionOrder_SUI"),
+                                        STRTDTTM = item.STDTTM,
+                                        LOCATIONID = AuthRepositoryViewModel.Instance.RoomID,
+                                        AVG_WEIGHT = avgWeight.ToString(),
+                                        AVG_THICKNESS = avgThick.ToString(),
+                                        AVG_HARDNESS = avgHardness.ToString(),
+                                        AVG_DIAMETER = avgDiameter.ToString()
+                                    });
+
                                 }
 
                                 if (await _BR_BRS_REG_IPC_CHECKMASTER_MULTI.Execute())
@@ -521,18 +513,32 @@ namespace 보령
                                     dt.Columns.Add(new DataColumn("개별최소질량"));
                                     dt.Columns.Add(new DataColumn("개별최대질량"));
                                     dt.Columns.Add(new DataColumn("평균두께"));
+                                    dt.Columns.Add(new DataColumn("최소두께"));
+                                    dt.Columns.Add(new DataColumn("최대두께"));
                                     dt.Columns.Add(new DataColumn("평균경도"));
+                                    dt.Columns.Add(new DataColumn("최소경도"));
+                                    dt.Columns.Add(new DataColumn("최대경도"));
+                                    dt.Columns.Add(new DataColumn("평균직경"));
+                                    dt.Columns.Add(new DataColumn("최소직경"));
+                                    dt.Columns.Add(new DataColumn("최대직경"));
 
                                     foreach (var rowdata in BR_BRS_GET_Selector_Check_Master.OUTDATAs)
                                     {
                                         var row = dt.NewRow();
-                                        row["장비번호"] = rowdata.EQPTID ?? "";
-                                        row["점검일시"] = rowdata.STDATETIME ?? "";
-                                        row["평균질량"] = rowdata.AVG_WEIGHT ?? "";
-                                        row["개별최소질량"] = rowdata.MIN_WEIGHT ?? "";
-                                        row["개별최대질량"] = rowdata.MAX_WEIGHT ?? "";
-                                        row["평균두께"] = rowdata.AVG_THICKNESS ?? "";
-                                        row["평균경도"] = rowdata.AVG_HARDNESS ?? "";
+                                        row["장비번호"] = rowdata.EQPTID;
+                                        row["점검일시"] = rowdata.STDATETIME != null ? rowdata.STDATETIME : "";
+                                        row["평균질량"] = rowdata.AVG_WEIGHT != null ? rowdata.AVG_WEIGHT : "";
+                                        row["개별최소질량"] = rowdata.MIN_WEIGHT != null ? rowdata.MIN_WEIGHT : "";
+                                        row["개별최대질량"] = rowdata.MAX_WEIGHT != null ? rowdata.MAX_WEIGHT : "";
+                                        row["평균두께"] = rowdata.AVG_THICK != null ? rowdata.AVG_THICK : "";
+                                        row["최소두께"] = rowdata.MIN_THICK != null ? rowdata.MIN_THICK : "";
+                                        row["최대두께"] = rowdata.MAX_THICK != null ? rowdata.MAX_THICK : "";
+                                        row["평균경도"] = rowdata.AVG_HARDNESS != null ? rowdata.AVG_HARDNESS : "";
+                                        row["최소경도"] = rowdata.MIN_HARDNESS != null ? rowdata.MIN_HARDNESS : "";
+                                        row["최대경도"] = rowdata.MAX_HARDNESS != null ? rowdata.MAX_HARDNESS : "";
+                                        row["평균직경"] = rowdata.AVG_DIAMETER != null ? rowdata.AVG_DIAMETER : "";
+                                        row["최소직경"] = rowdata.MIN_DIAMETER != null ? rowdata.MIN_DIAMETER : "";
+                                        row["최대직경"] = rowdata.MAX_DIAMETER != null ? rowdata.MAX_DIAMETER : "";
 
                                         dt.Rows.Add(row);
                                     }
@@ -572,10 +578,10 @@ namespace 보령
                         }
                     }
                 }, arg =>
-               {
-                   return CommandCanExecutes.ContainsKey("ConfirmCommandAsync") ?
-                       CommandCanExecutes["ConfirmCommandAsync"] : (CommandCanExecutes["ConfirmCommandAsync"] = true);
-               });
+                {
+                    return CommandCanExecutes.ContainsKey("ConfirmCommandAsync") ?
+                        CommandCanExecutes["ConfirmCommandAsync"] : (CommandCanExecutes["ConfirmCommandAsync"] = true);
+                });
             }
         }
         #endregion
