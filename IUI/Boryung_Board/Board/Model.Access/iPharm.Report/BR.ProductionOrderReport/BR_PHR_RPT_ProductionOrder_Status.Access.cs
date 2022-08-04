@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LGCNS.iPharmMES.Common
 {
-    
+
     /// <summary>
     /// summary of BR_PHR_RPT_ProductionOrder_Status
     /// </summary>
@@ -22,7 +22,7 @@ namespace LGCNS.iPharmMES.Common
                 return this._INDATAs;
             }
         }
-        [BizActorInputSetDefineAttribute(Order="0")]
+        [BizActorInputSetDefineAttribute(Order = "0")]
         [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
         public partial class INDATA : BizActorDataSetBase
         {
@@ -306,7 +306,7 @@ namespace LGCNS.iPharmMES.Common
                 return this._OUTDATAs;
             }
         }
-        [BizActorOutputSetDefineAttribute(Order="0")]
+        [BizActorOutputSetDefineAttribute(Order = "0")]
         [CustomValidation(typeof(ViewModelBase), "ValidateRow")]
         public partial class OUTDATA : BizActorDataSetBase
         {
@@ -833,9 +833,9 @@ namespace LGCNS.iPharmMES.Common
                     }
                 }
             }
-            private System.Nullable<long> _PLANQTY;
+            private string _PLANQTY;
             [BizActorOutputItemAttribute()]
-            public System.Nullable<long> PLANQTY
+            public string PLANQTY
             {
                 get
                 {
@@ -869,6 +869,7 @@ namespace LGCNS.iPharmMES.Common
         public BR_PHR_RPT_ProductionOrder_Status()
         {
             RuleName = "BR_PHR_RPT_ProductionOrder_Status";
+            BizName = "BR_PHR_RPT_ProductionOrder_Status";
             _INDATAs = new INDATACollection();
             _OUTDATAs = new OUTDATACollection();
         }
