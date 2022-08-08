@@ -486,10 +486,10 @@ namespace 보령
             if (BR_BRS_SEL_EquipmentStatus_PROCEQPT != null && BR_BRS_SEL_EquipmentStatus_PROCEQPT.OUTDATAs.Count > 0)
             {
                 CANRECORDFLAG = true;
+                //2022.08.08 박희돈 적격성평가로직 검토 필요로 인해 주석. 검토 후 재적용 필요.
+                //var failEQPTS = BR_BRS_SEL_EquipmentStatus_PROCEQPT.OUTDATAs.FirstOrDefault(o => o.AVAILFLAG == "N" || o.VALIDFLAG == "N" || o.PERIODCHKSTATUS.Contains( "부적합")|| o.QUALIFICATIONSTATUS.Contains("부적합"));
 
-                var failEQPTS = BR_BRS_SEL_EquipmentStatus_PROCEQPT.OUTDATAs.FirstOrDefault(o => o.AVAILFLAG == "N" || o.VALIDFLAG == "N" || o.PERIODCHKSTATUS.Contains( "부적합")|| o.QUALIFICATIONSTATUS.Contains("부적합"));
-
-                if (null != failEQPTS) CANRECORDFLAG = false;
+                //if (null != failEQPTS) CANRECORDFLAG = false;
             }
         }
         private async void RefreshData(string prevEQPTID, string curEQPTID)
