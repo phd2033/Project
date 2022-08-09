@@ -37,6 +37,7 @@ namespace 보령
         private int _repeaterInterval = 2000;
         private ScaleWebAPIHelper _restScaleService = new ScaleWebAPIHelper();
         private string IPC_TSID = "타정개별질량측정";
+        private bool Standard = true;
         /// <summary>
         /// 기록 회차
         /// </summary>
@@ -412,12 +413,10 @@ namespace 보령
                             if (_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[0].LSL > _CURWEIGHT.Value)
                             {
                                 OnMessage("하한값 보다 낮습니다.");
-                                return;
                             }
                             else if (_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[0].USL < _CURWEIGHT.Value)
                             {
                                 OnMessage("상한값 보다 높습니다");
-                                return;
                             }
 
 
@@ -559,6 +558,35 @@ namespace 보령
                                         true,
                                         "OM_ProductionOrder_SUI",
                                         "", _mainWnd.CurrentInstruction.Raw.RECIPEISTGUID, null) == false)
+                                    {
+                                        throw new Exception(string.Format("서명이 완료되지 않았습니다."));
+                                    }
+                                }
+                               
+                                foreach (var item in IPC_RESULTS)
+                                {
+                                    if (_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[0].LSL > item.RESULT)
+                                    {
+                                        Standard = false;
+                                    }
+                                    else if (_BR_BRS_SEL_ProductionOrderIPCStandard.OUTDATAs[0].USL < item.RESULT)
+                                    {
+                                        Standard = false;
+                                    }
+                                }
+
+                                if (!Standard)
+                                {
+                                    authHelper.InitializeAsync(Common.enumCertificationType.Role, Common.enumAccessType.Create, "OM_ProductionOrder_Deviation");
+                                    if (await authHelper.ClickAsync(
+                                        Common.enumCertificationType.Role,
+                                        Common.enumAccessType.Create,
+                                        "기록값 일탈에 대해 서명후 기록을 진행합니다.",
+                                        "Deviation Sign",
+                                        false,
+                                        "OM_ProductionOrder_Deviation",
+                                        "",
+                                        null, null) == false)
                                     {
                                         throw new Exception(string.Format("서명이 완료되지 않았습니다."));
                                     }
